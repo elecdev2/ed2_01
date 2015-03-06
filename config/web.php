@@ -6,7 +6,13 @@ $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
+    'timeZone'=>'America/Bogota',
+    'language' => 'es-ES',
     'components' => [
+        'urlManager' => [
+            'enablePrettyUrl' => true,
+            'showScriptName' => false,
+        ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => '_q0hLQME77sqP3OERcMhfQQ0d5dRoZ8N',
@@ -50,5 +56,6 @@ if (YII_ENV_DEV) {
     $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = 'yii\gii\Module';
 }
+$config['modules']['gridview'] = '\kartik\grid\Module';
 
 return $config;

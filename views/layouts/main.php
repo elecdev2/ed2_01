@@ -35,9 +35,12 @@ AppAsset::register($this);
             echo Nav::widget([
                 'options' => ['class' => 'navbar-nav navbar-right'],
                 'items' => [
-                    ['label' => 'Home', 'url' => ['/site/index']],
-                    ['label' => 'About', 'url' => ['/site/about']],
-                    ['label' => 'Contact', 'url' => ['/site/contact']],
+                    ['label' => 'Inicio', 'url' => ['/site/index']],
+                    ['label' => 'Procedimientos', 'url' => ['/procedimientos/index']],
+                    ['label' => 'Pacientes', 'url' => ['/pacientes/index']],
+                    ['label' => 'Médicos', 'url' => ['/medicos/index']],
+                    ['label' => 'Eps', 'url' => ['/eps/index']],
+                    ['label' => 'Usuarios', 'url' => ['/usuarios/index']],
                     Yii::$app->user->isGuest ?
                         ['label' => 'Login', 'url' => ['/site/login']] :
                         ['label' => 'Logout (' . Yii::$app->user->identity->username . ')',

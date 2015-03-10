@@ -44,7 +44,8 @@ class Ips extends \yii\db\ActiveRecord
     {
         return [
             [['codigo', 'nombre', 'direccion', 'tipo_identificacion', 'nit', 'telefono', 'idclientes', 'activo', 'consecutivo_fact', 'representante_legal', 'consecutivo_recibo', 'mensaje_email'], 'required'],
-            [['idclientes', 'activo', 'consecutivo_fact', 'consecutivo_recibo'], 'integer'],
+            [['idclientes','consecutivo_fact', 'consecutivo_recibo'], 'integer'],
+            [['activo'], 'integer', 'message' => 'Por favor seleccione una opción'],
             [['codigo', 'nit'], 'string', 'max' => 15],
             [['nombre'], 'string', 'max' => 150],
             [['direccion', 'representante_legal', 'descripcion'], 'string', 'max' => 100],
@@ -62,12 +63,12 @@ class Ips extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'codigo' => 'Codigo',
-            'nombre' => 'Nombre',
+            'nombre' => 'IPS',
             'direccion' => 'Direccion',
-            'tipo_identificacion' => 'Tipo Identificacion',
+            'tipo_identificacion' => 'Tipo de ID',
             'nit' => 'Nit',
             'telefono' => 'Telefono',
-            'idclientes' => 'Idclientes',
+            'idclientes' => 'Cliente',
             'activo' => 'Activo',
             'consecutivo_fact' => 'Consecutivo Fact',
             'representante_legal' => 'Representante Legal',

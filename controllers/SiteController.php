@@ -11,6 +11,7 @@ use app\models\ContactForm;
 
 class SiteController extends Controller
 {
+    public $layout = 'main';
     public function behaviors()
     {
         return [
@@ -50,6 +51,12 @@ class SiteController extends Controller
     public function actionIndex()
     {
         return $this->render('index');
+    }
+
+    public function actionAdmin()
+    {
+       $this->layout = 'panelAdmin';
+        return $this->render('panelAdmin');
     }
 
     public function actionLogin()

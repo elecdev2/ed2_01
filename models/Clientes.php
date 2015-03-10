@@ -34,10 +34,10 @@ class Clientes extends \yii\db\ActiveRecord
     {
         return [
             [['nombre', 'activo'], 'required'],
-            [['activo'], 'integer'],
+            [['activo'], 'integer', 'message' => 'Por favor seleccione una opción'],
             [['nombre'], 'string', 'max' => 100],
             [['tema'], 'string', 'max' => 45],
-            [['tipo_consecutivo'], 'string', 'max' => 1]
+            [['tipo_consecutivo'], 'string']
         ];
     }
 

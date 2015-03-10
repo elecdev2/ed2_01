@@ -3,6 +3,11 @@ body {
     height: 100%;
 }
 
+/*Quita el paddin del palnel admin*/
+.nopad{
+    padding: 0;
+}
+
 .wrap {
     min-height: 100%;
     height: auto;

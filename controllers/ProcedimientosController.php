@@ -4,10 +4,13 @@ namespace app\controllers;
 
 use Yii;
 use app\models\Procedimientos;
+use app\models\Pacientes;
+use app\models\Ips;
 use app\models\ProcedimientosSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\Json;
 
 /**
  * ProcedimientosController implements the CRUD actions for Procedimientos model.
@@ -65,10 +68,37 @@ class ProcedimientosController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
+            // $id_cliente = $this->cliente(Yii::$app->user->id);
+            $id_cliente = 1;
+            $paciente = new Pacientes();
+            $ips = new Ips();
+            $ips_list = Ips::find()->where(['idclientes'=>$id_cliente])->all();            
             return $this->render('create', [
-                'model' => $model,
+                'model' => $model, 
+                'paciente_model'=>$paciente,
+                'ips_model'=>$ips,
+                'ips_list'=>$ips_list,
             ]);
         }
+    }
+
+    public function cliente($id_usuario)
+    {
+        $query = (new \yii\db\Query());
+        $query->select('idclientes')->from('usuarios')->where('id=:id_usuario');
+        $query->addParams([':id_usuario'=>$id_usuario]);
+
+        return $query->scalar();
+    }
+
+    public function actionGetpaciente()
+    {
+        $query = (new \yii\db\Query());
+        $query->select('id,nombre1,nombre2,apellido1,apellido2')->from('pacientes')->where('identificacion=:identificacion_p');
+        $query->addParams([':identificacion_p'=>$_POST['data']]);
+
+        \Yii::$app->response->format = 'json';
+        return $query->one();
     }
 
     /**
@@ -117,5 +147,93 @@ class ProcedimientosController extends Controller
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
+    }
+
+    /*Consulta de listados*/
+    public function eps($id_ips)
+    {
+        $query = (new \yii\db\Query());
+        $query->select('id,(nombre)AS name')->from('eps')->where('idips=:id');
+        $query->addParams([':id'=>$id_ips]);
+        $r = $query->all();
+
+        return $r;
+    }
+
+    public function tipos_s($id_ips, $id_eps)
+    {
+        $query = (new \yii\db\Query());
+        $query->select('t.id,(t.nombre)AS name')->from('tipos_servicio t, eps_tipos et, eps e')->where('et.tipos_servicio_id=t.id AND (et.eps_id=:id_eps AND e.idips=:id_ips)');
+        $query->addParams([':id_eps'=>$id_eps, ':id_ips'=>$id_ips]);
+        $r = $query->all();
+
+        return $r;
+    }
+
+
+    public function estudio($id_ips, $id_eps, $id_tipo)
+    {
+        $query = (new \yii\db\Query());
+        $query->select('(e.cod_cups)AS id, (e.descripcion)AS name')->from('estudios e, eps_tipos et, estudios_ips ei, eps ep')->where('(e.cod_cups=ei.cod_cups AND ei.idtipo_servicio=:id_tipo) AND (ei.idtipo_servicio=et.tipos_servicio_id AND et.eps_id=:id_eps) AND (et.eps_id=ep.id AND ep.idips=:id_ips)');
+        $query->addParams([':id_eps'=>$id_eps, ':id_tipo'=>$id_tipo, ':id_ips'=>$id_ips]);
+        $r = $query->all();
+        // $out = [$r];
+
+        return $r;
+    }
+
+     /*Dependencias*/
+    public function actionSubeps() {
+        $out = [];
+        if (isset($_POST['depdrop_parents'])) {
+            $parents = $_POST['depdrop_parents'];
+            if ($parents != null) {
+                $ips_id = $parents[0];
+                $out = $this->eps($ips_id);
+
+                return Json::encode(['output'=>$out, 'selected'=>'']);
+            }
+        }
+        return Json::encode(['output'=>'', 'selected'=>'']);
+    }
+
+    public function actionSubtipo() {
+        $out = [];
+        if (isset($_POST['depdrop_parents'])) {
+            $ids = $_POST['depdrop_parents'];
+            $ips_id = empty($ids[0]) ? null : $ids[0];
+            $eps_id = empty($ids[1]) ? null : $ids[1];
+            if ($ips_id != null) {
+               $data = self::tipos_s($ips_id, $eps_id);
+                // $data =  [
+                //        'out'=>[
+                //            ['id'=>'1', 'name'=>'<prod-name1>'],
+                //            ['id'=>'2', 'name'=>'<prod-name2>']
+                //         ],
+                //         'selected'=>'1'
+                //    ];
+                return Json::encode(['output'=>$data, 'selected'=>'']);
+                // return Json::encode(['output'=>$data['out'], 'selected'=>$data['selected']]);
+            }
+        }
+        return Json::encode(['output'=>'', 'selected'=>'']);
+    }
+
+
+    public function actionSubest() {
+        $out = [];
+        if (isset($_POST['depdrop_parents'])) {
+            $ids = $_POST['depdrop_parents'];
+            $ips_id = empty($ids[0]) ? null : $ids[0];
+            $eps_id = empty($ids[1]) ? null : $ids[1];
+            $tipo_id = empty($ids[2]) ? null : $ids[2];
+            if ($ips_id != null) {
+               $data = self::estudio($ips_id, $eps_id, $tipo_id);
+            
+                return Json::encode(['output'=>$data, 'selected'=>'']);
+                // return Json::encode(['output'=>$data['out'], 'selected'=>$data['selected']]);
+            }
+        }
+        return Json::encode(['output'=>'', 'selected'=>'']);
     }
 }

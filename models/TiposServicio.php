@@ -14,6 +14,7 @@ use Yii;
  * @property string $serie
  *
  * @property Campos[] $campos
+ * @property EpsTipos[] $epsTipos 
  * @property EstudiosIps[] $estudiosIps
  * @property Procedimientos[] $procedimientos
  */
@@ -48,7 +49,7 @@ class TiposServicio extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'nombre' => 'Nombre',
-            'idips' => 'Idips',
+            'idips' => 'IPS',
             'consecutivo' => 'Consecutivo',
             'serie' => 'Serie',
         ];
@@ -61,6 +62,14 @@ class TiposServicio extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Campos::className(), ['idtipos_servicio' => 'id']);
     }
+
+    /** 
+    * @return \yii\db\ActiveQuery 
+    */ 
+   public function getEpsTipos() 
+   { 
+       return $this->hasMany(EpsTipos::className(), ['tipos_servicio_id' => 'id']); 
+   }
 
     /**
      * @return \yii\db\ActiveQuery

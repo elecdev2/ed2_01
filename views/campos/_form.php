@@ -1,7 +1,15 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+use yii\helpers\Url;
+use yii\helpers\Json;
+use yii\helpers\ArrayHelper;
+use app\models\ListasSistema;
+
+// use yii\widgets\ActiveForm;
+use yii\bootstrap\ActiveForm;
+use kartik\select2\Select2;
+use kartik\depdrop\DepDrop;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Campos */
@@ -10,20 +18,66 @@ use yii\widgets\ActiveForm;
 
 <div class="campos-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin(['layout' => 'horizontal']); ?>
 
-    <?= $form->field($model, 'idtipos_servicio')->textInput() ?>
+  
 
-    <?= $form->field($model, 'tipo_campo')->textInput(['maxlength' => 45]) ?>
+    <?= $form->field($client_model, 'id')->dropDownList($list_client, ['prompt'=>'Seleccione una opción', 'id'=>'client_id'])->label('Cliente');?>
 
-    <?= $form->field($model, 'nombre_campo')->textInput(['maxlength' => 200]) ?>
+    <?= $form->field($ips_model, 'id')->widget(DepDrop::classname(), [
+             'options'=>['id'=>'ips_id'],
+             'type' => 2,
+             'pluginOptions'=>[
+                 'depends'=>['client_id'],
+                 'placeholder' => 'Seleccione una IPS',
+                 'url' => Url::to(['/tipos-servicio/subnombre'])
+             ]
+        ])->label('IPS');
+    ?>
+    
+    <?= $form->field($model, 'idtipos_servicio')->widget(DepDrop::classname(), [
+                'type' => 2,
+                'pluginOptions'=>[
+                'depends'=>['client_id', 'ips_id'],
+                'placeholder'=>'Seleccione tipo de estudio',
+                'url'=>Url::to(['/campos/subtipo'])
+            ]
+        ])->label('Tipo de servicio');  
+    ?>
 
-    <?= $form->field($model, 'titulos_idtitulos')->textInput() ?>
+    <!-- <?= $form->field($model, 'idtipos_servicio')->textInput() ?> -->
 
-    <?= $form->field($model, 'orden')->textInput() ?>
+    <?= $form->field($model, 'tipo_campo')->widget(Select2::classname(), [
+            'data' => array_merge(["" => ""], ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_campo"')->all(),'id','descripcion')),
+            'language' => 'es',
+            'options' => ['placeholder' => 'Seleccione un tipo de campo'],
+            'pluginOptions' => [
+                'allowClear' => true
+            ],
+        ])->label('Tipo de campo');
+    ?>
 
-    <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+    <!-- <?= $form->field($model, 'tipo_campo')->textInput(['maxlength' => 45]) ?> -->
+
+    <?= $form->field($model, 'titulos_idtitulos')->widget(Select2::classname(), [
+            'data' => array_merge(["" => ""], $titulos_list),
+            'language' => 'es',
+            'options' => ['placeholder' => 'Seleccione un titulo'],
+            'pluginOptions' => [
+                'allowClear' => true
+            ],
+        ])->label('Titulo');
+    ?>
+
+    <!-- <?= $form->field($model, 'titulos_idtitulos')->textInput() ?> -->
+
+    <?= $form->field($model, 'nombre_campo')->textInput(['maxlength' => 200])->label('Nombre de campo') ?>
+
+    <!-- <?= $form->field($model, 'orden')->textInput() ?> -->
+
+    <div class="form-group text-center">
+        <?= Html::submitButton($model->isNewRecord ? 'Crear' : 'Actualizar', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::a('Cancelar', ['campos/index'], ['class' => 'btn btn-primary'])?>
     </div>
 
     <?php ActiveForm::end(); ?>

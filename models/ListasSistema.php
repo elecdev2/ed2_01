@@ -14,6 +14,13 @@ use Yii;
  */
 class ListasSistema extends \yii\db\ActiveRecord
 {
+    const rips = "rips";
+    const tipo_identificacion = "tipo_identificacion";
+    const tipo_usuario = "tipo_usuario";
+    const tipo_residencia = "tipo_residencia";
+    const estado_prc = "estado_prc";
+    const concepto_fact = "concepto_fact";
+    const tipo_campo = "tipo_campo";
     /**
      * @inheritdoc
      */

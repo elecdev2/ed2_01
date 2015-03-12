@@ -48,10 +48,10 @@ class Campos extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'idtipos_servicio' => 'Idtipos Servicio',
-            'tipo_campo' => 'Tipo Campo',
-            'nombre_campo' => 'Nombre Campo',
-            'titulos_idtitulos' => 'Titulos Idtitulos',
+            'idtipos_servicio' => 'Tipos de servicio',
+            'tipo_campo' => 'Tipo de campo',
+            'nombre_campo' => 'Nombre de campo',
+            'titulos_idtitulos' => 'Titulos',
             'orden' => 'Orden',
         ];
     }

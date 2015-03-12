@@ -126,6 +126,16 @@ class TiposServicioController extends Controller
         }
     }
 
+    public function cliente($id_cliente)
+    {
+        $query = (new \yii\db\Query());
+        $query->select('id,(nombre)AS name')->from('ips')->where('idclientes=:id');
+        $query->addParams([':id'=>$id_cliente]);
+        $r = $query->all();
+
+        return $r;
+    }
+
 
     /*Dependencias*/
     public function actionSubnombre() {
@@ -134,14 +144,12 @@ class TiposServicioController extends Controller
             $parents = $_POST['depdrop_parents'];
             if ($parents != null) {
                 $client_id = $parents[0];
-                $nombres = Ips::find()->where(['idclientes' => $client_id+1])->all(); //es el ID equivocado
-                $out = ArrayHelper::map($nombres, 'id', 'nombre');
-                // the getSubCatList function will query the database based on the
-                // cat_id and return an array like below:
-                // [
-                //    ['id'=>'<sub-cat-id-1>', 'name'=>'<sub-cat-name1>'],
-                //    ['id'=>'<sub-cat_id_2>', 'name'=>'<sub-cat-name2>']
-                // ]
+                $out = $this->cliente($client_id);
+                // $out = Ips::findBySql('select id,(nombre)AS name from ips where idclientes='.$client_id)->all();
+                // $out = ArrayHelper::map($nombres, 'id', 'nombre');
+
+                // $out = [['id'=>'1', 'name'=>'prueba 1'],['id'=>'2', 'name'=>'prueba 2']];
+                // \Yii::$app->response->format = 'json';
                 return Json::encode(['output'=>$out, 'selected'=>'']);
             }
         }

@@ -20,6 +20,7 @@ use Yii;
  *
  * @property Informes $idinformes0
  * @property Ips $idips0
+ * @property EpsTipos[] $epsTipos 
  * @property Pacientes[] $pacientes
  * @property Procedimientos[] $procedimientos
  * @property Tarifas[] $tarifas
@@ -83,6 +84,14 @@ class Eps extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Ips::className(), ['id' => 'idips']);
     }
+
+    /**
+    * @return \yii\db\ActiveQuery
+    */
+   public function getEpsTipos() 
+   { 
+       return $this->hasMany(EpsTipos::className(), ['eps_id' => 'id']); 
+   } 
 
     /**
      * @return \yii\db\ActiveQuery

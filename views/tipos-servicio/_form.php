@@ -20,27 +20,28 @@ use kartik\depdrop\DepDrop;
     <?= $form->field($client_model, 'id')->widget(Select2::classname(), [
             'data' => array_merge(["" => ""], $list_client),
             'language' => 'es',
-            'options' => ['id'=>'client_id', 'placeholder' => 'Seleccione un cliente'],
+            'options' => ['placeholder' => 'Seleccione un cliente'],
             'pluginOptions' => [
                 'allowClear' => true
             ],
-        ])->label('Cliente'); 
+        ])->label('Cliente');
     ?>
 
-    <!-- <?= $form->field($client_model, 'id')->dropDownList($list_client, ['prompt'=>'Seleccione una opción', 'id'=>'id']);?>  -->
+    <?= $form->field($client_model, 'id')->dropDownList($list_client, ['prompt'=>'Seleccione una opción', 'id'=>'client_id'])->label('Cliente');?>
 
-    <?= $form->field($model, 'nombre')->widget(DepDrop::classname(), [
+    <?= $form->field($model, 'idips')->widget(DepDrop::classname(), [
+            'type'=>2,
 		     'pluginOptions'=>[
-		         'depends'=>['client_id'], //USAR EL METODO PARA OBTENER EL ID
-		         'placeholder' => 'Select...',
+		         'depends'=>['client_id'],
+		         'placeholder' => 'Seleccione una IPS',
 		         'url' => Url::to(['/tipos-servicio/subnombre'])
 		     ]
- 		]);
+ 		])->label('IPS');
  	?>
 
-    <!-- <?= $form->field($model, 'nombre')->textInput(['maxlength' => 100]) ?> -->
-
-    <?= $form->field($model, 'idips')->textInput() ?>
+    <!-- <?= $form->field($model, 'idips')->textInput() ?> -->
+    
+    <?= $form->field($model, 'nombre')->textInput(['maxlength' => 100]) ?>
 
     <?= $form->field($model, 'consecutivo')->textInput() ?>
 
@@ -48,6 +49,7 @@ use kartik\depdrop\DepDrop;
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::a('Cancelar', ['tipos-servicio/index'], ['class' => 'btn btn-primary'])?>
     </div>
 
     <?php ActiveForm::end(); ?>

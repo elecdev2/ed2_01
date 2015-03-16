@@ -28,8 +28,6 @@ AppAsset::register($this);
     <div class="wrap">
         <?php
             NavBar::begin([
-                'brandLabel' => 'My Company',
-                'brandUrl' => Yii::$app->homeUrl,
                 'options' => [
                     'class' => 'navbar-inverse navbar-fixed-top',
                 ],
@@ -37,13 +35,6 @@ AppAsset::register($this);
             echo Nav::widget([
                 'options' => ['class' => 'navbar-nav navbar-right'],
                 'items' => [
-                    ['label' => 'Inicio', 'url' => ['/site/index']],
-                    ['label' => 'Procedimientos', 'url' => ['/procedimientos/index']],
-                    ['label' => 'Pacientes', 'url' => ['/pacientes/index']],
-                    ['label' => 'Médicos', 'url' => ['/medicos/index']],
-                    ['label' => 'Eps', 'url' => ['/eps/index']],
-                    ['label' => 'Administración', 'url' => ['/clientes/index']],
-                    ['label' => 'Usuarios', 'url' => ['/usuarios/index']],
                     Yii::$app->user->isGuest ?
                         ['label' => 'Login', 'url' => ['/site/login']] :
                         ['label' => 'Logout (' . Yii::$app->user->identity->username . ')',
@@ -54,11 +45,31 @@ AppAsset::register($this);
             NavBar::end();
         ?>
 
-        <div class="container">
-            <?= Breadcrumbs::widget([
-                'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-            ]) ?>
-            <?= $content ?>
+        <div class="container-fluid">
+            <div class="col-md-3" style="width: 250px;">
+                <img src="http://www.clapp.com.co/wp-content/uploads/2014/12/LogoFin_Logo50px.png" alt="" class="responsive"><br><br>
+                <?php 
+                     echo Nav::widget([
+                        'options' => ['class' => 'nav nav-pills nav-stacked'],
+                        'items' => [
+                            ['label' => 'Inicio', 'url' => ['/site/index']],
+                            ['label' => 'Procedimientos', 'url' => ['/procedimientos/index']],
+                            ['label' => 'Pacientes', 'url' => ['/pacientes/index']],
+                            ['label' => 'Médicos', 'url' => ['/medicos/index']],
+                            ['label' => 'Eps', 'url' => ['/eps/index']],
+                            ['label' => 'Administración', 'url' => ['/clientes/index']],
+                            ['label' => 'Usuarios', 'url' => ['/usuarios/index']],
+                            
+                        ],
+                    ]);   
+                 ?>
+            </div>
+            <div class="col-md-9">
+                <?= Breadcrumbs::widget([
+                    'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
+                ]) ?>
+                <?= $content ?>
+            </div>
         </div>
     </div>
 

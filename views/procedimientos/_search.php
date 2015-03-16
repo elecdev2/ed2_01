@@ -15,64 +15,64 @@ use yii\widgets\ActiveForm;
         'method' => 'get',
     ]); ?>
 
-    <?= $form->field($model, 'id') ?>
+    <!-- <?= $form->field($model, 'id') ?> -->
 
-    <?= $form->field($model, 'idpacientes') ?>
+    <?= $form->field($model, 'idpacientes', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Paciente']); ?>
 
-    <?= $form->field($model, 'fecha_atencion') ?>
+    <?= $form->field($model, 'fecha_atencion', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Fecha de atención']) ?>
 
-    <?= $form->field($model, 'autorizacion') ?>
+    <?= $form->field($model, 'autorizacion', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Autorización']) ?>
 
-    <?= $form->field($model, 'numero_muestra') ?>
+    <?= $form->field($model, 'numero_muestra', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Número de muestra']) ?>
 
-    <?php // echo $form->field($model, 'valor_procedimiento') ?>
+    <?php // echo $form->field($model, 'valor_procedimiento', ['template'=>"{input}{error}"]) ?>
 
-    <?php // echo $form->field($model, 'eps_ideps') ?>
+    <?php // echo $form->field($model, 'eps_ideps', ['template'=>"{input}{error}"]) ?>
 
-    <?php // echo $form->field($model, 'cod_cups') ?>
+    <?= $form->field($model, 'cod_cups', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Código del procedimiento']) ?>
 
-    <?php // echo $form->field($model, 'cantidad_muestras') ?>
+    <?php // echo $form->field($model, 'cantidad_muestras', ['template'=>"{input}{error}"]) ?>
 
-    <?php // echo $form->field($model, 'valor_copago') ?>
+    <?php // echo $form->field($model, 'valor_copago', ['template'=>"{input}{error}"]) ?>
 
-    <?php // echo $form->field($model, 'valor_saldo') ?>
+    <?php // echo $form->field($model, 'valor_saldo', ['template'=>"{input}{error}"]) ?>
 
-    <?php // echo $form->field($model, 'valor_abono') ?>
+    <?php // echo $form->field($model, 'valor_abono', ['template'=>"{input}{error}"]) ?>
 
-    <?php // echo $form->field($model, 'medico') ?>
+    <?php // echo $form->field($model, 'medico', ['template'=>"{input}{error}"]) ?>
 
-    <?php // echo $form->field($model, 'observaciones') ?>
+    <?php // echo $form->field($model, 'observaciones', ['template'=>"{input}{error}"]) ?>
 
-    <?php // echo $form->field($model, 'forma_pago') ?>
+    <?php // echo $form->field($model, 'forma_pago', ['template'=>"{input}{error}"]) ?>
 
-    <?php // echo $form->field($model, 'numero_cheque') ?>
+    <?php // echo $form->field($model, 'numero_cheque', ['template'=>"{input}{error}"]) ?>
 
-    <?php // echo $form->field($model, 'estado') ?>
+    <?php // echo $form->field($model, 'estado', ['template'=>"{input}{error}"]) ?>
 
-    <?php // echo $form->field($model, 'fecha_informe') ?>
+    <?php // echo $form->field($model, 'fecha_informe', ['template'=>"{input}{error}"]) ?>
 
-    <?php // echo $form->field($model, 'numero_factura') ?>
+    <?php // echo $form->field($model, 'numero_factura', ['template'=>"{input}{error}"]) ?>
 
-    <?php // echo $form->field($model, 'fecha_salida') ?>
+    <?php // echo $form->field($model, 'fecha_salida', ['template'=>"{input}{error}"]) ?>
 
-    <?php // echo $form->field($model, 'fecha_entrega') ?>
+    <?php // echo $form->field($model, 'fecha_entrega', ['template'=>"{input}{error}"]) ?>
 
-    <?php // echo $form->field($model, 'periodo_facturacion') ?>
+    <?php // echo $form->field($model, 'periodo_facturacion', ['template'=>"{input}{error}"]) ?>
 
-    <?php // echo $form->field($model, 'idtipo_servicio') ?>
+    <?php // echo $form->field($model, 'idtipo_servicio', ['template'=>"{input}{error}"]) ?>
 
-    <?php // echo $form->field($model, 'idmedico') ?>
+    <?php // echo $form->field($model, 'idmedico', ['template'=>"{input}{error}"]) ?>
 
-    <?php // echo $form->field($model, 'usuario_recibe') ?>
+    <?php // echo $form->field($model, 'usuario_recibe', ['template'=>"{input}{error}"]) ?>
 
-    <?php // echo $form->field($model, 'usuario_transcribe') ?>
+    <?php // echo $form->field($model, 'usuario_transcribe', ['template'=>"{input}{error}"]) ?>
 
-    <?php // echo $form->field($model, 'descuento') ?>
+    <?php // echo $form->field($model, 'descuento', ['template'=>"{input}{error}"]) ?>
 
-    <?php // echo $form->field($model, 'idbackup') ?>
+    <?php // echo $form->field($model, 'idbackup', ['template'=>"{input}{error}"]) ?>
 
-    <div class="form-group">
-        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
+    <div class="form-group text-center">
+        <?= Html::submitButton('Buscar', ['class' => 'btn btn-primary']) ?>
         <?= Html::resetButton('Reset', ['class' => 'btn btn-default']) ?>
     </div>
 

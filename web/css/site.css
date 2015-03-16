@@ -15,8 +15,12 @@ body {
     padding: 0 0 60px;
 }
 
-.wrap > .container {
+.wrap > .container-fluid {
     padding: 70px 15px 20px;
+}
+
+.titulo{
+    margin: 0;
 }
 
 .footer {

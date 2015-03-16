@@ -35,13 +35,20 @@ class ProcedimientosController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new ProcedimientosSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
+        $searchModel = new ProcedimientosSearch();
+        if(count(Yii::$app->request->queryParams) > 0){
+            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+            return $this->render('index', [
+                'searchModel' => $searchModel,
+                'dataProvider' => $dataProvider,
+            ]);
+        }else{
+            return $this->render('index', [
+                'searchModel' => $searchModel,
+            ]);
+        }
+
     }
 
     /**
@@ -51,7 +58,7 @@ class ProcedimientosController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
+        return $this->renderPartial('view', [
             'model' => $this->findModel($id),
         ]);
     }
@@ -163,7 +170,7 @@ class ProcedimientosController extends Controller
     public function tipos_s($id_ips, $id_eps)
     {
         $query = (new \yii\db\Query());
-        $query->select('t.id,(t.nombre)AS name')->from('tipos_servicio t, eps_tipos et, eps e')->where('et.tipos_servicio_id=t.id AND (et.eps_id=:id_eps AND e.idips=:id_ips)');
+        $query->select('t.id,(t.nombre)AS name')->from('tipos_servicio t, eps_tipos et, eps e')->where('(et.tipos_servicio_id=t.id AND et.eps_id=:id_eps) AND (et.eps_id=e.id AND e.idips=:id_ips)');
         $query->addParams([':id_eps'=>$id_eps, ':id_ips'=>$id_ips]);
         $r = $query->all();
 
@@ -174,7 +181,7 @@ class ProcedimientosController extends Controller
     public function estudio($id_ips, $id_eps, $id_tipo)
     {
         $query = (new \yii\db\Query());
-        $query->select('(e.cod_cups)AS id, (e.descripcion)AS name')->from('estudios e, eps_tipos et, estudios_ips ei, eps ep')->where('(e.cod_cups=ei.cod_cups AND ei.idtipo_servicio=:id_tipo) AND (ei.idtipo_servicio=et.tipos_servicio_id AND et.eps_id=:id_eps) AND (et.eps_id=ep.id AND ep.idips=:id_ips)');
+        $query->select('(e.cod_cups)AS id, (e.descripcion)AS name')->from('estudios e, eps_tipos et, tipos_servicio ts, estudios_ips ei, eps ep')->where('(e.cod_cups=ei.cod_cups AND ei.idtipo_servicio=:id_tipo) AND (ei.idtipo_servicio=ts.id AND ts.idips=:id_ips) AND (ei.idtipo_servicio=et.tipos_servicio_id AND et.eps_id=:id_eps) AND (et.eps_id=ep.id AND ep.idips=:id_ips)');
         $query->addParams([':id_eps'=>$id_eps, ':id_tipo'=>$id_tipo, ':id_ips'=>$id_ips]);
         $r = $query->all();
         // $out = [$r];

@@ -6,29 +6,39 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model app\models\Procedimientos */
 
-$this->title = $model->id;
+$this->title = $model->numero_muestra;
 $this->params['breadcrumbs'][] = ['label' => 'Procedimientos', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="procedimientos-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="col-md-6">
+                <h1 class="titulo"><?= Html::encode($this->title) ?></h1>
+            </div>
+            <div class="col-md-6">
+                <?= Html::a('Actualizar', ['update', 'id' => $model->id], ['style'=>'float:right','class' => 'btn btn-primary btn-lg']) ?>
+            </div>
+        </div>
+    </div>
 
-    <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
+
+ <!--    <p>
+        <?= Html::a('Actualizar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Borrar', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
                 'confirm' => 'Are you sure you want to delete this item?',
                 'method' => 'post',
             ],
         ]) ?>
-    </p>
+    </p> -->
 
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'id',
+            // 'id',
             'idpacientes',
             'fecha_atencion',
             'autorizacion',

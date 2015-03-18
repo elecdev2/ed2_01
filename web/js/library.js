@@ -13,3 +13,29 @@ function nombrePaciente(docInput,idInput,nombreTag)
         });
     });
 }
+
+
+ 
+// serialize form, render response and close modal
+function submitForm($form) {
+    $.post(
+        $form.attr("action"), // serialize Yii2 form
+        $form.serialize()
+    )
+        .done(function(result) {
+            $form.parent().html(result.message);
+            $('#viewModal').modal('hide');
+        })
+        .fail(function() {
+            console.log("server error");
+            $form.replaceWith('<button class="newType">Fail</button>').fadeOut()
+        });
+    return false;
+}
+function getUrlVars() {
+    var vars = {};
+    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+        vars[key] = value;
+    });
+    return window.location.href;
+}

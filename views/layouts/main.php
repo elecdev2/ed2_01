@@ -25,6 +25,7 @@ AppAsset::register($this);
 <body>
 
 <?php $this->beginBody() ?>
+
     <div class="wrap">
         <?php
             NavBar::begin([
@@ -45,12 +46,12 @@ AppAsset::register($this);
             NavBar::end();
         ?>
 
-        <div class="container-fluid">
-            <div class="col-md-3" style="width: 250px;">
-                <img src="http://www.clapp.com.co/wp-content/uploads/2014/12/LogoFin_Logo50px.png" alt="" class="responsive"><br><br>
+            <div class="nopad">
+                <img src="<?= Yii::$app->request->baseUrl; ?>/images/logospructos-04.png" alt="" style="width:90%" class="responsive"><br><br>
+            <!-- <div class="collapse navbar-collapse navbar-ex1-collapse"> -->
                 <?php 
                      echo Nav::widget([
-                        'options' => ['class' => 'nav nav-pills nav-stacked'],
+                        'options' => ['class' => 'nav-pills nav-stacked'],
                         'items' => [
                             ['label' => 'Inicio', 'url' => ['/site/index']],
                             ['label' => 'Procedimientos', 'url' => ['/procedimientos/index']],
@@ -62,23 +63,24 @@ AppAsset::register($this);
                             
                         ],
                     ]);   
-                 ?>
+                 ?>                    
             </div>
-            <div class="col-md-9">
-                <?= Breadcrumbs::widget([
-                    'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-                ]) ?>
-                <?= $content ?>
+        <div class="row">
+            <div class="col-md-10 contenido">
+                <?php // echo Breadcrumbs::widget(['links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],]) ?>
+                <div class="col-md-12">
+                    <?= $content ?>
+                </div>
             </div>
         </div>
     </div>
 
-    <footer class="footer">
+    <!-- <footer class="footer">
         <div class="container">
             <p class="pull-left">&copy; My Company <?= date('Y') ?></p>
             <p class="pull-right"><?= Yii::powered() ?></p>
         </div>
-    </footer>
+    </footer> -->
 
 <?php $this->endBody() ?>
 </body>

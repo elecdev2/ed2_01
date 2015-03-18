@@ -1,8 +1,14 @@
 <?php
 
 use yii\helpers\Html;
+
 // use yii\grid\GridView;
 use kartik\grid\GridView;
+use app\models\Pacientes;
+use app\models\Ips;
+use app\models\Procedimientos;
+use yii\bootstrap\Modal;
+
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\ProcedimientosSearch */
@@ -13,7 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="procedimientos-index col-md-12">
 
-    
+    <div class="text-center"><?= Html::tag('h3', (isset($_GET['message'])) ? $_GET['message'] : '' ,['class'=> 'help-block']);?></div>
     <div class="panel panel-default">
         <div class="panel-body">
             <div class="col-md-6">
@@ -93,31 +99,78 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 </div>
 
-<div id="viewModal" class="modal fade bs-example-modal-lg act" data-backdrop="false" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+<!-- <div id="viewModal" class="modal fade bs-example-modal-lg" data-backdrop="false" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title"><h2>Información</h2></h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span></button>
+                <h4 class="modal-title"><h3>Información</h3></h4>
             </div>
             <div class="modal-body">
                 <div id="vista"></div>
             </div>
             <div class="modal-footer">
-                <!-- <button id="gastoProm" type="button" class="btn btn-primary" >Guardar cambios</button> --> 
-                <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button> -->
+                <button id="gastoProm" type="button" class="btn btn-primary" >Guardar cambios</button> 
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
             </div>
         </div>
     </div>
-</div>
+</div> -->
+
+<!-- <div id="updateModal" class="modal fade bs-example-modal-lg" data-backdrop="false" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span></button>
+                <h4 class="modal-title"><h3>Actualizar</h3></h4>
+            </div>
+            <div class="modal-body">
+              
+                <div id="act"></div>
+            </div>
+            <div class="modal-footer">
+                <button id="gastoProm" type="button" class="btn btn-primary" >Guardar cambios</button> 
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div> -->
+
+<?php Modal::begin([
+    'id'=>'viewModal',
+    'header'=>'<h3>Actualizar</h3>',
+    'size'=>Modal::SIZE_LARGE,
+    'options'=>['data-backdrop'=>'static'],
+]);  
+echo "<div id='vista'></div>";
+Modal::end();
+?>
+
 
 <script type="text/javascript">
     $(document).on('click', '#procedimientos tr',function(event) {
         event.preventDefault();
         fila = $(this).attr('data-key');
-        $('#viewModal').modal({backdrop:'static'});
         $.get('view', {id: fila}).done(function(data) {
             $('#vista').html(data);
+            $('#viewModal').modal({backdrop:'static'});
         });
+    });
+
+    // listen click, open modal and .load content
+    // $('#actualizar').click(function (){
+    // // $(document).on('click','#actualizar', function(event) {
+    //     // event.preventDefault();
+    //     $('#viewModal').modal('hide');
+    //     $('#updateModal').modal('show')
+    //         .find('#act')
+    //         .load($(this).attr('value'));
+    // });
+    
+    $(document).on('click','#actualizar', function(event) {
+        event.preventDefault();
+            $('#viewModal').modal({backdrop:'static'})
+            .find('#vista')
+            .load($(this).attr('value'));
     });
 </script>

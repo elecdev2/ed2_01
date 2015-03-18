@@ -4,9 +4,6 @@ body {
 }
 
 /*Quita el paddin del palnel admin*/
-.nopad{
-    padding: 0;
-}
 
 .wrap {
     min-height: 100%;
@@ -17,6 +14,20 @@ body {
 
 .wrap > .container-fluid {
     padding: 70px 15px 20px;
+}
+
+.contenido{
+     padding: 70px 15px 20px;
+     float: right;
+}
+
+.nopad{
+    padding: 1%;
+    padding-top:70px;
+    position: fixed;
+    background-color: currentColor;
+    height: 100%;
+    width: 250px;
 }
 
 .titulo{

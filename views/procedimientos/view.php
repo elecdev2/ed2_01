@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
@@ -18,7 +19,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 <h1 class="titulo"><?= Html::encode($this->title) ?></h1>
             </div>
             <div class="col-md-6">
-                <?= Html::a('Actualizar', ['update', 'id' => $model->id], ['style'=>'float:right','class' => 'btn btn-primary btn-lg']) ?>
+                <?= Html::button(
+                'Actualizar',
+                ['value' => Url::to(['procedimientos/update?id='.$model->id]),
+                    'id' => 'actualizar',
+                    'class'=>'btn btn-primary btn-lg',
+                    'style'=>'float:right',
+         
+                ]) ?>
+                <!-- <button id="actualizar" class="btn btn-primary btn-lg"></button> -->
             </div>
         </div>
     </div>
@@ -65,7 +74,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'usuario_recibe',
             'usuario_transcribe',
             'descuento',
-            'idbackup',
         ],
     ]) ?>
 

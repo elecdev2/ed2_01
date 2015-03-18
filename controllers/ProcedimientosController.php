@@ -79,7 +79,7 @@ class ProcedimientosController extends Controller
             $id_cliente = 1;
             $paciente = new Pacientes();
             $ips = new Ips();
-            $ips_list = Ips::find()->where(['idclientes'=>$id_cliente])->all();            
+            $ips_list = Ips::find()->where(['idclientes'=>$id_cliente])->all();
             return $this->render('create', [
                 'model' => $model, 
                 'paciente_model'=>$paciente,
@@ -118,13 +118,37 @@ class ProcedimientosController extends Controller
     {
         $model = $this->findModel($id);
 
+        $vista = 'update';
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
+            $model->refresh();
+            Yii::$app->response->format = 'json';
+            return $this->redirect($_POST['url'].'&message=Registro actualizado');
         }
+             // $id_cliente = $this->cliente(Yii::$app->user->id);
+        $id_cliente = 1;
+        $paciente = new Pacientes();
+        $ips = new Ips();
+        $ips_list = Ips::find()->where(['idclientes'=>$id_cliente])->all(); 
+        return $this->renderAjax('update', [
+                    'model' => $model,
+                    'paciente_model'=>$paciente,
+                    'ips_model'=>$ips,
+                    'ips_list'=>$ips_list,
+                ]);
+        
+        // else {
+        //     // $id_cliente = $this->cliente(Yii::$app->user->id);
+        //     $id_cliente = 1;
+        //     $paciente = new Pacientes();
+        //     $ips = new Ips();
+        //     $ips_list = Ips::find()->where(['idclientes'=>$id_cliente])->all();
+        //     return $this->render('update', [
+        //         'model' => $model,
+        //         'paciente_model'=>$paciente,
+        //         'ips_model'=>$ips,
+        //         'ips_list'=>$ips_list,
+        //     ]);
+        // }
     }
 
     /**

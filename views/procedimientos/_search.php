@@ -16,62 +16,117 @@ use yii\widgets\ActiveForm;
     ]); ?>
 
     <!-- <?= $form->field($model, 'id') ?> -->
+    <div class="col-sm-6 col-lg-4">
+        <?= $form->field($model, 'idpacientes', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Paciente']); ?>
+    </div>
 
-    <?= $form->field($model, 'idpacientes', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Paciente']); ?>
+    <div class="col-sm-6 col-lg-4">
+        <?= $form->field($model, 'fecha_atencion', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Fecha de atención']) ?>
+    </div>
 
-    <?= $form->field($model, 'fecha_atencion', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Fecha de atención']) ?>
+    <div class="col-sm-6 col-lg-4">
+        <?= $form->field($model, 'autorizacion', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Autorización']) ?>
+    </div>
 
-    <?= $form->field($model, 'autorizacion', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Autorización']) ?>
+    <div class="col-sm-6 col-lg-4">
+        <?= $form->field($model, 'numero_muestra', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Número de muestra']) ?>
+    </div>
 
-    <?= $form->field($model, 'numero_muestra', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Número de muestra']) ?>
+    <div class="col-sm-6 col-lg-4">
+        <?= $form->field($model, 'valor_procedimiento', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Costo del procedimiento']) ?>
+    </div>
 
-    <?php // echo $form->field($model, 'valor_procedimiento', ['template'=>"{input}{error}"]) ?>
+    <div class="col-sm-6 col-lg-4">
+        <?= $form->field($model, 'estado', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Estado']) ?>
+    </div>
+    
+    <div class="col-sm-6 col-lg-4">
+        <?php // echo $form->field($model, 'eps_ideps', ['template'=>"{input}{error}"]) ?>
+    </div>
 
-    <?php // echo $form->field($model, 'eps_ideps', ['template'=>"{input}{error}"]) ?>
+    <div class="col-sm-6 col-lg-4">
+        <?php // echo $form->field($model, 'cod_cups', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Código del procedimiento']) ?>
+    </div>
 
-    <?= $form->field($model, 'cod_cups', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Código del procedimiento']) ?>
+    <div class="col-sm-6 col-lg-4">
+        <?php // echo $form->field($model, 'cantidad_muestras', ['template'=>"{input}{error}"]) ?>
+    </div>
 
-    <?php // echo $form->field($model, 'cantidad_muestras', ['template'=>"{input}{error}"]) ?>
+    <div class="col-sm-6 col-lg-4">
+        <?php // echo $form->field($model, 'valor_copago', ['template'=>"{input}{error}"]) ?>
+    </div>
 
-    <?php // echo $form->field($model, 'valor_copago', ['template'=>"{input}{error}"]) ?>
+    <div class="col-sm-6 col-lg-4">
+        <?php // echo $form->field($model, 'valor_saldo', ['template'=>"{input}{error}"]) ?>
+    </div>
 
-    <?php // echo $form->field($model, 'valor_saldo', ['template'=>"{input}{error}"]) ?>
+    <div class="col-sm-6 col-lg-4">
+        <?php // echo $form->field($model, 'valor_abono', ['template'=>"{input}{error}"]) ?>
+    </div>
 
-    <?php // echo $form->field($model, 'valor_abono', ['template'=>"{input}{error}"]) ?>
+    <div class="col-sm-6 col-lg-4">
+        <?php // echo $form->field($model, 'medico', ['template'=>"{input}{error}"]) ?>
+    </div>
 
-    <?php // echo $form->field($model, 'medico', ['template'=>"{input}{error}"]) ?>
+    <div class="col-sm-6 col-lg-4">
+        <?php // echo $form->field($model, 'observaciones', ['template'=>"{input}{error}"]) ?>
+    </div>
 
-    <?php // echo $form->field($model, 'observaciones', ['template'=>"{input}{error}"]) ?>
+    <div class="col-sm-6 col-lg-4">
+        <?php // echo $form->field($model, 'forma_pago', ['template'=>"{input}{error}"]) ?>
+    </div>
 
-    <?php // echo $form->field($model, 'forma_pago', ['template'=>"{input}{error}"]) ?>
+    <div class="col-sm-6 col-lg-4">
+        <?php // echo $form->field($model, 'numero_cheque', ['template'=>"{input}{error}"]) ?>
+    </div>
 
-    <?php // echo $form->field($model, 'numero_cheque', ['template'=>"{input}{error}"]) ?>
 
-    <?php // echo $form->field($model, 'estado', ['template'=>"{input}{error}"]) ?>
+    <div class="col-sm-6 col-lg-4">
+        <?php // echo $form->field($model, 'fecha_informe', ['template'=>"{input}{error}"]) ?>
+    </div>
 
-    <?php // echo $form->field($model, 'fecha_informe', ['template'=>"{input}{error}"]) ?>
+    <div class="col-sm-6 col-lg-4">
+        <?php // echo $form->field($model, 'numero_factura', ['template'=>"{input}{error}"]) ?>
+    </div>
 
-    <?php // echo $form->field($model, 'numero_factura', ['template'=>"{input}{error}"]) ?>
+    <div class="col-sm-6 col-lg-4">
+        <?php // echo $form->field($model, 'fecha_salida', ['template'=>"{input}{error}"]) ?>
+    </div>
 
-    <?php // echo $form->field($model, 'fecha_salida', ['template'=>"{input}{error}"]) ?>
+    <div class="col-sm-6 col-lg-4">
+        <?php // echo $form->field($model, 'fecha_entrega', ['template'=>"{input}{error}"]) ?>
+    </div>
 
-    <?php // echo $form->field($model, 'fecha_entrega', ['template'=>"{input}{error}"]) ?>
+    <div class="col-sm-6 col-lg-4">
+        <?php // echo $form->field($model, 'periodo_facturacion', ['template'=>"{input}{error}"]) ?>
+    </div>
 
-    <?php // echo $form->field($model, 'periodo_facturacion', ['template'=>"{input}{error}"]) ?>
+    <div class="col-sm-6 col-lg-4">
+        <?php // echo $form->field($model, 'idtipo_servicio', ['template'=>"{input}{error}"]) ?>
+    </div>
 
-    <?php // echo $form->field($model, 'idtipo_servicio', ['template'=>"{input}{error}"]) ?>
+    <div class="col-sm-6 col-lg-4">
+        <?php // echo $form->field($model, 'idmedico', ['template'=>"{input}{error}"]) ?>
+    </div>
 
-    <?php // echo $form->field($model, 'idmedico', ['template'=>"{input}{error}"]) ?>
+    <div class="col-sm-6 col-lg-4">
+        <?php // echo $form->field($model, 'usuario_recibe', ['template'=>"{input}{error}"]) ?>
+    </div>
 
-    <?php // echo $form->field($model, 'usuario_recibe', ['template'=>"{input}{error}"]) ?>
+    <div class="col-sm-6 col-lg-4">
+        <?php // echo $form->field($model, 'usuario_transcribe', ['template'=>"{input}{error}"]) ?>
+    </div>
 
-    <?php // echo $form->field($model, 'usuario_transcribe', ['template'=>"{input}{error}"]) ?>
+    <div class="col-sm-6 col-lg-4">
+        <?php // echo $form->field($model, 'descuento', ['template'=>"{input}{error}"]) ?>
+    </div>
 
-    <?php // echo $form->field($model, 'descuento', ['template'=>"{input}{error}"]) ?>
+    <div class="col-sm-6 col-lg-4">
+        <?php // echo $form->field($model, 'idbackup', ['template'=>"{input}{error}"]) ?>
+    </div>
 
-    <?php // echo $form->field($model, 'idbackup', ['template'=>"{input}{error}"]) ?>
 
-    <div class="form-group text-center">
+    <div class="col-sm-12 form-group text-center">
         <?= Html::submitButton('Buscar', ['class' => 'btn btn-primary']) ?>
         <?= Html::resetButton('Reset', ['class' => 'btn btn-default']) ?>
     </div>

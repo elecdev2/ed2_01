@@ -22,3 +22,8 @@ $this->params['breadcrumbs'][] = $this->title;
     ]) ?>
 
 </div>
+<script type="text/javascript">
+    $(document).ready(function() {
+        nombrePaciente('#documento', '#procedimientos-idpacientes', '#pacienteName');
+    });
+</script>

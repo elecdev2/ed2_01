@@ -50,12 +50,12 @@ class Pacientes extends \yii\db\ActiveRecord
         return [
             [['tipo_identificacion', 'identificacion', 'apellido1', 'nombre1', 'direccion', 'sexo', 'fecha_nacimiento', 'idclientes'], 'required'],
             [['fecha_nacimiento'], 'safe'],
-            [['idclientes', 'activo', 'idciudad', 'ideps', 'envia_email'], 'integer'],
+            [['idclientes', 'idciudad', 'ideps'], 'integer'],
             [['tipo_identificacion'], 'string', 'max' => 3],
             [['identificacion', 'telefono', 'codeps'], 'string', 'max' => 15],
             [['apellido1', 'nombre1', 'nombre2', 'apellido2'], 'string', 'max' => 30],
             [['direccion', 'email'], 'string', 'max' => 100],
-            [['sexo', 'tipo_usuario', 'tipo_residencia'], 'string', 'max' => 1]
+            [['tipo_usuario', 'tipo_residencia'], 'string', 'max' => 1]
         ];
     }
 

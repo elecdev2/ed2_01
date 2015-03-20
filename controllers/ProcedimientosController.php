@@ -5,12 +5,16 @@ namespace app\controllers;
 use Yii;
 use app\models\Procedimientos;
 use app\models\Pacientes;
+use app\models\ListasSistema;
+use app\models\Ciudades;
+use app\models\Eps;
 use app\models\Ips;
 use app\models\ProcedimientosSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\Json;
+use yii\helpers\ArrayHelper;
 
 /**
  * ProcedimientosController implements the CRUD actions for Procedimientos model.
@@ -80,11 +84,24 @@ class ProcedimientosController extends Controller
             $paciente = new Pacientes();
             $ips = new Ips();
             $ips_list = Ips::find()->where(['idclientes'=>$id_cliente])->all();
+            $lista_tipos = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_usuario"')->all(),'codigo','descripcion');
+            $lista_tipoid = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_identificacion"')->all(),'codigo','descripcion');
+            $lista_resid = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_residencia"')->all(),'codigo','descripcion');
+            $lista_estados = ArrayHelper::map(ListasSistema::find()->where('tipo="estado_prc"')->all(),'codigo','descripcion');
+            $lista_ciudades = ArrayHelper::map(Ciudades::find()->all(),'id','nombre');
+            $lista_eps = ArrayHelper::map(Eps::find()->all(),'id','nombre');
             return $this->render('create', [
                 'model' => $model, 
                 'paciente_model'=>$paciente,
                 'ips_model'=>$ips,
                 'ips_list'=>$ips_list,
+                'lista_tipos'=>$lista_tipos,
+                'lista_tipoid'=>$lista_tipoid,
+                'lista_resid'=>$lista_resid,
+                'lista_ciudades'=>$lista_ciudades,
+                'lista_estados'=>$lista_estados,
+                'lista_eps'=>$lista_eps,
+                'id_cliente'=>$id_cliente,
             ]);
         }
     }
@@ -118,7 +135,6 @@ class ProcedimientosController extends Controller
     {
         $model = $this->findModel($id);
 
-        $vista = 'update';
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             $model->refresh();
             Yii::$app->response->format = 'json';
@@ -128,12 +144,14 @@ class ProcedimientosController extends Controller
         $id_cliente = 1;
         $paciente = new Pacientes();
         $ips = new Ips();
-        $ips_list = Ips::find()->where(['idclientes'=>$id_cliente])->all(); 
+        $ips_list = Ips::find()->where(['idclientes'=>$id_cliente])->all();
+        $lista_estados = ArrayHelper::map(ListasSistema::find()->where('tipo="estado_prc"')->all(),'codigo','descripcion');
         return $this->renderAjax('update', [
                     'model' => $model,
                     'paciente_model'=>$paciente,
                     'ips_model'=>$ips,
                     'ips_list'=>$ips_list,
+                    'lista_estados'=>$lista_estados,
                 ]);
         
         // else {

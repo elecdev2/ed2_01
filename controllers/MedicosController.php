@@ -4,10 +4,13 @@ namespace app\controllers;
 
 use Yii;
 use app\models\Medicos;
+use app\models\Ips;
+use app\models\Especialidades;
 use app\models\MedicosSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
  * MedicosController implements the CRUD actions for Medicos model.
@@ -33,12 +36,21 @@ class MedicosController extends Controller
     public function actionIndex()
     {
         $searchModel = new MedicosSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $lista_especialidades = ArrayHelper::map(Especialidades::find()->all(),'codigo','nombre');
+        if(count(Yii::$app->request->queryParams) > 0){
+            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
+            return $this->render('index', [
+                'searchModel' => $searchModel,
+                'dataProvider' => $dataProvider,
+                'lista_especialidades'=>$lista_especialidades,
+            ]);
+        }else{
+            return $this->render('index', [
+                'searchModel' => $searchModel,
+                'lista_especialidades'=>$lista_especialidades,
+            ]);
+        }
     }
 
     /**
@@ -48,7 +60,7 @@ class MedicosController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
+        return $this->renderPartial('view', [
             'model' => $this->findModel($id),
         ]);
     }
@@ -65,8 +77,15 @@ class MedicosController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
+            // $id_cliente = $this->cliente(Yii::$app->user->id);
+            $id_cliente = 1;
+            $lista_especialidades = ArrayHelper::map(Especialidades::find()->all(),'codigo','nombre');
+            $lista_ips = ArrayHelper::map(Ips::find()->all(),'id','nombre');
             return $this->render('create', [
                 'model' => $model,
+                'lista_especialidades'=>$lista_especialidades,
+                'lista_ips'=>$lista_ips,
+                'id_cliente'=>$id_cliente,
             ]);
         }
     }
@@ -84,8 +103,12 @@ class MedicosController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
-            return $this->render('update', [
+            $lista_especialidades = ArrayHelper::map(Especialidades::find()->all(),'codigo','nombre');
+            $lista_ips = ArrayHelper::map(Ips::find()->all(),'id','nombre');
+            return $this->renderAjax('update', [
                 'model' => $model,
+                'lista_especialidades'=>$lista_especialidades,
+                'lista_ips'=>$lista_ips,
             ]);
         }
     }

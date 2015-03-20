@@ -13,6 +13,7 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
         'method' => 'get',
+        'validateOnType' => true,
     ]); ?>
 
     <!-- <?= $form->field($model, 'id') ?> -->
@@ -21,7 +22,7 @@ use yii\widgets\ActiveForm;
     </div>
 
     <div class="col-sm-6 col-lg-4">
-        <?= $form->field($model, 'fecha_atencion', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Fecha de atención']) ?>
+        <?= $form->field($model, 'fecha_atencion', ['template'=>"{input}{error}"])->widget(yii\jui\DatePicker::classname(), ["dateFormat" => "yyyy-MM-dd", 'options' => ['class' => 'fecha form-control', "placeholder" => "Fecha de atención"], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']) ?>
     </div>
 
     <div class="col-sm-6 col-lg-4">
@@ -127,7 +128,7 @@ use yii\widgets\ActiveForm;
 
 
     <div class="col-sm-12 form-group text-center">
-        <?= Html::submitButton('Buscar', ['class' => 'btn btn-primary']) ?>
+        <?= Html::submitButton('Buscar', ['class' => 'btn btn-success']) ?>
         <?= Html::resetButton('Reset', ['class' => 'btn btn-default']) ?>
     </div>
 

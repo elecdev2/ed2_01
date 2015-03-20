@@ -7,6 +7,7 @@ use yii\helpers\ArrayHelper;
 use yii\bootstrap\ActiveForm;
 use app\models\Ips;
 use kartik\depdrop\DepDrop;
+use kartik\select2\Select2;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Procedimientos */
@@ -31,7 +32,7 @@ use kartik\depdrop\DepDrop;
             <?= $form->field($model, 'idpacientes')->hiddenInput()->label('') ?>
         
         
-            <?= $form->field($model, 'fecha_atencion')->widget(yii\jui\DatePicker::classname(), ["id" => "pacientes-fecha_atencion", "name" => "Pacientes[fecha_atencion]", "dateFormat" => "yyyy-MM-dd", 'options' => ['value'=>$model->fecha_atencion, 'class' => 'fecha form-control', "placeholder" => "aaaa-mm-dd"], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']) ?>
+            <?= $form->field($model, 'fecha_atencion')->widget(yii\jui\DatePicker::classname(), ["dateFormat" => "yyyy-MM-dd", 'options' => ['value'=>$model->fecha_atencion, 'class' => 'fecha form-control', "placeholder" => "aaaa-mm-dd"], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']) ?>
         
         
 
@@ -137,15 +138,19 @@ use kartik\depdrop\DepDrop;
         
             <?= $form->field($model, 'numero_cheque')->textInput(['maxlength' => 15]) ?>
         
-        
+            
+            <?= $form->field($model, 'estado')->widget(Select2::classname(), [
+                    'data'=>array_merge(["" => ""], $lista_estados),
+                    'language' => 'es',
+                    'options' => ['placeholder' => 'Seleccione un estado'],
+                    'pluginOptions' => [
+                        'allowClear' => true
+                    ],
+                ]);
+            ?>
 
         
-            <?= $form->field($model, 'estado')->textInput(['maxlength' => 3]) ?>
-        
-        
-
-        
-            <?= $form->field($model, 'fecha_informe')->textInput() ?>
+            <?= $form->field($model, 'fecha_informe')->widget(yii\jui\DatePicker::classname(), ["dateFormat" => "yyyy-MM-dd", 'options' => ['value'=>$model->fecha_informe, 'class' => 'fecha form-control', "placeholder" => "aaaa-mm-dd"], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']) ?>
         
         
 
@@ -155,17 +160,17 @@ use kartik\depdrop\DepDrop;
         
 
         
-            <?= $form->field($model, 'fecha_salida')->textInput() ?>
+            <?= $form->field($model, 'fecha_salida')->widget(yii\jui\DatePicker::classname(), ["dateFormat" => "yyyy-MM-dd", 'options' => ['value'=>$model->fecha_salida, 'class' => 'fecha form-control', "placeholder" => "aaaa-mm-dd"], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']) ?>
         
         
 
         
-            <?= $form->field($model, 'fecha_entrega')->textInput() ?>
+            <?= $form->field($model, 'fecha_entrega')->widget(yii\jui\DatePicker::classname(), ["dateFormat" => "yyyy-MM-dd", 'options' => ['value'=>$model->fecha_entrega, 'class' => 'fecha form-control', "placeholder" => "aaaa-mm-dd"], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']) ?>
         
         
 
         
-            <?= $form->field($model, 'periodo_facturacion')->textInput() ?>
+            <?= $form->field($model, 'periodo_facturacion')->widget(yii\jui\DatePicker::classname(), ["dateFormat" => "yyyy-MM-dd", 'options' => ['value'=>$model->periodo_facturacion, 'class' => 'fecha form-control', "placeholder" => "aaaa-mm-dd"], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']) ?>
         
         
 
@@ -209,12 +214,17 @@ use kartik\depdrop\DepDrop;
                 <?php if($model->isNewRecord){ ?>
                    <?= $this->render('//pacientes/_form', [
                         'model' => $paciente_model,
+                        'lista_tipos'=>$lista_tipos,
+                        'lista_tipoid'=>$lista_tipoid,
+                        'lista_resid'=>$lista_resid,
+                        'lista_ciudades'=>$lista_ciudades,
+                        'lista_eps'=>$lista_eps,
+                        'id_cliente'=>$id_cliente,
                     ]) ?>
                 <?php } ?>
             </div>
             <div class="modal-footer">
-                <button id="reg_pac" type="button" class="btn btn-primary" >Registrar</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                <div></div>
             </div>
         </div>
     </div>

@@ -1,7 +1,9 @@
 <?php
 
 use yii\helpers\Html;
+
 use yii\widgets\ActiveForm;
+use kartik\select2\Select2;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\MedicosSearch */
@@ -13,23 +15,39 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
         'method' => 'get',
+        'validateOnType' => true,
     ]); ?>
 
-    <?= $form->field($model, 'ips_idips') ?>
+    <?php // $form->field($model, 'ips_idips') ?>
 
-    <?= $form->field($model, 'idespecialidades') ?>
 
-    <?= $form->field($model, 'codigo') ?>
+<div class="col-sm-6 col-lg-4">
+    <?= $form->field($model, 'idespecialidades', ['template'=>"{input}{error}"])->widget(Select2::classname(), [
+            'data'=>array_merge(["" => ""], $lista_especialidades),
+            'language' => 'es',
+            'options' => ['placeholder' => 'Seleccione una especialidad'],
+            'pluginOptions' => [
+                'allowClear' => true
+            ],
+        ]);
+    ?>
+</div>
 
-    <?= $form->field($model, 'nombre') ?>
+<div class="col-sm-6 col-lg-4">
+    <?= $form->field($model, 'codigo', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Código']) ?>
+</div>
 
-    <?= $form->field($model, 'id') ?>
+<div class="col-sm-6 col-lg-4">
+    <?= $form->field($model, 'nombre', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Nombre']) ?>
+</div>
 
-    <?php // echo $form->field($model, 'idclientes') ?>
+    <?php //$form->field($model, 'id', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Autorización']) ?>
 
-    <?php // echo $form->field($model, 'ruta_firma') ?>
+    <?php // $form->field($model, 'idclientes', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Autorización']) ?>
 
-    <div class="form-group">
+    <?php // $form->field($model, 'ruta_firma', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Autorización']) ?>
+
+    <div class="form-group text-center">
         <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
         <?= Html::resetButton('Reset', ['class' => 'btn btn-default']) ?>
     </div>

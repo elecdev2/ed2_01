@@ -13,49 +13,63 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
         'method' => 'get',
+        'validateOnType' => true,
     ]); ?>
 
-    <?= $form->field($model, 'id') ?>
 
-    <?= $form->field($model, 'tipo_identificacion') ?>
+    <?php // echo $form->field($model, 'id', ['template'=>"{input}{error}"]) ?>
 
-    <?= $form->field($model, 'identificacion') ?>
+<div class="col-sm-6 col-lg-4">
+    <?= $form->field($model, 'tipo_identificacion', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Tipo de ID']); ?>
+</div>
 
-    <?= $form->field($model, 'apellido1') ?>
+<div class="col-sm-6 col-lg-4">
+    <?= $form->field($model, 'identificacion', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Identificación']); ?>
+</div>
 
-    <?= $form->field($model, 'nombre1') ?>
+<div class="col-sm-6 col-lg-4">
+    <?= $form->field($model, 'nombre1', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Primer nombre']); ?>
+</div>
 
-    <?php // echo $form->field($model, 'nombre2') ?>
+<div class="col-sm-6 col-lg-4">
+    <?= $form->field($model, 'nombre2', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Segundo nombre']); ?>
+</div>
 
-    <?php // echo $form->field($model, 'apellido2') ?>
+<div class="col-sm-6 col-lg-4">
+    <?= $form->field($model, 'apellido1', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Primer apellido']); ?>
+</div>
 
-    <?php // echo $form->field($model, 'direccion') ?>
+<div class="col-sm-6 col-lg-4">
+    <?= $form->field($model, 'apellido2', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Segundo apellido']); ?>
+</div>
 
-    <?php // echo $form->field($model, 'telefono') ?>
+    <?php // echo $form->field($model, 'direccion', ['template'=>"{input}{error}"]) ?>
 
-    <?php // echo $form->field($model, 'sexo') ?>
+    <?php // echo $form->field($model, 'telefono', ['template'=>"{input}{error}"]) ?>
 
-    <?php // echo $form->field($model, 'fecha_nacimiento') ?>
+    <?php // echo $form->field($model, 'sexo', ['template'=>"{input}{error}"]) ?>
 
-    <?php // echo $form->field($model, 'tipo_usuario') ?>
+    <?php // echo $form->field($model, 'fecha_nacimiento', ['template'=>"{input}{error}"]) ?>
 
-    <?php // echo $form->field($model, 'tipo_residencia') ?>
+    <?php // echo $form->field($model, 'tipo_usuario', ['template'=>"{input}{error}"]) ?>
 
-    <?php // echo $form->field($model, 'idclientes') ?>
+    <?php // echo $form->field($model, 'tipo_residencia', ['template'=>"{input}{error}"]) ?>
 
-    <?php // echo $form->field($model, 'activo') ?>
+    <?php // echo $form->field($model, 'idclientes', ['template'=>"{input}{error}"]) ?>
 
-    <?php // echo $form->field($model, 'idciudad') ?>
+    <?php // echo $form->field($model, 'activo', ['template'=>"{input}{error}"]) ?>
 
-    <?php // echo $form->field($model, 'ideps') ?>
+    <?php // echo $form->field($model, 'idciudad', ['template'=>"{input}{error}"]) ?>
 
-    <?php // echo $form->field($model, 'email') ?>
+    <?php // echo $form->field($model, 'ideps', ['template'=>"{input}{error}"]) ?>
 
-    <?php // echo $form->field($model, 'envia_email') ?>
+    <?php // echo $form->field($model, 'email', ['template'=>"{input}{error}"]) ?>
 
-    <?php // echo $form->field($model, 'codeps') ?>
+    <?php // echo $form->field($model, 'envia_email', ['template'=>"{input}{error}"]) ?>
 
-    <div class="form-group">
+    <?php // echo $form->field($model, 'codeps', ['template'=>"{input}{error}"]) ?>
+
+    <div class="col-sm-12 form-group text-center">
         <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
         <?= Html::resetButton('Reset', ['class' => 'btn btn-default']) ?>
     </div>

@@ -4,10 +4,14 @@ namespace app\controllers;
 
 use Yii;
 use app\models\Pacientes;
+use app\models\Ciudades;
+use app\models\ListasSistema;
+use app\models\Eps;
 use app\models\PacientesSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
  * PacientesController implements the CRUD actions for Pacientes model.
@@ -33,12 +37,17 @@ class PacientesController extends Controller
     public function actionIndex()
     {
         $searchModel = new PacientesSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
+        if(count(Yii::$app->request->queryParams) > 0){
+            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+            return $this->render('index', [
+                'searchModel' => $searchModel,
+                'dataProvider' => $dataProvider,
+            ]);
+        }else{
+            return $this->render('index', [
+                'searchModel' => $searchModel,
+            ]);
+        }
     }
 
     /**
@@ -48,7 +57,7 @@ class PacientesController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
+        return $this->renderPartial('view', [
             'model' => $this->findModel($id),
         ]);
     }
@@ -64,11 +73,23 @@ class PacientesController extends Controller
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
-        }
+        } 
+        $id_cliente = 1; 
+        $lista_tipos = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_usuario"')->all(),'codigo','descripcion');
+        $lista_tipoid = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_identificacion"')->all(),'codigo','descripcion');
+        $lista_resid = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_residencia"')->all(),'codigo','descripcion');
+        $lista_ciudades = ArrayHelper::map(Ciudades::find()->all(),'id','nombre');
+        $lista_eps = ArrayHelper::map(Eps::find()->all(),'id','nombre');
+        return $this->render('create', [
+            'model' => $model,
+            'lista_tipos'=>$lista_tipos,
+            'lista_tipoid'=>$lista_tipoid,
+            'lista_resid'=>$lista_resid,
+            'lista_ciudades'=>$lista_ciudades,
+            'lista_eps'=>$lista_eps,
+            'id_cliente'=>$id_cliente,
+        ]);
+        
     }
 
     /**
@@ -82,12 +103,26 @@ class PacientesController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
+            $model->refresh();
+            Yii::$app->response->format = 'json';
+            return $this->redirect($_POST['url'].'&message=Registro actualizado');
         }
+        $id_cliente = 1; 
+        $lista_tipos = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_usuario"')->all(),'codigo','descripcion');
+        $lista_tipoid = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_identificacion"')->all(),'codigo','descripcion');
+        $lista_resid = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_residencia"')->all(),'codigo','descripcion');
+        $lista_ciudades = ArrayHelper::map(Ciudades::find()->all(),'id','nombre');
+        $lista_eps = ArrayHelper::map(Eps::find()->all(),'id','nombre');
+        return $this->renderAjax('update', [
+            'model' => $model,
+            'lista_tipos'=>$lista_tipos,
+            'lista_tipoid'=>$lista_tipoid,
+            'lista_resid'=>$lista_resid,
+            'lista_ciudades'=>$lista_ciudades,
+            'lista_eps'=>$lista_eps,
+            'id_cliente'=>$id_cliente,
+        ]);
+        
     }
 
     /**

@@ -14,7 +14,13 @@ function nombrePaciente(docInput,idInput,nombreTag)
     });
 }
 
-
+function openModalView(idcontenedor,elemento){
+   var fila = elemento.attr('data-key');
+    $.get('view', {id: fila}).done(function(data) {
+        $('#'+idcontenedor).html(data);
+        $('#viewModal').modal({backdrop:'static'});
+    });
+}
  
 // serialize form, render response and close modal
 function submitForm($form) {

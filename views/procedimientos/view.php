@@ -8,8 +8,8 @@ use yii\widgets\DetailView;
 /* @var $model app\models\Procedimientos */
 
 $this->title = $model->numero_muestra;
-$this->params['breadcrumbs'][] = ['label' => 'Procedimientos', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+// $this->params['breadcrumbs'][] = ['label' => 'Procedimientos', 'url' => ['index']];
+// $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="procedimientos-view">
 

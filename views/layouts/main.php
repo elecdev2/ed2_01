@@ -18,6 +18,7 @@ AppAsset::register($this);
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <script type="text/javascript" charset="utf8" src="<?= Yii::$app->request->baseUrl; ?>/js/jquery.min.js"></script>
+    <link href='http://fonts.googleapis.com/css?family=Muli:300,400,400italic,300italic|Montserrat:700,400' rel='stylesheet' type='text/css'>
     <?= Html::csrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
@@ -30,7 +31,7 @@ AppAsset::register($this);
         <?php
             NavBar::begin([
                 'options' => [
-                    'class' => 'navbar-inverse navbar-fixed-top',
+                    'class' => 'navegacion navbar-fixed-top',
                 ],
             ]);
             echo Nav::widget([
@@ -47,13 +48,15 @@ AppAsset::register($this);
         ?>
 
             <div class="nopad">
-                <img src="<?= Yii::$app->request->baseUrl; ?>/images/logospructos-04.png" alt="" style="width:90%" class="responsive"><br><br>
+                <p class="text-center">
+                    <img src="<?= Yii::$app->request->baseUrl; ?>/images/LogoFin50pxapp.png" alt="" style="width:90%" class="responsive">
+                </p>
             <!-- <div class="collapse navbar-collapse navbar-ex1-collapse"> -->
                 <?php 
                      echo Nav::widget([
                         'options' => ['class' => 'nav-pills nav-stacked'],
                         'items' => [
-                            ['label' => 'Inicio', 'url' => ['/site/index']],
+                            // ['label' => 'Inicio', 'url' => ['/site/index'], 'class'=>'button'],
                             ['label' => 'Procedimientos', 'url' => ['/procedimientos/index']],
                             ['label' => 'Pacientes', 'url' => ['/pacientes/index']],
                             ['label' => 'Médicos', 'url' => ['/medicos/index']],

@@ -8,6 +8,7 @@ use app\models\ListasSistemaSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 
 /**
  * ListasSistemaController implements the CRUD actions for ListasSistema model.
@@ -18,6 +19,20 @@ class ListasSistemaController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'allow' => false,
+                        'roles' => ['?'],
+                    ],
+                    [
+                        'allow' => true,
+                        'roles' => ['super_admin'],
+                    ],
+                   
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [

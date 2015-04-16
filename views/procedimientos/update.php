@@ -19,6 +19,8 @@ $this->title = $model->numero_muestra;
         'paciente_model'=>$paciente_model,
         'ips_model'=>$ips_model,
         'ips_list'=>$ips_list,
+        'lista_estados'=>$lista_estados,
+        'lista_pago'=>$lista_pago,
     ]) ?>
 
 </div>

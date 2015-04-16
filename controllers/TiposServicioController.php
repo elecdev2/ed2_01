@@ -12,6 +12,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
+use yii\filters\AccessControl;
 
 /**
  * TiposServicioController implements the CRUD actions for TiposServicio model.
@@ -22,6 +23,20 @@ class TiposServicioController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'allow' => false,
+                        'roles' => ['?'],
+                    ],
+                    [
+                        'allow' => true,
+                        'roles' => ['super_admin'],
+                    ],
+                   
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [

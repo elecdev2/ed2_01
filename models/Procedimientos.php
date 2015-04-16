@@ -62,7 +62,7 @@ class Procedimientos extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['idpacientes', 'fecha_atencion', 'numero_muestra', 'eps_ideps', 'cod_cups', 'cantidad_muestras', 'idtipo_servicio'], 'required'],
+            [['idpacientes', 'fecha_atencion', 'numero_muestra', 'eps_ideps', 'cod_cups', 'cantidad_muestras', 'idtipo_servicio','idmedico'], 'required'],
             [['idpacientes', 'eps_ideps', 'cantidad_muestras', 'idtipo_servicio', 'idmedico', 'usuario_recibe', 'usuario_transcribe', 'idbackup'], 'integer'],
             [['fecha_atencion', 'fecha_informe', 'fecha_salida', 'fecha_entrega', 'periodo_facturacion'], 'safe'],
             [['valor_procedimiento', 'valor_copago', 'valor_saldo', 'valor_abono', 'descuento'], 'number'],
@@ -84,10 +84,10 @@ class Procedimientos extends \yii\db\ActiveRecord
             'idpacientes' => 'Idpacientes',
             'fecha_atencion' => 'Fecha de atención',
             'autorizacion' => 'Autorizacion',
-            'numero_muestra' => 'Numero de muestra',
+            'numero_muestra' => 'Número de muestra',
             'valor_procedimiento' => 'Valor del procedimiento',
             'eps_ideps' => 'Eps',
-            'cod_cups' => 'Codigo Cups',
+            'cod_cups' => 'Código Cups',
             'cantidad_muestras' => 'Cantidad de muestras',
             'valor_copago' => 'Valor Copago',
             'valor_saldo' => 'Valor Saldo',
@@ -151,12 +151,30 @@ class Procedimientos extends \yii\db\ActiveRecord
         return $this->hasOne(Usuarios::className(), ['id' => 'usuario_transcribe']);
     }
 
+    public function getNombreUsuarioTrasncribe()
+    {
+        try {
+            return $this->usuarioTranscribe->nombre;
+        } catch (yii\base\ErrorException $e) {
+            return 'No definido';
+        }
+    }
+
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getIdmedico0()
     {
         return $this->hasOne(Medicos::className(), ['id' => 'idmedico']);
+    }
+
+    public function getNombreMedico()
+    {
+        try {
+            return $this->idmedico0->nombre;
+        } catch (yii\base\ErrorException $e) {
+            return 'No definido';
+        }
     }
 
     /**

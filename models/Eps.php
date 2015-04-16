@@ -42,7 +42,7 @@ class Eps extends \yii\db\ActiveRecord
     {
         return [
             [['idips', 'codigo', 'nombre', 'direccion', 'telefono', 'nit', 'generar_rip', 'idinformes', 'activo'], 'required'],
-            [['idips', 'generar_rip', 'idinformes', 'activo'], 'integer'],
+            [['idips', 'generar_rip', 'idinformes'], 'integer'],
             [['codigo', 'telefono'], 'string', 'max' => 15],
             [['nombre'], 'string', 'max' => 150],
             [['direccion'], 'string', 'max' => 100],
@@ -57,14 +57,14 @@ class Eps extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'idips' => 'Idips',
-            'codigo' => 'Codigo',
+            'idips' => 'IPS',
+            'codigo' => 'Código',
             'nombre' => 'Nombre',
             'direccion' => 'Dirección',
             'telefono' => 'Teléfono',
             'nit' => 'Nit',
             'generar_rip' => 'Generar Rip',
-            'idinformes' => 'Idinformes',
+            'idinformes' => 'Informe',
             'activo' => 'Activo',
         ];
     }

@@ -12,6 +12,10 @@ use app\models\Procedimientos;
  */
 class ProcedimientosSearch extends Procedimientos
 {
+    public $eps;
+    public $numid_paciente;
+    public $tipo_servicio;
+    public $medico;
     /**
      * @inheritdoc
      */
@@ -19,7 +23,7 @@ class ProcedimientosSearch extends Procedimientos
     {
         return [
             [['id', 'idpacientes', 'eps_ideps', 'cantidad_muestras', 'idtipo_servicio', 'idmedico', 'usuario_recibe', 'usuario_transcribe', 'idbackup'], 'integer'],
-            [['fecha_atencion', 'autorizacion', 'numero_muestra', 'cod_cups', 'medico', 'observaciones', 'forma_pago', 'numero_cheque', 'estado', 'fecha_informe', 'numero_factura', 'fecha_salida', 'fecha_entrega', 'periodo_facturacion'], 'safe'],
+            [['eps','numid_paciente','tipo_servicio','medico','fecha_atencion', 'autorizacion', 'numero_muestra', 'cod_cups', 'medico', 'observaciones', 'forma_pago', 'numero_cheque', 'estado', 'fecha_informe', 'numero_factura', 'fecha_salida', 'fecha_entrega', 'periodo_facturacion'], 'safe'],
             [['valor_procedimiento', 'valor_copago', 'valor_saldo', 'valor_abono', 'descuento'], 'number'],
         ];
     }
@@ -44,9 +48,41 @@ class ProcedimientosSearch extends Procedimientos
     {
         $query = Procedimientos::find();
 
+        $query->joinWith(['idpacientes0', 'epsIdeps','idmedico0','idtipoServicio']);
+
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
+
+        $dataProvider->sort->attributes['eps'] =[
+            'asc'=>['eps.nombre'=>SORT_ASC],
+            'desc'=>['eps.nombre'=>SORT_DESC],
+        ];
+
+        $dataProvider->sort->attributes['numid_paciente'] =[
+            'asc'=>['pacientes.identificacion'=>SORT_ASC],
+            'desc'=>['pacientes.identificacion'=>SORT_DESC],
+        ];
+
+        $dataProvider->sort->attributes['tipo_servicio'] =[
+            'asc'=>['tipos_servicio.nombre'=>SORT_ASC],
+            'desc'=>['tipos_servicio.nombre'=>SORT_DESC],
+        ];
+
+        $dataProvider->sort->attributes['medico'] =[
+            'asc'=>['medicos.nombre'=>SORT_ASC],
+            'desc'=>['medicos.nombre'=>SORT_DESC],
+        ];
+
+        $dataProvider->sort->attributes['usuario_recibe'] =[
+            'asc'=>['usaurios.nombre'=>SORT_ASC],
+            'desc'=>['usaurios.nombre'=>SORT_DESC],
+        ];
+
+        $dataProvider->sort->attributes['usuario_transcribe'] =[
+            'asc'=>['usaurios.nombre'=>SORT_ASC],
+            'desc'=>['usaurios.nombre'=>SORT_DESC],
+        ];
 
         $this->load($params);
 
@@ -86,6 +122,10 @@ class ProcedimientosSearch extends Procedimientos
             ->andFilterWhere(['like', 'forma_pago', $this->forma_pago])
             ->andFilterWhere(['like', 'numero_cheque', $this->numero_cheque])
             ->andFilterWhere(['like', 'estado', $this->estado])
+            ->andFilterWhere(['like', 'eps.nombre', $this->eps])
+            ->andFilterWhere(['like', 'pacientes.identificacion', $this->numid_paciente])
+            ->andFilterWhere(['like', 'medicos.nombre', $this->medico])
+            ->andFilterWhere(['like', 'tipos_servicio.nombre', $this->tipo_servicio])
             ->andFilterWhere(['like', 'numero_factura', $this->numero_factura]);
 
         return $dataProvider;

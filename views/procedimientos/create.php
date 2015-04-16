@@ -34,9 +34,9 @@ $this->title = 'Crear procedimiento';
                 'lista_tipoid'=>$lista_tipoid,
                 'lista_resid'=>$lista_resid,
                 'lista_ciudades'=>$lista_ciudades,
-                'lista_estados'=>$lista_estados,
                 'lista_eps'=>$lista_eps,
                 'id_cliente'=>$id_cliente,
+                'lista_pago'=>$lista_pago,
             ]) ?>
         </div>
     </div>
@@ -44,6 +44,6 @@ $this->title = 'Crear procedimiento';
 </div>
 <script type="text/javascript">
     $(document).ready(function() {
-        nombrePaciente('#documento', '#procedimientos-idpacientes', '#pacienteName');
+        nombrePaciente('#documento', '#procedimientos-idpacientes', '#pacienteName', '#pacientes-direccion','#pacientes-telefono','#pacientes-fecha_nacimiento','#edad', '#pacientes-email');
     });
 </script>

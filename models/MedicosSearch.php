@@ -12,6 +12,9 @@ use app\models\Medicos;
  */
 class MedicosSearch extends Medicos
 {
+
+    public $ips;
+    public $especialidad;
     /**
      * @inheritdoc
      */
@@ -19,7 +22,7 @@ class MedicosSearch extends Medicos
     {
         return [
             [['ips_idips', 'idespecialidades', 'id', 'idclientes'], 'integer'],
-            [['codigo', 'nombre', 'ruta_firma'], 'safe'],
+            [['codigo', 'nombre', 'ruta_firma','ips','especialidad'], 'safe'],
         ];
     }
 
@@ -43,9 +46,21 @@ class MedicosSearch extends Medicos
     {
         $query = Medicos::find();
 
+        $query->joinWith(['idespecialidades0', 'ipsIdips']);
+
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
+
+        $dataProvider->sort->attributes['ips'] = [
+            'asc'=>['ips.nombre'=>SORT_ASC],
+            'desc'=>['ips.nombre'=>SORT_DESC],
+        ];
+
+        $dataProvider->sort->attributes['especialidad'] = [
+            'asc'=>['especialidades.nombre'=>SORT_ASC],
+            'desc'=>['especialidades.nombre'=>SORT_DESC],
+        ];
 
         $this->load($params);
 
@@ -64,6 +79,8 @@ class MedicosSearch extends Medicos
 
         $query->andFilterWhere(['like', 'codigo', $this->codigo])
             ->andFilterWhere(['like', 'nombre', $this->nombre])
+            ->andFilterWhere(['like', 'ips.nombre', $this->ips])
+            ->andFilterWhere(['like', 'especialidades.nombre', $this->especialidad])
             ->andFilterWhere(['like', 'ruta_firma', $this->ruta_firma]);
 
         return $dataProvider;

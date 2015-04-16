@@ -48,7 +48,7 @@ use kartik\select2\Select2;
     <?php // $form->field($model, 'ruta_firma', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Autorización']) ?>
 
     <div class="form-group text-center">
-        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
+        <?= Html::submitButton('Buscar', ['class' => 'btn btn-success']) ?>
         <?= Html::resetButton('Reset', ['class' => 'btn btn-default']) ?>
     </div>
 

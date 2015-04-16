@@ -22,7 +22,7 @@ use app\models\ListasSistema;
     <?= $form->field($model, 'descripcion')->textInput(['maxlength' => 100])->label('Descripción *') ?>
 
     <div class="form-group text-center">
-        <?= Html::submitButton($model->isNewRecord ? 'Crear' : 'Actualizar', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::submitButton($model->isNewRecord ? 'Crear' : 'Actualizar', ['class' =>'btn btn-success']) ?>
     	<?= Html::a('Cancelar', ['listas-sistema/index'], ['class' => 'btn btn-primary'])?>
     </div>
 

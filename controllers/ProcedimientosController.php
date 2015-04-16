@@ -15,6 +15,8 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\Json;
 use yii\helpers\ArrayHelper;
+use yii\filters\AccessControl;
+use yii\db\Query;
 
 /**
  * ProcedimientosController implements the CRUD actions for Procedimientos model.
@@ -24,6 +26,30 @@ class ProcedimientosController extends Controller
     public function behaviors()
     {
         return [
+        'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'allow' => false,
+                        'roles' => ['?'],
+                    ],
+                    [
+                        'allow' => true,
+                        'roles' => ['admin'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['index','create','view','update'],
+                        'roles' => ['auxiliar'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['index','view', 'update'],
+                        'roles' => ['medico'],
+                    ],
+                   
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -41,15 +67,18 @@ class ProcedimientosController extends Controller
     {
 
         $searchModel = new ProcedimientosSearch();
+        $lista_estados = ArrayHelper::map(ListasSistema::find()->where('tipo="estado_prc"')->all(),'codigo','descripcion');
         if(count(Yii::$app->request->queryParams) > 0){
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
             return $this->render('index', [
                 'searchModel' => $searchModel,
                 'dataProvider' => $dataProvider,
+                'lista_estados'=>$lista_estados,
             ]);
         }else{
             return $this->render('index', [
                 'searchModel' => $searchModel,
+                'lista_estados'=>$lista_estados,
             ]);
         }
 
@@ -75,35 +104,44 @@ class ProcedimientosController extends Controller
     public function actionCreate()
     {
         $model = new Procedimientos();
+        $paciente = new Pacientes();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            // $id_cliente = $this->cliente(Yii::$app->user->id);
-            $id_cliente = 1;
-            $paciente = new Pacientes();
-            $ips = new Ips();
-            $ips_list = Ips::find()->where(['idclientes'=>$id_cliente])->all();
-            $lista_tipos = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_usuario"')->all(),'codigo','descripcion');
-            $lista_tipoid = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_identificacion"')->all(),'codigo','descripcion');
-            $lista_resid = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_residencia"')->all(),'codigo','descripcion');
-            $lista_estados = ArrayHelper::map(ListasSistema::find()->where('tipo="estado_prc"')->all(),'codigo','descripcion');
-            $lista_ciudades = ArrayHelper::map(Ciudades::find()->all(),'id','nombre');
-            $lista_eps = ArrayHelper::map(Eps::find()->all(),'id','nombre');
-            return $this->render('create', [
-                'model' => $model, 
-                'paciente_model'=>$paciente,
-                'ips_model'=>$ips,
-                'ips_list'=>$ips_list,
-                'lista_tipos'=>$lista_tipos,
-                'lista_tipoid'=>$lista_tipoid,
-                'lista_resid'=>$lista_resid,
-                'lista_ciudades'=>$lista_ciudades,
-                'lista_estados'=>$lista_estados,
-                'lista_eps'=>$lista_eps,
-                'id_cliente'=>$id_cliente,
-            ]);
-        }
+        if ($model->load(Yii::$app->request->post())){
+
+            $pac = $this->findModelPaciente($model->idpacientes);
+            if($paciente->load(Yii::$app->request->post)){
+                $pac->direccion = $paciente->direccion;
+                $pac->telefono = $paciente->telefono;
+                $pac->fecha_nacimiento = $paciente->fecha_nacimiento;
+
+                if($model->save() && $pac->save()) 
+                    return $this->redirect(['view', 'id' => $model->id]);
+            }
+        } 
+        // $id_cliente = $this->cliente(Yii::$app->user->id);
+        $id_cliente = 1;
+        $ips = new Ips();
+        $ips_list = Ips::find()->where(['idclientes'=>$id_cliente])->all();
+        $lista_tipos = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_usuario"')->all(),'codigo','descripcion');
+        $lista_tipoid = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_identificacion"')->all(),'codigo','descripcion');
+        $lista_resid = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_residencia"')->all(),'codigo','descripcion');
+        $lista_pago = ArrayHelper::map(ListasSistema::find()->where('tipo="forma_pago"')->all(),'codigo','descripcion');
+        $lista_ciudades = ArrayHelper::map(Ciudades::find()->all(),'id','nombre');
+        $lista_eps = ArrayHelper::map(Eps::find()->all(),'id','nombre');
+        return $this->render('create', [
+            'model' => $model, 
+            'paciente_model'=>$paciente,
+            'ips_model'=>$ips,
+            'ips_list'=>$ips_list,
+            'lista_tipos'=>$lista_tipos,
+            'lista_tipoid'=>$lista_tipoid,
+            'lista_resid'=>$lista_resid,
+            'lista_ciudades'=>$lista_ciudades,
+            'lista_eps'=>$lista_eps,
+            'id_cliente'=>$id_cliente,
+            'lista_pago'=>$lista_pago,
+        ]);
+        
     }
 
     public function cliente($id_usuario)
@@ -118,7 +156,7 @@ class ProcedimientosController extends Controller
     public function actionGetpaciente()
     {
         $query = (new \yii\db\Query());
-        $query->select('id,nombre1,nombre2,apellido1,apellido2')->from('pacientes')->where('identificacion=:identificacion_p');
+        $query->select('id,nombre1,nombre2,apellido1,apellido2,direccion,telefono,fecha_nacimiento,email')->from('pacientes')->where('identificacion=:identificacion_p');
         $query->addParams([':identificacion_p'=>$_POST['data']]);
 
         \Yii::$app->response->format = 'json';
@@ -146,12 +184,14 @@ class ProcedimientosController extends Controller
         $ips = new Ips();
         $ips_list = Ips::find()->where(['idclientes'=>$id_cliente])->all();
         $lista_estados = ArrayHelper::map(ListasSistema::find()->where('tipo="estado_prc"')->all(),'codigo','descripcion');
+        $lista_pago = ArrayHelper::map(ListasSistema::find()->where('tipo="forma_pago"')->all(),'codigo','descripcion');
         return $this->renderAjax('update', [
                     'model' => $model,
                     'paciente_model'=>$paciente,
                     'ips_model'=>$ips,
                     'ips_list'=>$ips_list,
                     'lista_estados'=>$lista_estados,
+                    'lista_pago'=>$lista_pago,
                 ]);
         
         // else {
@@ -167,6 +207,13 @@ class ProcedimientosController extends Controller
         //         'ips_list'=>$ips_list,
         //     ]);
         // }
+    }
+
+    public function actionPrecio()
+    {
+        Yii::$app->response->format = 'json';
+        $query = (new Query())->select('valor_procedimiento, descuento')->from('tarifas')->where(['idestudios'=>$_POST['cod'], 'eps_id'=>$_POST['id']]);
+        return $query->one();
     }
 
     /**
@@ -198,6 +245,15 @@ class ProcedimientosController extends Controller
         }
     }
 
+     protected function findModelPaciente($id)
+    {
+        if (($model = Pacientes::findOne($id)) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+    }
+
     /*Consulta de listados*/
     public function eps($id_ips)
     {
@@ -212,23 +268,28 @@ class ProcedimientosController extends Controller
     public function tipos_s($id_ips, $id_eps)
     {
         $query = (new \yii\db\Query());
-        $query->select('t.id,(t.nombre)AS name')->from('tipos_servicio t, eps_tipos et, eps e')->where('(et.tipos_servicio_id=t.id AND et.eps_id=:id_eps) AND (et.eps_id=e.id AND e.idips=:id_ips)');
-        $query->addParams([':id_eps'=>$id_eps, ':id_ips'=>$id_ips]);
-        $r = $query->all();
+        $query->select('ts.id,(ts.nombre)AS name')->from('tipos_servicio ts')
+        ->join('INNER JOIN', 'eps_tipos ep','ep.tipos_servicio_id = ts.id')
+        ->join('INNER JOIN', 'eps e','e.id = ep.eps_id')
+        ->join('INNER JOIN', 'ips i','i.id = e.idips')
+        ->where(['e.id'=>$id_eps]);
 
-        return $r;
+        return $query->all();
     }
 
 
     public function estudio($id_ips, $id_eps, $id_tipo)
     {
         $query = (new \yii\db\Query());
-        $query->select('(e.cod_cups)AS id, (e.descripcion)AS name')->from('estudios e, eps_tipos et, tipos_servicio ts, estudios_ips ei, eps ep')->where('(e.cod_cups=ei.cod_cups AND ei.idtipo_servicio=:id_tipo) AND (ei.idtipo_servicio=ts.id AND ts.idips=:id_ips) AND (ei.idtipo_servicio=et.tipos_servicio_id AND et.eps_id=:id_eps) AND (et.eps_id=ep.id AND ep.idips=:id_ips)');
-        $query->addParams([':id_eps'=>$id_eps, ':id_tipo'=>$id_tipo, ':id_ips'=>$id_ips]);
-        $r = $query->all();
-        // $out = [$r];
+        $query->select('(es.cod_cups)AS id, (es.descripcion)AS name')->from('estudios es')
+        ->join('INNER JOIN', 'estudios_ips ei','ei.cod_cups = es.cod_cups')
+        ->join('INNER JOIN', 'tipos_servicio ts','ts.id = ei.idtipo_servicio')
+        ->join('INNER JOIN', 'eps_tipos et','et.tipos_servicio_id = ts.id')
+        ->join('INNER JOIN', 'eps e','e.id = et.eps_id')
+        ->join('INNER JOIN', 'ips i','i.id = e.idips')
+        ->where(['i.id'=>$id_ips,'e.id'=>$id_eps, 'ts.id'=>$id_tipo]);
 
-        return $r;
+        return $query->all();
     }
 
      /*Dependencias*/

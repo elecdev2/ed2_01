@@ -15,7 +15,8 @@ use kartik\select2\Select2;
 <div class="pacientes-form">
 
     <?php $form = ActiveForm::begin(['layout'=>'horizontal', 'id'=>'pacForm', 'validateOnType' => true, 'options'=>['onsubmit'=>'submitForm']]); ?>
-
+    
+     <input type="text" name="url" id="url" hidden>
     <?= $form->field($model, 'tipo_identificacion')->widget(Select2::classname(), [
             'data'=>array_merge(["" => ""], $lista_tipoid),
             'language' => 'es',
@@ -28,12 +29,12 @@ use kartik\select2\Select2;
 
     <?= $form->field($model, 'identificacion')->textInput(['maxlength' => 15]) ?>
 
-    <?= $form->field($model, 'apellido1')->textInput(['maxlength' => 30]) ?>
-
     <?= $form->field($model, 'nombre1')->textInput(['maxlength' => 30]) ?>
 
     <?= $form->field($model, 'nombre2')->textInput(['maxlength' => 30]) ?>
 
+    <?= $form->field($model, 'apellido1')->textInput(['maxlength' => 30]) ?>
+    
     <?= $form->field($model, 'apellido2')->textInput(['maxlength' => 30]) ?>
 
     <?= $form->field($model, 'direccion')->textInput(['maxlength' => 100]) ?>
@@ -79,9 +80,9 @@ use kartik\select2\Select2;
     ?>
     
     <?= $form->field($model, 'ideps')->widget(Select2::classname(), [
-            'data'=>array_merge(["" => ""], $lista_eps),
+            'data'=>$lista_eps,
             'language' => 'es',
-            'options' => ['placeholder' => 'Seleccione una eps'],
+            'options' => ['placeholder' => 'Seleccione una EPS'],
             'pluginOptions' => [
                 'allowClear' => true
             ],
@@ -92,12 +93,16 @@ use kartik\select2\Select2;
 
     <?= $form->field($model, 'envia_email')->dropDownList(['prompt'=>'Seleccione una opción', '1' => 'Si', '2' => 'No'])->label('Enviar email') ?>
 
-    <?= $form->field($model, 'codeps')->textInput(['maxlength' => 15]) ?>
 
     <div class="form-group text-center">
-        <?= Html::submitButton($model->isNewRecord ? 'Crear' : 'Actualizar', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::submitButton($model->isNewRecord ? 'Crear' : 'Actualizar', ['class' =>'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
 
 </div>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#url').val(getUrlVars());
+    });
+</script>

@@ -9,18 +9,18 @@ use yii\bootstrap\Modal;
 /* @var $searchModel app\models\MedicosSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Medicos';
+$this->title = 'Médicos';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="medicos-index">
 
     <div class="panel panel-default">
         <div class="panel-body">
-            <div class="col-md-6">
+            <div class="col-sm-6">
                 <h1 class="titulo"><?= Html::encode($this->title) ?></h1>
             </div>
-            <div class="col-md-6">
-                <?= Html::a('Crear médico', ['create'], ['style'=>'float:right', 'class' => 'btn btn-success btn-lg']);?>
+            <div class="col-sm-6">
+                <?= Html::a('Crear médico', ['create'], ['class' => 'crear add']);?>
             </div>
         </div>
     </div>
@@ -38,8 +38,18 @@ $this->params['breadcrumbs'][] = $this->title;
             'columns' => [
                 // ['class' => 'yii\grid\SerialColumn'],
 
-                'ips_idips',
-                'idespecialidades',
+                [
+                    'attribute'=>'ips',
+                    'label'=>'IPS',
+                    'value'=> 'ipsIdips.nombre',
+                ],
+                // 'ips_idips',
+                [
+                    'attribute'=>'especialidad',
+                    'label'=>'Especialidad',
+                    'value'=> 'idespecialidades0.nombre',
+                ],
+                // 'idespecialidades',
                 'codigo',
                 'nombre',
                 // 'id',
@@ -49,8 +59,19 @@ $this->params['breadcrumbs'][] = $this->title;
                 // ['class' => 'yii\grid\ActionColumn'],
                 [
                     'class' => 'kartik\grid\ActionColumn',
-                    'template'=>'{update} {delete}'
+                    'template'=>'{update}',
+                    'buttons' => [
+                        'update'=> function ($url, $model, $key) {
+                            return '<a href="" id="actualizar" class="up" title="actualizar"></a>';
+                        },
+                        // 'delete'=> function ($url, $model, $key) {
+                        //     return Html::a('', ['delete', 'id' => $model->id], ['class' => 'del',
+                        //         'data' => ['confirm' => '¿Está seguro que desea borrar este elemento?','method' => 'post',],
+                        //     ]);
+                        // },
+                    ],
                 ],
+
             ],
             'toolbar' => [
             //     ['content'=>
@@ -69,6 +90,17 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php } ?>
 
 </div>
+
+<?php Modal::begin([
+    'id'=>'updateModal',
+    'header'=>'<h3></h3>',
+    'size'=>Modal::SIZE_LARGE,
+    'options'=>['data-backdrop'=>'static'],
+]);  
+echo "<div id='act'></div>";
+Modal::end();
+?>
+
 <?php Modal::begin([
     'id'=>'viewModal',
     'header'=>'<h3>Actualizar</h3>',
@@ -80,12 +112,17 @@ Modal::end();
 ?>
 
 <script type="text/javascript">
-    $(document).on('click', '#medicos tr',function(event) {
+    $(document).on('click', '#medicos tr td:not(#medicos tr td.skip-export)',function(event) {
         event.preventDefault();
-        openModalView('vista',$(this));
+        openModalView('vista',$(this).parent());
+    });
+
+    $(document).on('click', '#actualizar' ,function(event) {
+        event.preventDefault();
+        openModalUpdate('act',$($(this).parent()).parent());
     });
     
-    $(document).on('click','#actualizar', function(event) {
+    $(document).on('click','.updModal', function(event) {
         event.preventDefault();
             $('#viewModal').modal({backdrop:'static'})
             .find('#vista')

@@ -12,6 +12,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
+use yii\filters\AccessControl;
 
 /**
  * PacientesController implements the CRUD actions for Pacientes model.
@@ -21,6 +22,25 @@ class PacientesController extends Controller
     public function behaviors()
     {
         return [
+        'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'allow' => false,
+                        'roles' => ['?'],
+                    ],
+                    [
+                        'allow' => true,
+                        'roles' => ['admin'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['index','create','update'],
+                        'roles' => ['auxiliar'],
+                    ],
+                   
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -36,16 +56,19 @@ class PacientesController extends Controller
      */
     public function actionIndex()
     {
+        $lista_tipoid = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_identificacion"')->all(),'codigo','descripcion');
         $searchModel = new PacientesSearch();
         if(count(Yii::$app->request->queryParams) > 0){
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
             return $this->render('index', [
                 'searchModel' => $searchModel,
                 'dataProvider' => $dataProvider,
+                'lista_tipoid'=>$lista_tipoid,
             ]);
         }else{
             return $this->render('index', [
                 'searchModel' => $searchModel,
+                'lista_tipoid'=>$lista_tipoid,
             ]);
         }
     }
@@ -72,8 +95,9 @@ class PacientesController extends Controller
         $model = new Pacientes();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['index']);
         } 
+        // $id_cliente = $this->cliente(Yii::$app->user->id);
         $id_cliente = 1; 
         $lista_tipos = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_usuario"')->all(),'codigo','descripcion');
         $lista_tipoid = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_identificacion"')->all(),'codigo','descripcion');
@@ -107,6 +131,7 @@ class PacientesController extends Controller
             Yii::$app->response->format = 'json';
             return $this->redirect($_POST['url'].'&message=Registro actualizado');
         }
+        // $id_cliente = $this->cliente(Yii::$app->user->id);
         $id_cliente = 1; 
         $lista_tipos = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_usuario"')->all(),'codigo','descripcion');
         $lista_tipoid = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_identificacion"')->all(),'codigo','descripcion');

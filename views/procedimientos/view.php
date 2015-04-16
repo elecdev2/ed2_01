@@ -22,8 +22,7 @@ $this->title = $model->numero_muestra;
                 <?= Html::button(
                 'Actualizar',
                 ['value' => Url::to(['procedimientos/update?id='.$model->id]),
-                    'id' => 'actualizar',
-                    'class'=>'btn btn-primary btn-lg',
+                    'class'=>'update upd updModal',
                     'style'=>'float:right',
          
                 ]) ?>
@@ -48,12 +47,23 @@ $this->title = $model->numero_muestra;
         'model' => $model,
         'attributes' => [
             // 'id',
-            'idpacientes',
+
+            [
+                'attribute'=>'idpacientes',
+                'label'=>'Cédula del paciente',
+                'value'=> $model->idpacientes0->identificacion,
+            ],
+            // 'idpacientes',
             'fecha_atencion',
             'autorizacion',
             'numero_muestra',
             'valor_procedimiento',
-            'eps_ideps',
+            [
+                'attribute'=>'eps_ideps',
+                'label'=>'EPS',
+                'value'=> $model->epsIdeps->nombre,
+            ],
+            // 'eps_ideps',
             'cod_cups',
             'cantidad_muestras',
             'valor_copago',
@@ -69,10 +79,32 @@ $this->title = $model->numero_muestra;
             'fecha_salida',
             'fecha_entrega',
             'periodo_facturacion',
-            'idtipo_servicio',
-            'idmedico',
-            'usuario_recibe',
-            'usuario_transcribe',
+            [
+                'attribute'=>'idtipo_servicio',
+                'label'=>'Estudio',
+                'value'=> $model->idtipoServicio->nombre,
+            ],
+            // 'idtipo_servicio',
+            [
+                'attribute'=>'idmedico',
+                'label'=>'Médico',
+                'value'=> $model->nombreMedico,
+            ],
+            // 'idmedico',
+
+            [
+                'attribute'=>'usuario_recibe',
+                'label'=>'Usurio recibe',
+                'value'=> $model->usuarioRecibe->nombre,
+            ],
+            // 'usuario_recibe',
+
+            [
+                'attribute'=>'usuario_transcribe',
+                'label'=>'Usurio transcribe',
+                'value'=> $model->nombreUsuarioTrasncribe,
+            ],
+            // 'usuario_transcribe',
             'descuento',
         ],
     ]) ?>

@@ -22,8 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?= Html::button(
                 'Actualizar',
                 ['value' => Url::to(['pacientes/update?id='.$model->id]),
-                    'id' => 'actualizar',
-                    'class'=>'btn btn-primary btn-lg',
+                    'class'=>'update upd updModal',
                     'style'=>'float:right',
          
                 ]) ?>
@@ -48,9 +47,13 @@ $this->params['breadcrumbs'][] = $this->title;
             'fecha_nacimiento',
             'tipo_usuario',
             'tipo_residencia',
-            'idclientes',
+            // 'idclientes',
             'activo',
             'idciudad',
+            // [
+            //     'attribute'=>'ideps',
+            //     'value'=>$model->ideps0->nombre,
+            // ],
             'ideps',
             'email:email',
             'envia_email:email',

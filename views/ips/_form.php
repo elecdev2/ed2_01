@@ -55,7 +55,7 @@ use kartik\select2\Select2;
     <!-- <?= $form->field($model, 'activo')->textInput() ?> -->
 
     <div class="form-group text-center">
-        <?= Html::submitButton($model->isNewRecord ? 'Crear' : 'Actualizar', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::submitButton($model->isNewRecord ? 'Crear' : 'Actualizar', ['class''btn btn-success']) ?>
         <?= Html::a('Cancelar', ['ips/index'], ['class' => 'btn btn-primary'])?>
     </div>
 

@@ -36,7 +36,7 @@ class Medicos extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['ips_idips', 'idespecialidades', 'codigo', 'nombre', 'idclientes'], 'required'],
+            [['ips_idips', 'idespecialidades', 'codigo', 'nombre', 'idclientes'], 'required','on'=>'general'],
             [['ips_idips', 'idespecialidades', 'idclientes'], 'integer'],
             [['codigo'], 'string', 'max' => 15],
             [['nombre', 'ruta_firma'], 'string', 'max' => 150]

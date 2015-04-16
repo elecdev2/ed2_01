@@ -12,6 +12,7 @@ use app\models\Eps;
  */
 class EpsSearch extends Eps
 {
+    public $ips;
     /**
      * @inheritdoc
      */
@@ -19,7 +20,7 @@ class EpsSearch extends Eps
     {
         return [
             [['id', 'idips', 'generar_rip', 'idinformes', 'activo'], 'integer'],
-            [['codigo', 'nombre', 'direccion', 'telefono', 'nit'], 'safe'],
+            [['codigo', 'nombre', 'direccion', 'telefono', 'nit','ips'], 'safe'],
         ];
     }
 
@@ -43,9 +44,16 @@ class EpsSearch extends Eps
     {
         $query = Eps::find();
 
+        $query->joinWith(['idips0']);
+
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
+
+        $dataProvider->sort->attributes['ips'] = [
+            'asc'=>['ips.nombre'=>SORT_ASC],
+            'desc'=>['ips.nombre'=>SORT_DESC],
+        ];
 
         $this->load($params);
 
@@ -67,6 +75,7 @@ class EpsSearch extends Eps
             ->andFilterWhere(['like', 'nombre', $this->nombre])
             ->andFilterWhere(['like', 'direccion', $this->direccion])
             ->andFilterWhere(['like', 'telefono', $this->telefono])
+            ->andFilterWhere(['like', 'ips.nombre', $this->ips])
             ->andFilterWhere(['like', 'nit', $this->nit]);
 
         return $dataProvider;

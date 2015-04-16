@@ -13,6 +13,12 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
         ],
+        'authManager' => [
+            'class' => 'yii\rbac\DbManager',
+            'itemTable' => 'items',
+            'itemChildTable' => 'items_hijos',
+            'assignmentTable' => 'asignaciones',
+        ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => '_q0hLQME77sqP3OERcMhfQQ0d5dRoZ8N',
@@ -21,7 +27,7 @@ $config = [
             'class' => 'yii\caching\FileCache',
         ],
         'user' => [
-            'identityClass' => 'app\models\User',
+            'identityClass' => 'app\models\Usuarios',
             'enableAutoLogin' => true,
         ],
         'errorHandler' => [

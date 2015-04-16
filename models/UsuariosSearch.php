@@ -19,7 +19,7 @@ class UsuariosSearch extends Usuarios
     {
         return [
             [['id', 'idmedicos', 'idclientes'], 'integer'],
-            [['password', 'nombre', 'username'], 'safe'],
+            [['password', 'nombre', 'username', 'perfil'], 'safe'],
             [['activo'], 'number'],
         ];
     }
@@ -42,7 +42,7 @@ class UsuariosSearch extends Usuarios
      */
     public function search($params)
     {
-        $query = Usuarios::find();
+        $query = Usuarios::find()->where(['<>','perfil','super_admin']);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -65,7 +65,8 @@ class UsuariosSearch extends Usuarios
 
         $query->andFilterWhere(['like', 'password', $this->password])
             ->andFilterWhere(['like', 'nombre', $this->nombre])
-            ->andFilterWhere(['like', 'username', $this->username]);
+            ->andFilterWhere(['like', 'username', $this->username])
+            ->andFilterWhere(['like', 'perfil', $this->perfil]);
 
         return $dataProvider;
     }

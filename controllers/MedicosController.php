@@ -11,6 +11,8 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
+use yii\filters\AccessControl;
+
 
 /**
  * MedicosController implements the CRUD actions for Medicos model.
@@ -20,6 +22,20 @@ class MedicosController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'allow' => false,
+                        'roles' => ['?'],
+                    ],
+                    [
+                        'allow' => true,
+                        'roles' => ['admin'],
+                    ],
+                   
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -75,11 +91,11 @@ class MedicosController extends Controller
         $model = new Medicos();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['index']);
         } else {
             // $id_cliente = $this->cliente(Yii::$app->user->id);
             $id_cliente = 1;
-            $lista_especialidades = ArrayHelper::map(Especialidades::find()->all(),'codigo','nombre');
+            $lista_especialidades = ArrayHelper::map(Especialidades::find('SELECT id, (nombre) AS name')->all(),'id','nombre');
             $lista_ips = ArrayHelper::map(Ips::find()->all(),'id','nombre');
             return $this->render('create', [
                 'model' => $model,
@@ -101,16 +117,19 @@ class MedicosController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            $lista_especialidades = ArrayHelper::map(Especialidades::find()->all(),'codigo','nombre');
-            $lista_ips = ArrayHelper::map(Ips::find()->all(),'id','nombre');
-            return $this->renderAjax('update', [
-                'model' => $model,
-                'lista_especialidades'=>$lista_especialidades,
-                'lista_ips'=>$lista_ips,
-            ]);
-        }
+            $model->refresh();
+            Yii::$app->response->format = 'json';
+            return $this->redirect($_POST['url'].'&message=Registro actualizado');
+        } 
+        
+        $lista_especialidades = ArrayHelper::map(Especialidades::find('SELECT id, (nombre) AS name')->all(),'id','nombre');
+        $lista_ips = ArrayHelper::map(Ips::find()->all(),'id','nombre');
+        return $this->renderAjax('update', [
+            'model' => $model,
+            'lista_especialidades'=>$lista_especialidades,
+            'lista_ips'=>$lista_ips,
+        ]);
+        
     }
 
     /**

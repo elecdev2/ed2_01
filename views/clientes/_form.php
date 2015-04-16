@@ -26,7 +26,7 @@ use yii\bootstrap\ActiveForm;
     <?= $form->field($model, 'tipo_consecutivo')->dropDownList(['prompt'=>'Seleccione una opción', 'G' => 'General', 'E' => 'Especifico']); ?>
 
     <div class="form-group text-center">
-        <?= Html::submitButton($model->isNewRecord ? 'Crear' : 'Actualizar', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::submitButton($model->isNewRecord ? 'Crear' : 'Actualizar', ['class' =>'btn btn-success']) ?>
         <?= Html::a('Cancelar', ['clientes/index'], ['class' => 'btn btn-primary'])?>
     </div>
 

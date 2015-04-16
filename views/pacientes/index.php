@@ -17,18 +17,18 @@ $this->params['breadcrumbs'][] = $this->title;
     <!-- <div class="text-center"><?php //echo Html::tag('h3', (isset($_GET['message'])) ? $_GET['message'] : '' ,['class'=> 'help-block']);?></div> -->
     <div class="panel panel-default">
         <div class="panel-body">
-            <div class="col-md-6">
+            <div class="col-sm-6">
                 <h1 class="titulo"><?= Html::encode($this->title) ?></h1>
             </div>
-            <div class="col-md-6">
-                <?= Html::a('Crear paciente', ['create'], ['style'=>'float:right', 'class' => 'btn btn-success btn-lg']);?>
+            <div class="col-sm-6">
+                <?= Html::a('Crear paciente', ['create'], ['class' => 'crear add']);?>
             </div>
         </div>
     </div>
 
     <div class="panel panel-default">
         <div class="panel-body">
-            <?= $this->render('_search', ['model' => $searchModel]); ?>
+            <?= $this->render('_search', ['model' => $searchModel,'lista_tipoid'=>$lista_tipoid]); ?>
         </div>
     </div>
 
@@ -62,11 +62,21 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'envia_email:email',
             // 'codeps',
 
-            // ['class' => 'kartik\grid\ActionColumn'],
             [
                 'class' => 'kartik\grid\ActionColumn',
-                'template'=>'{update} {delete}'
+                'template'=>'{update} {delete}',
+                'buttons' => [
+                    'update'=> function ($url, $model, $key) {
+                        return '<a href="" id="actualizar" class="up" title="actualizar"></a>';
+                    },
+                    'delete'=> function ($url, $model, $key) {
+                        return Html::a('', ['delete', 'id' => $model->id], ['class' => 'del',
+                            'data' => ['confirm' => '¿Está seguro que desea borrar este elemento?','method' => 'post',],
+                        ]);
+                    },
+                ],
             ],
+
         ],
         'toolbar' => [
         //     ['content'=>
@@ -85,9 +95,20 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php } ?>
 </div>
 
+
+<?php Modal::begin([
+    'id'=>'updateModal',
+    'header'=>'<h3></h3>',
+    'size'=>Modal::SIZE_LARGE,
+    'options'=>['data-backdrop'=>'static'],
+]);  
+echo "<div id='act'></div>";
+Modal::end();
+?>
+
 <?php Modal::begin([
     'id'=>'viewModal',
-    'header'=>'<h3>Actualizar</h3>',
+    'header'=>'<h3></h3>',
     'size'=>Modal::SIZE_LARGE,
     'options'=>['data-backdrop'=>'static'],
 ]);  
@@ -96,12 +117,17 @@ Modal::end();
 ?>
 
 <script type="text/javascript">
-    $(document).on('click', '#pacientes tr',function(event) {
+    $(document).on('click', '#pacientes tr td:not(#pacientes tr td.skip-export)',function(event) {
         event.preventDefault();
-        openModalView('vista',$(this));
+        openModalView('vista',$(this).parent());
+    });
+
+     $(document).on('click', '#actualizar' ,function(event) {
+        event.preventDefault();
+        openModalUpdate('act',$($(this).parent()).parent());
     });
     
-    $(document).on('click','#actualizar', function(event) {
+    $(document).on('click','.updModal', function(event) {
         event.preventDefault();
             $('#viewModal').modal({backdrop:'static'})
             .find('#vista')

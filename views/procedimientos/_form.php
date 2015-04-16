@@ -17,29 +17,43 @@ use kartik\select2\Select2;
 <div class="procedimientos-form">
 
     <?php $form = ActiveForm::begin(['layout'=>'horizontal', 'id'=>'procForm', 'validateOnType' => true, 'options'=>['onsubmit'=>'submitForm']]); ?>
-        <div class="form-group">
-            <label class="control-label col-sm-3">N° de identificación *</label>
-            <div class="col-sm-6">                
-                <input id="documento" type="number" required class="form-control" value="<?= $model->isNewRecord ? '' : $model->idpacientes0->identificacion?>">
+        
+    <div class="panel panel-default">
+        <div class="panel-body">
+
+            <div class="form-group">
+                <label class="control-label col-sm-3">N° de identificación *</label>
+                <div class="col-sm-6">                
+                    <input id="documento" type="number" required class="form-control" value="<?= $model->isNewRecord ? '' : $model->idpacientes0->identificacion?>">
+                </div>
             </div>
+
+            <div class="row text-center">
+                <h4 id="pacienteName"><?=$model->isNewRecord ? '' :$model->idpacientes0->nombre1.' '.$model->idpacientes0->nombre2.' '.$model->idpacientes0->apellido1.' '.$model->idpacientes0->apellido2 ?> 
+                  
+                <?php if(!$model->isNewRecord){ ?>
+                    <h5 id="edad">Edad: <?= $model->idpacientes0->fecha_nacimiento !== '0000-00-00' ? date_diff(date_create($model->idpacientes0->fecha_nacimiento), date_create(date('Y-m-d')))->y : 'N/A' ?></h5>
+                <?php } ?>
+            </div>
+
+                <?= $form->field($model, 'idpacientes')->hiddenInput()->label('') ?>
+
+                <?= $form->field($paciente_model, 'direccion')->textInput(['value'=>$model->isNewRecord ? '' : $model->idpacientes0->direccion, 'maxlength' => 100]) ?>
+
+                <?= $form->field($paciente_model, 'telefono')->textInput(['value'=>$model->isNewRecord ? '' : $model->idpacientes0->telefono, 'maxlength' => 15]) ?>
+                
+                <?= $form->field($paciente_model, 'email')->textInput(['value'=>$model->isNewRecord ? '' : $model->idpacientes0->email, 'maxlength' => 100]) ?>
+
+                <?= $form->field($paciente_model, 'fecha_nacimiento')->widget(yii\jui\DatePicker::classname(), ["dateFormat" => "yyyy-MM-dd", 'options' => ['value'=>$model->isNewRecord ? '' : $model->idpacientes0->fecha_nacimiento, 'class' => 'fecha form-control', "placeholder" => "aaaa-mm-dd"], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']) ?>
         </div>
-
-        <div class="row text-center">
-            <h4 id="pacienteName"><?=$model->isNewRecord ? '' :$model->idpacientes0->nombre1.' '.$model->idpacientes0->nombre2.' '.$model->idpacientes0->apellido1.' '.$model->idpacientes0->apellido2 ?></h4>
-        </div>
-
-            <input type="text" name="url" id="url" hidden>
-            <?= $form->field($model, 'idpacientes')->hiddenInput()->label('') ?>
+    </div>
         
+            <input type="text" name="url" id="url" hidden>  
         
-            <?= $form->field($model, 'fecha_atencion')->widget(yii\jui\DatePicker::classname(), ["dateFormat" => "yyyy-MM-dd", 'options' => ['value'=>$model->fecha_atencion, 'class' => 'fecha form-control', "placeholder" => "aaaa-mm-dd"], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']) ?>
+            <?= $form->field($model, 'fecha_atencion')->widget(yii\jui\DatePicker::classname(), ["dateFormat" => "yyyy-MM-dd", 'options' => ['value'=>$model->isNewRecord ? date('Y-m-d') : $model->fecha_atencion, 'class' => 'fecha form-control', "placeholder" => "aaaa-mm-dd"], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']) ?>
         
-        
-
                 
             <?= $form->field($ips_model, 'id')->dropDownList(ArrayHelper::map($ips_list,'id','nombre'), ['prompt'=>'Seleccione una opción', 'id'=>'ips_id'])->label('IPS');?>
-        
-        
 
         
             <?= $form->field($model, 'eps_ideps')->widget(DepDrop::classname(), [
@@ -54,8 +68,6 @@ use kartik\select2\Select2;
             ])->label('EPS');  
             ?>
         
-        
-
         
             <?= $form->field($model, 'idtipo_servicio')->widget(DepDrop::classname(), [
                         'type' => 2,
@@ -89,112 +101,43 @@ use kartik\select2\Select2;
             <?= $form->field($model, 'autorizacion')->textInput(['maxlength' => 15]) ?>
         
         
-
-        
-            <?= $form->field($model, 'numero_muestra')->textInput(['maxlength' => 15]) ?>
-        
-        
-
-       
-            <?= $form->field($model, 'valor_procedimiento')->textInput() ?>
-        
-        
-
-        
             <?= $form->field($model, 'cantidad_muestras')->textInput() ?>
         
         
+            <?= $form->field($model, 'valor_procedimiento')->textInput() ?>
 
+            <?= $form->field($model, 'descuento')->textInput(['readOnly'=>'']) ?>
         
             <?= $form->field($model, 'valor_copago')->textInput() ?>
         
-        
-
-        
-            <?= $form->field($model, 'valor_saldo')->textInput() ?>
-        
-        
-
-        
             <?= $form->field($model, 'valor_abono')->textInput() ?>
-        
-        
 
+            <?= $form->field($model, 'valor_saldo')->textInput(['readOnly'=>'']) ?>
+        
         
             <?= $form->field($model, 'medico')->textInput(['maxlength' => 150]) ?>
         
         
-
         
-            <?= $form->field($model, 'observaciones')->textInput(['maxlength' => 200]) ?>
-        
+            <?= $form->field($model, 'observaciones')->textArea(['maxlength' => 200]) ?>
         
 
-        
-           <?= $form->field($model, 'forma_pago')->textInput(['maxlength' => 3]) ?>
-       
-        
-
-        
-            <?= $form->field($model, 'numero_cheque')->textInput(['maxlength' => 15]) ?>
-        
-            
-            <?= $form->field($model, 'estado')->widget(Select2::classname(), [
-                    'data'=>array_merge(["" => ""], $lista_estados),
+            <?= $form->field($model, 'forma_pago')->widget(Select2::classname(), [
+                    'data'=>array_merge(["" => ""], $lista_pago),
                     'language' => 'es',
-                    'options' => ['placeholder' => 'Seleccione un estado'],
+                    'options' => ['placeholder' => 'Seleccione una forma de pago'],
                     'pluginOptions' => [
                         'allowClear' => true
                     ],
-                ]);
+                ])->label('Forma de pago');
             ?>
 
         
-            <?= $form->field($model, 'fecha_informe')->widget(yii\jui\DatePicker::classname(), ["dateFormat" => "yyyy-MM-dd", 'options' => ['value'=>$model->fecha_informe, 'class' => 'fecha form-control', "placeholder" => "aaaa-mm-dd"], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']) ?>
-        
-        
-
-        
-            <?= $form->field($model, 'numero_factura')->textInput(['maxlength' => 15]) ?>
-        
-        
-
-        
-            <?= $form->field($model, 'fecha_salida')->widget(yii\jui\DatePicker::classname(), ["dateFormat" => "yyyy-MM-dd", 'options' => ['value'=>$model->fecha_salida, 'class' => 'fecha form-control', "placeholder" => "aaaa-mm-dd"], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']) ?>
-        
-        
-
-        
-            <?= $form->field($model, 'fecha_entrega')->widget(yii\jui\DatePicker::classname(), ["dateFormat" => "yyyy-MM-dd", 'options' => ['value'=>$model->fecha_entrega, 'class' => 'fecha form-control', "placeholder" => "aaaa-mm-dd"], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']) ?>
-        
-        
-
-        
-            <?= $form->field($model, 'periodo_facturacion')->widget(yii\jui\DatePicker::classname(), ["dateFormat" => "yyyy-MM-dd", 'options' => ['value'=>$model->periodo_facturacion, 'class' => 'fecha form-control', "placeholder" => "aaaa-mm-dd"], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']) ?>
-        
-        
-
-        
-            <?= $form->field($model, 'idmedico')->textInput() ?>
-        
-        
-            
-            <?= $form->field($model, 'usuario_recibe')->textInput() ?>
-        
-        
-
-        
-            <?= $form->field($model, 'usuario_transcribe')->textInput() ?>
-        
-        
-
-        
-            <?= $form->field($model, 'descuento')->textInput() ?>
         
          
 
         <div class="form-group text-center">
-            <?= Html::submitButton($model->isNewRecord ? 'Crear' : 'Actualizar', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+            <?= Html::submitButton($model->isNewRecord ? 'Crear' : 'Actualizar', ['class' =>'btn btn-success']) ?>
         </div>
     
 
@@ -232,5 +175,31 @@ use kartik\select2\Select2;
 <script type="text/javascript">
     $(document).ready(function() {
         $('#url').val(getUrlVars());
+
+        $('#procedimientos-cod_cups').on('change', function(event) {
+            var cod_cup = $(this).val();
+            var eps_id = $('#eps_id').val();
+            if(cod_cup != ''){
+                $.post('precio', {cod: cod_cup, id: eps_id}, function(data) {
+                    $('#procedimientos-valor_procedimiento').val(data['valor_procedimiento']);
+                    $('#procedimientos-valor_saldo').val(data['valor_procedimiento']);
+                    $('#procedimientos-descuento').val(data['descuento']);
+                    // console.log(data['valor_procedimiento']);
+                });
+            }
+        });
+
+        $('#procedimientos-valor_abono').on('change', function(event) {
+            event.preventDefault();
+            var abono = parseFloat($('#procedimientos-valor_abono').val());
+            var saldo = parseFloat($('#procedimientos-valor_saldo').val());
+            
+
+            if(isNaN(abono)){
+                $('#procedimientos-valor_saldo').val(saldo);
+            }else{
+                $('#procedimientos-valor_saldo').val(saldo-abono);
+            }
+        });
     });
 </script>

@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use kartik\select2\Select2;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\ProcedimientosSearch */
@@ -18,7 +19,7 @@ use yii\widgets\ActiveForm;
 
     <!-- <?= $form->field($model, 'id') ?> -->
     <div class="col-sm-6 col-lg-4">
-        <?= $form->field($model, 'idpacientes', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Paciente']); ?>
+        <?= $form->field($model, 'numid_paciente', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'CC Paciente']); ?>
     </div>
 
     <div class="col-sm-6 col-lg-4">
@@ -38,7 +39,15 @@ use yii\widgets\ActiveForm;
     </div>
 
     <div class="col-sm-6 col-lg-4">
-        <?= $form->field($model, 'estado', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Estado']) ?>
+        <?= $form->field($model, 'estado', ['template'=>"{input}{error}"])->widget(Select2::classname(), [
+            'data'=>array_merge(["" => ""], $lista_estados),
+            'language' => 'es',
+            'options' => ['placeholder' => 'Seleccione un estado'],
+            'pluginOptions' => [
+                'allowClear' => true
+            ],
+        ]);
+    ?>
     </div>
     
     <div class="col-sm-6 col-lg-4">

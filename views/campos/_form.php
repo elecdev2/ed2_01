@@ -76,7 +76,7 @@ use kartik\depdrop\DepDrop;
     <!-- <?= $form->field($model, 'orden')->textInput() ?> -->
 
     <div class="form-group text-center">
-        <?= Html::submitButton($model->isNewRecord ? 'Crear' : 'Actualizar', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::submitButton($model->isNewRecord ? 'Crear' : 'Actualizar', ['class' =>'btn btn-success']) ?>
         <?= Html::a('Cancelar', ['campos/index'], ['class' => 'btn btn-primary'])?>
     </div>
 

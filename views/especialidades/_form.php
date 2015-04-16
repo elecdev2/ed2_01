@@ -17,7 +17,7 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'nombre')->textInput(['maxlength' => 150]) ?>
 
     <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' =>'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

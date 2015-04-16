@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use kartik\select2\Select2;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\PacientesSearch */
@@ -20,7 +21,15 @@ use yii\widgets\ActiveForm;
     <?php // echo $form->field($model, 'id', ['template'=>"{input}{error}"]) ?>
 
 <div class="col-sm-6 col-lg-4">
-    <?= $form->field($model, 'tipo_identificacion', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Tipo de ID']); ?>
+    <?= $form->field($model, 'tipo_identificacion', ['template'=>"{input}{error}"])->widget(Select2::classname(), [
+            'data'=>$lista_tipoid,
+            'language' => 'es',
+            'options' => ['placeholder' => 'Tipo de ID'],
+            'pluginOptions' => [
+                'allowClear' => true
+            ],
+        ]);
+    ?>
 </div>
 
 <div class="col-sm-6 col-lg-4">
@@ -70,7 +79,7 @@ use yii\widgets\ActiveForm;
     <?php // echo $form->field($model, 'codeps', ['template'=>"{input}{error}"]) ?>
 
     <div class="col-sm-12 form-group text-center">
-        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
+        <?= Html::submitButton('Buscar', ['class' => 'btn btn-success']) ?>
         <?= Html::resetButton('Reset', ['class' => 'btn btn-default']) ?>
     </div>
 

@@ -48,7 +48,7 @@ use kartik\depdrop\DepDrop;
     <?= $form->field($model, 'serie')->textInput(['maxlength' => 1]) ?>
 
     <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' =>'btn btn-success']) ?>
         <?= Html::a('Cancelar', ['tipos-servicio/index'], ['class' => 'btn btn-primary'])?>
     </div>
 

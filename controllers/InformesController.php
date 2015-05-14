@@ -15,7 +15,6 @@ use yii\filters\AccessControl;
  */
 class InformesController extends Controller
 {
-    public $layout = 'panelAdmin';
     public function behaviors()
     {
         return [

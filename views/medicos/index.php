@@ -17,7 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="panel panel-default">
         <div class="panel-body">
             <div class="col-sm-6">
-                <h1 class="titulo"><?= Html::encode($this->title) ?></h1>
+                <h1 class="titulo tituloIndex"><?= Html::encode($this->title) ?></h1>
             </div>
             <div class="col-sm-6">
                 <?= Html::a('Crear médico', ['create'], ['class' => 'crear add']);?>
@@ -83,7 +83,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'hover' => true,
             'panel' => [
                 'type' => GridView::TYPE_DEFAULT,
-                'heading' => '<i class="glyphicon glyphicon-user"></i>  Médicos',
             ],
             'exportConfig' => [GridView::CSV => ['label' => 'Save as CSV']],
         ]); ?>
@@ -103,7 +102,7 @@ Modal::end();
 
 <?php Modal::begin([
     'id'=>'viewModal',
-    'header'=>'<h3>Actualizar</h3>',
+    'header'=>'<h3></h3>',
     'size'=>Modal::SIZE_LARGE,
     'options'=>['data-backdrop'=>'static'],
 ]);  

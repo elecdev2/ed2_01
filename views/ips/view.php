@@ -7,8 +7,8 @@ use yii\widgets\DetailView;
 /* @var $model app\models\Ips */
 
 $this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Ips', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+// $this->params['breadcrumbs'][] = ['label' => 'Ips', 'url' => ['index']];
+// $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="ips-view">
 

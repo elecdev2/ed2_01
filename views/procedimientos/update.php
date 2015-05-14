@@ -10,9 +10,15 @@ $this->title = $model->numero_muestra;
 // $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
 // $this->params['breadcrumbs'][] = 'Actualizar';
 ?>
-<div class="procedimientos-update text-center">
+<div class="procedimientos-update">
 
-    <h1><?= Html::encode($this->title) ?></h1><br>
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="">
+                <h1 class="titulo tituloDetalle"><?= Html::encode($this->title) ?></h1>
+            </div>
+        </div>
+    </div>
 
     <?= $this->render('_form', [
         'model' => $model,
@@ -21,6 +27,17 @@ $this->title = $model->numero_muestra;
         'ips_list'=>$ips_list,
         'lista_estados'=>$lista_estados,
         'lista_pago'=>$lista_pago,
+        'lista_med'=>$lista_med,
+        'lista_medRemGen'=>$lista_medRemGen,
+        'medicoRemModel'=>$medicoRemModel,
+        'lista_especialidades'=>$lista_especialidades,
+        'campos'=>$campos,
+
     ]) ?>
 
 </div>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#pacientes-fecha_nacimiento').val('<?=$model->idpacientes0->fecha_nacimiento?>');	
+	});
+</script>

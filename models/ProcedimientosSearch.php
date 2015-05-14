@@ -22,7 +22,7 @@ class ProcedimientosSearch extends Procedimientos
     public function rules()
     {
         return [
-            [['id', 'idpacientes', 'eps_ideps', 'cantidad_muestras', 'idtipo_servicio', 'idmedico', 'usuario_recibe', 'usuario_transcribe', 'idbackup'], 'integer'],
+            [['id', 'idpacientes', 'eps_ideps', 'cantidad_muestras', 'idtipo_servicio', 'idmedico', 'usuario_recibe', 'usuario_transcribe'], 'integer'],
             [['eps','numid_paciente','tipo_servicio','medico','fecha_atencion', 'autorizacion', 'numero_muestra', 'cod_cups', 'medico', 'observaciones', 'forma_pago', 'numero_cheque', 'estado', 'fecha_informe', 'numero_factura', 'fecha_salida', 'fecha_entrega', 'periodo_facturacion'], 'safe'],
             [['valor_procedimiento', 'valor_copago', 'valor_saldo', 'valor_abono', 'descuento'], 'number'],
         ];
@@ -111,7 +111,6 @@ class ProcedimientosSearch extends Procedimientos
             'usuario_recibe' => $this->usuario_recibe,
             'usuario_transcribe' => $this->usuario_transcribe,
             'descuento' => $this->descuento,
-            'idbackup' => $this->idbackup,
         ]);
 
         $query->andFilterWhere(['like', 'autorizacion', $this->autorizacion])

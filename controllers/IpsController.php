@@ -11,6 +11,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
+use yii\helpers\ArrayHelper;
 
 /**
  * IpsController implements the CRUD actions for Ips model.
@@ -85,7 +86,9 @@ class IpsController extends Controller
             $tipo_id = ListasSistema::find()->where('tipo="tipo_identificacion"')->all();
             $clientes = Clientes::find()->all();
             return $this->render('create', [
-                'model' => $model, 't_id' => $tipo_id, 'clientes'=> $clientes,
+                'model' => $model, 
+                't_id' => $tipo_id, 
+                'clientes'=> $clientes,
             ]);
         }
     }
@@ -103,8 +106,12 @@ class IpsController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
+            $tipo_id = ArrayHelper::map(ListasSistema::find()->where(['tipo'=>'tipo_identificacion'])->all(), 'codigo', 'descripcion');
+            $list_clientes = ArrayHelper::map(Clientes::find()->all(),'id','nombre');
             return $this->render('update', [
                 'model' => $model,
+                'list_clientes'=>$list_clientes,
+                'listdata'=>$tipo_id,
             ]);
         }
     }

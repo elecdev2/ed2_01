@@ -131,10 +131,6 @@ use kartik\select2\Select2;
         <?php // echo $form->field($model, 'descuento', ['template'=>"{input}{error}"]) ?>
     </div>
 
-    <div class="col-sm-6 col-lg-4">
-        <?php // echo $form->field($model, 'idbackup', ['template'=>"{input}{error}"]) ?>
-    </div>
-
 
     <div class="col-sm-12 form-group text-center">
         <?= Html::submitButton('Buscar', ['class' => 'btn btn-success']) ?>

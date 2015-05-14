@@ -19,7 +19,7 @@ use Yii;
  * @property double $valor_copago
  * @property double $valor_saldo
  * @property double $valor_abono
- * @property string $medico
+ * @property integer $medico
  * @property string $observaciones
  * @property string $forma_pago
  * @property string $numero_cheque
@@ -34,11 +34,13 @@ use Yii;
  * @property integer $usuario_recibe
  * @property integer $usuario_transcribe
  * @property double $descuento
- * @property integer $idbackup
+ * @property string $fecha_inicio
+ * @property string $fecha_fin
  *
  * @property Eps $epsIdeps
  * @property Estudios $codCups
  * @property Pacientes $idpacientes0
+ * @property MedicosRemitentes $medico0 
  * @property Usuarios $usuarioRecibe
  * @property Usuarios $usuarioTranscribe
  * @property Medicos $idmedico0
@@ -62,13 +64,12 @@ class Procedimientos extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['idpacientes', 'fecha_atencion', 'numero_muestra', 'eps_ideps', 'cod_cups', 'cantidad_muestras', 'idtipo_servicio','idmedico'], 'required'],
-            [['idpacientes', 'eps_ideps', 'cantidad_muestras', 'idtipo_servicio', 'idmedico', 'usuario_recibe', 'usuario_transcribe', 'idbackup'], 'integer'],
-            [['fecha_atencion', 'fecha_informe', 'fecha_salida', 'fecha_entrega', 'periodo_facturacion'], 'safe'],
+            [['idpacientes', 'fecha_atencion', 'numero_muestra', 'eps_ideps', 'cod_cups', 'cantidad_muestras', 'idtipo_servicio'], 'required'],
+            [['idpacientes', 'eps_ideps', 'cantidad_muestras', 'idtipo_servicio', 'idmedico', 'usuario_recibe','medico', 'usuario_transcribe'], 'integer'],
+            [['fecha_atencion', 'fecha_informe', 'fecha_salida', 'fecha_entrega', 'periodo_facturacion', 'fecha_inicio', 'fecha_fin'], 'safe'],
             [['valor_procedimiento', 'valor_copago', 'valor_saldo', 'valor_abono', 'descuento'], 'number'],
             [['autorizacion', 'numero_muestra', 'numero_cheque', 'numero_factura'], 'string', 'max' => 15],
             [['cod_cups'], 'string', 'max' => 20],
-            [['medico'], 'string', 'max' => 150],
             [['observaciones'], 'string', 'max' => 200],
             [['forma_pago', 'estado'], 'string', 'max' => 3]
         ];
@@ -107,9 +108,19 @@ class Procedimientos extends \yii\db\ActiveRecord
             'usuario_recibe' => 'Usuario Recibe',
             'usuario_transcribe' => 'Usuario Transcribe',
             'descuento' => 'Descuento',
-            'idbackup' => 'Idbackup',
+            'fecha_inicio' => 'Fecha Inicio',
+            'fecha_fin' => 'Fecha Fin',
         ];
     }
+
+    /**
+    * @return \yii\db\ActiveQuery
+    */
+    public function getMedico0() 
+   { 
+       return $this->hasOne(MedicosRemitentes::className(), ['id' => 'medico']); 
+   } 
+ 
 
     /**
      * @return \yii\db\ActiveQuery

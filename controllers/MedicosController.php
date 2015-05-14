@@ -12,6 +12,8 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use yii\filters\AccessControl;
+use app\models\UploadFormImages;
+use yii\web\UploadedFile;
 
 
 /**
@@ -89,6 +91,7 @@ class MedicosController extends Controller
     public function actionCreate()
     {
         $model = new Medicos();
+        $model->scenario = 'medico';
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['index']);
@@ -115,11 +118,23 @@ class MedicosController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $imagen = new UploadFormImages();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            $model->refresh();
-            Yii::$app->response->format = 'json';
-            return $this->redirect($_POST['url'].'&message=Registro actualizado');
+        if ($model->load(Yii::$app->request->post())) {
+
+                $imagen->file = UploadedFile::getInstance($imagen, 'file');
+            if (isset($imagen->file)){
+                $model->ruta_firma !== null ? unlink('images/firmas/'.$model->ruta_firma) : '';
+                $img = md5(time()).'.'. $imagen->file->extension;
+                $imagen->file->saveAs('images/firmas/'.$img);
+                $model->ruta_firma = $img;
+            }
+
+            if($model->save()){
+                $model->refresh();
+                Yii::$app->response->format = 'json';
+                return $this->redirect($_POST['url'].'&message=Registro actualizado');
+            }
         } 
         
         $lista_especialidades = ArrayHelper::map(Especialidades::find('SELECT id, (nombre) AS name')->all(),'id','nombre');

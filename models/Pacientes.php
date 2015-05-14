@@ -48,7 +48,7 @@ class Pacientes extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['tipo_identificacion', 'identificacion', 'apellido1', 'nombre1', 'direccion', 'sexo', 'fecha_nacimiento', 'idclientes'], 'required'],
+            [['tipo_identificacion', 'identificacion', 'apellido1', 'nombre1', 'direccion', 'sexo', 'fecha_nacimiento', 'idclientes'], 'required','on'=>'paciente'],
             [['fecha_nacimiento'], 'safe'],
             [['idclientes', 'idciudad', 'ideps'], 'integer'],
             [['tipo_identificacion'], 'string', 'max' => 3],
@@ -86,6 +86,13 @@ class Pacientes extends \yii\db\ActiveRecord
             'envia_email' => 'Enviar Email',
             'codeps' => 'Codeps',
         ];
+    }
+
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
+        $scenarios['paciente'] = ['tipo_identificacion', 'identificacion', 'apellido1', 'nombre1', 'direccion', 'sexo', 'fecha_nacimiento', 'idclientes'];
+        return $scenarios;
     }
 
     /**

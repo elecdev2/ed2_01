@@ -19,7 +19,6 @@ use yii\filters\AccessControl;
  */
 class TiposServicioController extends Controller
 {
-    public $layout = 'panelAdmin';
     public function behaviors()
     {
         return [
@@ -106,8 +105,12 @@ class TiposServicioController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
+            $client_model = new Clientes();
+            $clientes = ArrayHelper::map(Clientes::find()->all(), 'id', 'nombre');
             return $this->render('update', [
                 'model' => $model,
+                'client_model'=>$client_model,
+                'list_client'=>$clientes,
             ]);
         }
     }

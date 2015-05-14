@@ -38,7 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
         'toolbar' => [
             ['content'=>
-                Html::a('Create ips', ['create'], ['class' => 'btn btn-success']),
+                Html::a('Crear ips', ['create'], ['class' => 'btn btn-success']),
             ],
             // '{export}',
             // '{toggleData}',

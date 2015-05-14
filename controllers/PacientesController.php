@@ -93,6 +93,7 @@ class PacientesController extends Controller
     public function actionCreate()
     {
         $model = new Pacientes();
+        $model->scenario = 'paciente';
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['index']);

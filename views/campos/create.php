@@ -24,6 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'ips_model' => $ips_model,
         'titulos_model'=>$titulos_model,
         'titulos_list'=>$titulos_list,
+        'tipo_campos'=>$tipos_campos,
     ]) ?>
 
 </div>

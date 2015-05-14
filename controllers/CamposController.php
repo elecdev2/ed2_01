@@ -8,17 +8,18 @@ use app\models\Titulos;
 use app\models\Clientes;
 use app\models\Ips;
 use app\models\CamposSearch;
+use app\models\ListasSistema;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\Json;
+use yii\helpers\ArrayHelper;
 
 /**
  * CamposController implements the CRUD actions for Campos model.
  */
 class CamposController extends Controller
 {
-    public $layout = 'panelAdmin';
     public function behaviors()
     {
         return [
@@ -75,6 +76,7 @@ class CamposController extends Controller
             $ips_model = new Ips();
             $client_model = new Clientes();
             $clientes = Clientes::find()->all();
+            $tipos_campos = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_campo"')->all(),'id','descripcion');
             return $this->render('create', [
                 'model' => $model, 
                 'ips_model' => $ips_model, 
@@ -82,6 +84,7 @@ class CamposController extends Controller
                 'clientes'=>$clientes,
                 'titulos_model'=>$titulos_model,
                 'titulos'=>$titulos,
+                'tipos_campos'=>$tipos_campos,
             ]);
         }
     }
@@ -99,8 +102,20 @@ class CamposController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
+            $titulos_model = new Titulos();
+            $titulos = ArrayHelper::map(Titulos::find()->all(), 'id', 'descripcion');
+            $ips_model = new Ips();
+            $client_model = new Clientes();
+            $clientes = ArrayHelper::map(Clientes::find()->all(), 'id', 'nombre');
+            $tipo_campos = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_campo"')->all(),'id','descripcion');
             return $this->render('update', [
                 'model' => $model,
+                'titulos_model'=>$titulos_model,
+                'titulos_list'=>$titulos,
+                'ips_model'=>$ips_model,
+                'client_model'=>$client_model,
+                'list_client'=>$clientes,
+                'tipo_campos'=>$tipo_campos,
             ]);
         }
     }

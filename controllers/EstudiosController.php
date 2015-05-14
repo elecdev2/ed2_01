@@ -15,7 +15,6 @@ use yii\filters\AccessControl;
  */
 class EstudiosController extends Controller
 {
-    public $layout = 'panelAdmin';
     public function behaviors()
     {
         return [

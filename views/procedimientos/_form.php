@@ -8,6 +8,7 @@ use yii\bootstrap\ActiveForm;
 use app\models\Ips;
 use kartik\depdrop\DepDrop;
 use kartik\select2\Select2;
+use yii\bootstrap\Modal;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Procedimientos */
@@ -19,8 +20,8 @@ use kartik\select2\Select2;
     <?php $form = ActiveForm::begin(['layout'=>'horizontal', 'id'=>'procForm', 'validateOnType' => true, 'options'=>['onsubmit'=>'submitForm']]); ?>
         
     <div class="panel panel-default">
-        <div class="panel-body">
-
+        <div class="panel-body  Panelpaciente">
+        <h2>Datos del paciente</h2><br>
             <div class="form-group">
                 <label class="control-label col-sm-3">N° de identificación *</label>
                 <div class="col-sm-6">                
@@ -115,8 +116,15 @@ use kartik\select2\Select2;
             <?= $form->field($model, 'valor_saldo')->textInput(['readOnly'=>'']) ?>
         
         
-            <?= $form->field($model, 'medico')->textInput(['maxlength' => 150]) ?>
-        
+            <?= $form->field($model, 'medico')->widget(Select2::classname(), [
+                    'data'=>$lista_med,
+                    'language' => 'es',
+                    'options' => ['placeholder' => 'Seleccione una opción'],
+                    'pluginOptions' => [
+                        'allowClear' => true
+                    ],
+                ])->label('Médico remitente');
+            ?>
         
         
             <?= $form->field($model, 'observaciones')->textArea(['maxlength' => 200]) ?>
@@ -132,12 +140,34 @@ use kartik\select2\Select2;
                 ])->label('Forma de pago');
             ?>
 
-        
-        
-         
+        <?php if(!$model->isNewRecord && $model->estado !== 'FCT'){ ?>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <?= $this->render('form_estudios', [
+                        'campos'=>$campos,
+                        'model'=>$model,
+                        'form'=>$form,
+                ]) ?>
+            </div>
+        </div>
+        <?php } ?>  
 
-        <div class="form-group text-center">
-            <?= Html::submitButton($model->isNewRecord ? 'Crear' : 'Actualizar', ['class' =>'btn btn-success']) ?>
+
+        <div class="panel panel-default">
+            <div class="panel-body"> 
+
+                <?php if($model->estado == 'PND' || $model->estado == 'PRC') {?>
+                        <div class="col-sm-6" style="padding: 7px 0px;">
+                            <input type="checkbox" name="checkEstado">
+                            <label for="checkEstado" style="font-size:1.25em;"><?= $model->estado == 'PND' ? 'Procesar' : 'Firmar' ?></label>
+                        </div>
+                <?php } ?>
+
+                <div class="col-sm-6">
+                    <?= Html::submitButton($model->isNewRecord ? 'Crear' : 'Actualizar', ['style'=>'float:right', 'class' =>'btn btn-success']) ?>
+                </div>
+
+            </div>
         </div>
     
 
@@ -145,6 +175,8 @@ use kartik\select2\Select2;
     <?php ActiveForm::end(); ?>
 
 </div>
+
+
 
 <div id="pacienteModal" class="modal fade bs-example-modal-sm" data-backdrop="true" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -172,17 +204,67 @@ use kartik\select2\Select2;
         </div>
     </div>
 </div>
+
+
+<?php Modal::begin([
+    'id'=>'medRemNuevo',
+    'header'=>'<h3></h3>',
+    // 'size'=>Modal::SIZE_SMALL,
+    'options'=>['data-backdrop'=>'static'],
+]); ?>
+    <div class="form-group required">
+        <label class="control-label" for="">Médicos remitentes</label><br>
+            <div class="col-sm-10">
+                <?= Select2::widget([
+                        'name' => 'remitentes',
+                        'id'=>'medrem',
+                        'data'=>$lista_medRemGen,
+                        'language' => 'es',
+                        'options' => ['placeholder' => 'Seleccione una opción'],
+                        'pluginOptions' => [
+                            'allowClear' => true,
+                        ],
+                    ]);
+                ?>
+            </div>   
+            <div class="col-sm-2"><a href="" id="agregar" data-dismiss="modal" class="btn btn-default">Añadir</a></div>
+    </div><br>
+
+     <div class="form-group field-medico-check">
+        <div class="col-sm-6">
+            <?= Html::input('checkBox','nombre','',['id'=>'showHidePanel', 'class'=>'']);?>
+            <label for="showHidePanel">Agregar un médico nuevo</label>
+        </div>
+    </div><br>
+
+    <div class="panel panel-default">
+        <div id="panelMedico"  class="panel-body">
+            <?=$this->render('//medicos-remitentes/_form', [
+                'model'=>$medicoRemModel,
+                'lista_especialidades'=>$lista_especialidades,
+                'ips_model'=>$ips_model,
+                'ips_list'=>$ips_list,
+            ]);?>
+        </div>
+    </div>
+<?php Modal::end();
+?>
+
 <script type="text/javascript">
     $(document).ready(function() {
+        $('#panelMedico').hide();
+        $('.field-procedimientos-medico').append('<a href="#" id="medRem">Nuevo médico remitente</a>');
         $('#url').val(getUrlVars());
-
         $('#procedimientos-cod_cups').on('change', function(event) {
             var cod_cup = $(this).val();
             var eps_id = $('#eps_id').val();
             if(cod_cup != ''){
                 $.post('precio', {cod: cod_cup, id: eps_id}, function(data) {
+                    saldo = data['valor_procedimiento'];
                     $('#procedimientos-valor_procedimiento').val(data['valor_procedimiento']);
                     $('#procedimientos-valor_saldo').val(data['valor_procedimiento']);
+                    $('#procedimientos-valor_copago').val(0);
+                    $('#procedimientos-valor_abono').val(0);
                     $('#procedimientos-descuento').val(data['descuento']);
                     // console.log(data['valor_procedimiento']);
                 });
@@ -192,14 +274,52 @@ use kartik\select2\Select2;
         $('#procedimientos-valor_abono').on('change', function(event) {
             event.preventDefault();
             var abono = parseFloat($('#procedimientos-valor_abono').val());
-            var saldo = parseFloat($('#procedimientos-valor_saldo').val());
-            
 
             if(isNaN(abono)){
-                $('#procedimientos-valor_saldo').val(saldo);
+                $('#procedimientos-valor_saldo').val($('#procedimientos-valor_procedimiento').val());
             }else{
-                $('#procedimientos-valor_saldo').val(saldo-abono);
+                $('#procedimientos-valor_saldo').val($('#procedimientos-valor_procedimiento').val()-abono);
             }
         });
+
+        $('#medRem').on('click', function(event) {
+            event.preventDefault();
+            $('#medRemNuevo').modal();
+        });
+
+        $('#showHidePanel').on('change', function(event) {
+            event.preventDefault();
+            $('#panelMedico').hide();
+            if($('#showHidePanel').is(':checked')){
+                $('#panelMedico').show();
+            }
+        });
+
+    
+        $('#agregar').on('click', function(event) {
+            event.preventDefault();
+            var datos = $('#medrem').val();
+            if(datos != ''){
+                $.post('add-medico', {data: datos}, function(data) {
+                   var datos = jQuery.parseJSON(data); 
+                   var newOption = $('<optgroup label="'+datos['especialidad']+'"><option value="'+datos['id']+'">'+datos['nombre']+'</option></optgroup>');
+                   $('#procedimientos-medico').append(newOption);
+                });
+            }
+        });
+
+        $('#guardarMedico').on('click', function(event) {
+            event.preventDefault();
+            var formulario = $('#medRemForm').serialize();
+            $('#medRemForm')[0].reset();
+            $.post('guardar-medico', {data: formulario}, function(data) {
+                var datos = jQuery.parseJSON(data); 
+               // console.log(datos['nombre']);
+               var newOption = $('<optgroup label='+datos['especialidad']+'><option value="'+datos['id']+'">'+datos['nombre']+'</option></optgroup>');
+               $('#procedimientos-medico').append(newOption);
+            });
+
+        });
+
     });
 </script>

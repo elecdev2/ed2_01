@@ -7,6 +7,11 @@ body {
 }
 
 
+
+a{
+    color: #3e5068;
+}
+
 /*Action column*/
 .up, .del, .ta{
     background-repeat: no-repeat;
@@ -27,7 +32,7 @@ body {
 
 .ta{
     background-color: #00A65A;    
-    background-image: url(../images/iconos-clapp/icons-18.png);
+    background-image: url(../images/iconos/iconos-711.png);
 }
 
 #eps tr td.skip-export{
@@ -57,6 +62,29 @@ body > .header .navbar{
 }
 
 /*--------------------------*/
+
+/*------tabla--------*/
+.kv-panel-before, .kv-panel-after{
+    padding: 0;
+    border-bottom:0;
+}
+
+.summary{
+    font-size: 12px;
+}
+
+.panel-default > .panel-heading{
+    padding: 3px 15px;
+}
+
+.pagination{
+    float: right;
+}
+
+.pagination > .active > a{
+  background-color: #3e5068;
+  border-color: #2e394d;
+}
 
 /*sidebar*/
 
@@ -109,10 +137,39 @@ div.wrapper.row-offcanvas.row-offcanvas-left > aside.left-side.sidebar-offcanvas
 }
 
 /*------------------------------*/
+
+/*-----Panel de pacientes en procedimientos--------*/
+
+
+/*--------------------------------*/
 h1{
     font-weight: 700;
-    font-family: 'Montserrat', sans-serif;
     font-size: 30px;
+}
+
+h2{
+    font-weight: 700;
+    font-size: 25px;
+}
+
+h3{
+    font-weight: 400;
+    font-size: 20px;
+}
+
+h4{
+    font-weight: 400;
+    font-size: 18px;
+}
+
+h5{
+    font-weight: 400;
+    font-size: 16px;
+}
+
+
+h1,h2,h3,h4,h5{
+    font-family: 'Montserrat', sans-serif;
     color: #2E394D;
 }
 
@@ -159,6 +216,11 @@ div.select2-container a.select2-choice{
 
 /*------------------------------*/
 
+
+div.container-fluid div.form-group{
+    margin-bottom:0;
+}
+
 /*Boton crear*/
 
 .crear, .update{
@@ -200,7 +262,7 @@ button.update:hover{
     width: 1em;
     text-align: center;
     font-size: 1.5em;
-    margin: 0px 0.4em 0 -1em;
+    margin: 0px 0.4em 0 0em;
     padding: 0px 1.05em 0 0;
     pointer-events: none;
 }
@@ -210,10 +272,31 @@ button.update:hover{
 }
 
 .upd:before{
-    content: url(../images/iconos-clapp/icons-22-copia.png);
+    content: url(../images/iconos/icon-76.png);
 }
 
 /*-----------------*/
+
+
+/*------Tamaños de modal-------*/
+
+.modal-dialog.modal-lg{
+    height: 120%;
+}
+
+.modal-content{
+    height: 75%;
+}
+
+.modal-body{
+    height: 90%;
+    overflow: auto;
+}
+
+.modal-open .modal{
+      overflow-y: hidden;
+}
+/*-----------------------------*/
 .detail-view{
     background-color: #f9f9f9;
 }
@@ -250,6 +333,19 @@ button.update:hover{
 
 .titulo{
     margin: 0;
+}
+
+.tituloDetalle{
+    font-size: 25px;
+    padding: 10px 0px;
+}
+
+.tituloIndex{
+    padding: 6px 0;
+}
+
+.tituloMd6{
+    padding:0;
 }
 
 /*.footer {

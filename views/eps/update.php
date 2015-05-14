@@ -12,7 +12,13 @@ $this->title =  $model->nombre;
 ?>
 <div class="eps-update">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="">
+                <h1 class="titulo tituloDetalle"><?= Html::encode($this->title) ?></h1>
+            </div>
+        </div>
+    </div>
 
     <?= $this->render('_form', [
         'model' => $model,

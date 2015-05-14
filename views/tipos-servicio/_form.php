@@ -17,16 +17,6 @@ use kartik\depdrop\DepDrop;
 
     <?php $form = ActiveForm::begin(['layout' => 'horizontal']); ?>
 
-    <?= $form->field($client_model, 'id')->widget(Select2::classname(), [
-            'data' => array_merge(["" => ""], $list_client),
-            'language' => 'es',
-            'options' => ['placeholder' => 'Seleccione un cliente'],
-            'pluginOptions' => [
-                'allowClear' => true
-            ],
-        ])->label('Cliente');
-    ?>
-
     <?= $form->field($client_model, 'id')->dropDownList($list_client, ['prompt'=>'Seleccione una opción', 'id'=>'client_id'])->label('Cliente');?>
 
     <?= $form->field($model, 'idips')->widget(DepDrop::classname(), [
@@ -47,8 +37,8 @@ use kartik\depdrop\DepDrop;
 
     <?= $form->field($model, 'serie')->textInput(['maxlength' => 1]) ?>
 
-    <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' =>'btn btn-success']) ?>
+    <div class="form-group text-center">
+        <?= Html::submitButton($model->isNewRecord ? 'Crear' : 'Actualizar', ['class' =>'btn btn-success']) ?>
         <?= Html::a('Cancelar', ['tipos-servicio/index'], ['class' => 'btn btn-primary'])?>
     </div>
 

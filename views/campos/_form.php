@@ -37,6 +37,7 @@ use kartik\depdrop\DepDrop;
     
     <?= $form->field($model, 'idtipos_servicio')->widget(DepDrop::classname(), [
                 'type' => 2,
+                'data'=>$model->isNewRecord ? '' : [$model->idtipos_servicio => $model->idtiposServicio->nombre],
                 'pluginOptions'=>[
                 'depends'=>['client_id', 'ips_id'],
                 'placeholder'=>'Seleccione tipo de estudio',
@@ -48,7 +49,7 @@ use kartik\depdrop\DepDrop;
     <!-- <?= $form->field($model, 'idtipos_servicio')->textInput() ?> -->
 
     <?= $form->field($model, 'tipo_campo')->widget(Select2::classname(), [
-            'data' => array_merge(["" => ""], ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_campo"')->all(),'id','descripcion')),
+            'data' => $tipo_campos,
             'language' => 'es',
             'options' => ['placeholder' => 'Seleccione un tipo de campo'],
             'pluginOptions' => [
@@ -60,7 +61,7 @@ use kartik\depdrop\DepDrop;
     <!-- <?= $form->field($model, 'tipo_campo')->textInput(['maxlength' => 45]) ?> -->
 
     <?= $form->field($model, 'titulos_idtitulos')->widget(Select2::classname(), [
-            'data' => array_merge(["" => ""], $titulos_list),
+            'data' => $titulos_list,
             'language' => 'es',
             'options' => ['placeholder' => 'Seleccione un titulo'],
             'pluginOptions' => [

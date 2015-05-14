@@ -69,9 +69,9 @@ use kartik\select2\Select2;
             ])->label('Especialidades');
         ?>
 
-        <?= $form->field($modelMedico, 'codigo')->textInput(['class'=>'medField','disabled'=>true, 'maxlength' => 45])->label('Código') ?>
+        <?= $form->field($modelMedico, 'codigo')->textInput(['class'=>'medField'])->label('Código') ?>
 
-        <?= $form->field($modelMedico, 'idclientes')->hiddenInput(['class'=>'medField','disabled'=>true,'value'=>$model->isNewRecord ? $id_cliente: $model->idclientes])->label('') ?>
+        <?= $form->field($modelMedico, 'idclientes')->hiddenInput(['class'=>'medField','value'=>$model->isNewRecord ? $id_cliente: $model->idclientes])->label('') ?>
     </div>
 </div>
 
@@ -85,7 +85,7 @@ use kartik\select2\Select2;
 <script type="text/javascript">
     $(document).ready(function() {
         $('#panelMedico').hide();
-        $('#showHidePanel').on('ifChanged', function(event) {
+        $('#showHidePanel').on('change', function(event) {
             event.preventDefault();
             $('#panelMedico').hide();
             if($('#showHidePanel').is(':checked')){

@@ -15,10 +15,38 @@ $this->title = $model->numero_muestra;
 
     <div class="panel panel-default">
         <div class="panel-body">
-            <div class="col-md-6">
-                <h1 class="titulo"><?= Html::encode($this->title) ?></h1>
+            <div class="col-md-6 tituloMd6">
+                <h1 class="titulo tituloDetalle"><?= Html::encode($this->title) ?></h1>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 tituloMd6">
+                <?php if($model->estado == 'FRM' || $model->estado == 'FCT'){ ?>
+
+                    <?= Html::a('Vista previa', ['print', 'id' => $model->id], [
+                        'class' => 'btn btn-danger',
+                        'target'=>'_blank',
+                        'data' => [
+                            'confirm' => '¿Seguro que desea visualizar el resultado?',
+                            'method' => 'post',
+                        ],
+                    ]); ?>
+
+                    <?= Html::a('Imprimir recibo', ['generar-recibo', 'id' => $model->id, 'vista'=>3], [
+                        'class' => 'btn btn-default',
+                        'target'=>'_blank',
+                        'data' => [
+                            'confirm' => '¿Seguro que desea imprimir el último recibo?',
+                            'method' => 'post',
+                        ],
+                    ]); ?>
+
+                    <?= Html::button(
+                    'Recibos',
+                    ['value' => Url::to(['procedimientos/generar-recibo?id='.$model->id.'&vista=1']),
+                        'class'=>'btn btn-default updModal',
+             
+                    ]) ?>
+
+                <?php } ?>
                 <?= Html::button(
                 'Actualizar',
                 ['value' => Url::to(['procedimientos/update?id='.$model->id]),
@@ -69,7 +97,12 @@ $this->title = $model->numero_muestra;
             'valor_copago',
             'valor_saldo',
             'valor_abono',
-            'medico',
+            [
+                'attribute',
+                'label'=>'Médico remitente',
+                'value'=>$model->medico == null ? '' : $model->medico0->nombre,
+            ],
+            // 'medico',
             'observaciones',
             'forma_pago',
             'numero_cheque',

@@ -19,25 +19,18 @@ use yii\helpers\Html;
 
         <ul class="sidebar-menu">
 
-            <li>
-                <a href="<?=Yii::$app->request->baseUrl;?>/procedimientos/index"><img class="sidebar-icon" src="<?=Yii::$app->request->baseUrl;?>/images/iconos/iconos-65(1).png" alt="">Procedimientos</a>
-            </li>
+            <li><a href="<?=Yii::$app->request->baseUrl;?>/procedimientos/index"><img class="sidebar-icon" src="<?=Yii::$app->request->baseUrl;?>/images/iconos/iconos-65(1).png" alt="">Procedimientos</a></li>
 
-            <li>
-                <a href="<?=Yii::$app->request->baseUrl;?>/pacientes/index"><img class="sidebar-icon" src="<?=Yii::$app->request->baseUrl;?>/images/iconos/iconos-66(1).png" alt="" >Pacientes</a>
-            </li>
+            <li><a href="<?=Yii::$app->request->baseUrl;?>/pacientes/index"><img class="sidebar-icon" src="<?=Yii::$app->request->baseUrl;?>/images/iconos/iconos-66(1).png" alt="" >Pacientes</a></li>
 
-            <li>
-                <a href="<?=Yii::$app->request->baseUrl;?>/medicos/index"><img class="sidebar-icon" src="<?=Yii::$app->request->baseUrl;?>/images/iconos/iconos-67(1).png" alt="" >Médicos</a>
-            </li>
+            <li><a href="<?=Yii::$app->request->baseUrl;?>/medicos/index"><img class="sidebar-icon" src="<?=Yii::$app->request->baseUrl;?>/images/iconos/iconos-67(1).png" alt="" >Médicos</a></li>
             
-            <li>
-                <a href="<?=Yii::$app->request->baseUrl;?>/eps/index"><img class="sidebar-icon" src="<?=Yii::$app->request->baseUrl;?>/images/iconos/iconos-68(1).png" alt="" >EPS</a>
-            </li>
+            <li><a href="<?=Yii::$app->request->baseUrl;?>/eps/index"><img class="sidebar-icon" src="<?=Yii::$app->request->baseUrl;?>/images/iconos/iconos-68(1).png" alt="" >EPS</a></li>
             
-            <li>
-                <a href="<?=Yii::$app->request->baseUrl;?>/usuarios/index"><img class="sidebar-icon" src="<?=Yii::$app->request->baseUrl;?>/images/iconos/iconos-70(1).png" alt="" >Usuarios</a>
-            </li>
+            <li><a href="<?=Yii::$app->request->baseUrl;?>/usuarios/index"><img class="sidebar-icon" src="<?=Yii::$app->request->baseUrl;?>/images/iconos/iconos-70(1).png" alt="" >Usuarios</a></li>
+            
+            <li><a href="<?=Yii::$app->request->baseUrl;?>/facturas/index"><img class="sidebar-icon" src="<?=Yii::$app->request->baseUrl;?>/images/iconos/iconos-711.png" alt="" >Facturación</a></li>
+            
             
             <?php if(Yii::$app->user->can('super_admin')){ ?>
             <li class="treeview">

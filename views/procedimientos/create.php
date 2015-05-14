@@ -15,7 +15,7 @@ $this->title = 'Crear procedimiento';
     <div class="panel panel-default">
         <div class="panel-body">
             <div class="col-md-6">
-                <h1 class="titulo"><?= Html::encode($this->title) ?></h1>
+                <h1 class="titulo tituloIndex"><?= Html::encode($this->title) ?></h1>
             </div>
             <div class="col-md-6">
                 <?= Html::a('Regresar', ['index'], ['style'=>'float:right', 'class' => 'btn btn-success btn-lg']);?>
@@ -37,6 +37,10 @@ $this->title = 'Crear procedimiento';
                 'lista_eps'=>$lista_eps,
                 'id_cliente'=>$id_cliente,
                 'lista_pago'=>$lista_pago,
+                'lista_med'=>$lista_med,
+                'medicoRemModel'=>$medicoRemModel,
+                'lista_especialidades'=>$lista_especialidades,
+                'lista_medRemGen'=>$lista_medRemGen,
             ]) ?>
         </div>
     </div>

@@ -33,9 +33,9 @@ use kartik\select2\Select2;
 
     <?= $form->field($model, 'descripcion')->textArea(['maxlength' => 100]) ?>
 
-    <?= $form->field($model, 'direccion')->textInput(['maxlength' => 100]) ?>
+    <?= $form->field($model, 'direccion')->textInput(['maxlength' => 100])->label('Dirección *') ?>
     
-    <?= $form->field($model, 'tipo_identificacion')->dropDownList($listdata,['prompt'=>'Seleccione una opción']);?>
+    <?= $form->field($model, 'tipo_identificacion')->dropDownList($listdata,['prompt'=>'Seleccione una opción'])->label('Tipo ID *');?>
 
     <!-- <?= $form->field($model, 'tipo_identificacion')->textInput(['maxlength' => 3]) ?> -->
 
@@ -49,13 +49,13 @@ use kartik\select2\Select2;
 
     <?= $form->field($model, 'representante_legal')->textInput(['maxlength' => 100])->label('Representante legal *') ?>
     
-    <?= $form->field($model, 'mensaje_email')->textArea(['maxlength' => 1000]) ?>
+    <?= $form->field($model, 'mensaje_email')->textArea(['maxlength' => 1000])->label('Mensaje email *') ?>
 
     <?= $form->field($model, 'activo')->dropDownList(['prompt'=>'Seleccione una opción', '1' => 'Si', '2' => 'No'])->label('Activo *') ?>
     <!-- <?= $form->field($model, 'activo')->textInput() ?> -->
 
     <div class="form-group text-center">
-        <?= Html::submitButton($model->isNewRecord ? 'Crear' : 'Actualizar', ['class''btn btn-success']) ?>
+        <?= Html::submitButton($model->isNewRecord ? 'Crear' : 'Actualizar', ['class' =>'btn btn-success']) ?>
         <?= Html::a('Cancelar', ['ips/index'], ['class' => 'btn btn-primary'])?>
     </div>
 

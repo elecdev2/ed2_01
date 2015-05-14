@@ -16,7 +16,7 @@ $this->title = $model->nombre;
     <div class="panel panel-default">
         <div class="panel-body">
             <div class="col-md-6 col-sm-6 col-xs-6">
-                <h1 class="titulo"><?= Html::encode($this->title) ?></h1>
+                <h1 class="titulo tituloDetalle"><?= Html::encode($this->title) ?></h1>
             </div>
             <div class="col-md-6 col-sm-6 col-xs-6">
                 <?= Html::button(
@@ -28,6 +28,7 @@ $this->title = $model->nombre;
                 ]) ?>
                 <!-- <button id="actualizar" class="btn btn-primary btn-lg"></button> -->
             </div>
+
         </div>
     </div>
 
@@ -52,6 +53,13 @@ $this->title = $model->nombre;
             // 'id',
             // 'idclientes',
             // 'ruta_firma',
+            [
+                'attribute'=>'ruta_firma',
+                'label'=>'Firma',
+                'value'=>$model->ruta_firma != null ? Html::img(Yii::$app->request->baseUrl.'/images/firmas/'.$model->ruta_firma, ['width'=>'200px', 'alt'=>'Firma médico', 'class'=>'responsive']) : 'No definida',
+                'format' => 'raw',
+                // 'format' => ['image',['width'=>'100','height'=>'100']],
+            ]
         ],
     ]) ?>
 

@@ -6,13 +6,19 @@ use yii\helpers\Html;
 /* @var $model app\models\Pacientes */
 
 $this->title = $model->nombre1. ' ' . $model->nombre2. ' ' . $model->apellido1. ' ' . $model->apellido2;
-$this->params['breadcrumbs'][] = ['label' => 'Pacientes', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+// $this->params['breadcrumbs'][] = ['label' => 'Pacientes', 'url' => ['index']];
+// $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
+// $this->params['breadcrumbs'][] = 'Update';
 ?>
 <div class="pacientes-update">
 
-    <h2><?= Html::encode($this->title) ?></h2>
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="">
+                <h2><?= Html::encode($this->title) ?></h2>
+            </div>
+        </div>
+    </div>
 
     <?= $this->render('_form', [
         'model' => $model,

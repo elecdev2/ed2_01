@@ -7,15 +7,15 @@ use yii\helpers\Html;
 /* @var $model app\models\Pacientes */
 
 $this->title = 'Create Pacientes';
-$this->params['breadcrumbs'][] = ['label' => 'Pacientes', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+// $this->params['breadcrumbs'][] = ['label' => 'Pacientes', 'url' => ['index']];
+// $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="pacientes-create">
 
 	<div class="panel panel-default">
         <div class="panel-body">
             <div class="col-md-6">
-                <h1 class="titulo"><?= Html::encode($this->title) ?></h1>
+                <h1 class="titulo tituloIndex"><?= Html::encode($this->title) ?></h1>
             </div>
             <div class="col-md-6">
                 <?= Html::a('Regresar', ['index'], ['style'=>'float:right', 'class' => 'btn btn-success btn-lg']);?>

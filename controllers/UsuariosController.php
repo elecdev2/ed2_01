@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use Yii;
+use yii\base\Model;
 use app\models\Usuarios;
 use app\models\Items;
 use app\models\Ips;
@@ -93,11 +94,11 @@ class UsuariosController extends Controller
         if ($model->load(Yii::$app->request->post())) {
             $model->password = sha1($model->password);
             $role = Yii::$app->authManager->getRole($model->perfil);
-            if($modelMedico->load(Yii::$app->request->post())){
+            if($modelMedico->load(Yii::$app->request->post()) && Model::validateMultiple([$model, $modelMedico])){
                 $cod = $modelMedico->codigo;
                 $modelMedico->idespecialidades = (new Query())->select('id')->from('especialidades')->where(['codigo'=>$modelMedico->idespecialidades])->scalar();
                 $modelMedico->nombre = $model->nombre;
-                $modelMedico->save();
+                $modelMedico->save(false);
                 $model->idmedicos = (new Query())->select('id')->from('medicos')->where(['codigo'=>$cod])->scalar();
             }
             if($model->save()){

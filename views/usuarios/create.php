@@ -15,7 +15,7 @@ $this->title = 'Crear usuario';
     <div class="panel panel-default">
         <div class="panel-body">
             <div class="col-md-6">
-                <h1 class="titulo"><?= Html::encode($this->title) ?></h1>
+                <h1 class="titulo tituloIndex"><?= Html::encode($this->title) ?></h1>
             </div>
             <div class="col-md-6">
                 <?= Html::a('Regresar', ['index'], ['style'=>'float:right', 'class' => 'btn btn-success btn-lg']);?>

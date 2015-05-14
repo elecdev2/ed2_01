@@ -5,10 +5,10 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\TiposServicio */
 
-$this->title = 'Update Tipos Servicio: ' . ' ' . $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Tipos Servicios', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->title = 'Actualizar';
+// $this->params['breadcrumbs'][] = ['label' => 'Tipos Servicios', 'url' => ['index']];
+// $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
+// $this->params['breadcrumbs'][] = 'Update';
 ?>
 <div class="tipos-servicio-update">
 
@@ -16,6 +16,8 @@ $this->params['breadcrumbs'][] = 'Update';
 
     <?= $this->render('_form', [
         'model' => $model,
+        'client_model'=>$client_model,
+        'list_client'=>$list_client,
     ]) ?>
 
 </div>

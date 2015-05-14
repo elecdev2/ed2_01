@@ -25,6 +25,7 @@ use Yii;
  * @property Eps[] $eps
  * @property Clientes $idclientes0
  * @property Medicos[] $medicos
+ * @property MedicosRemitentesIps[] $medicosRemitentesIps 
  * @property UsuariosIps[] $usuariosIps
  */
 class Ips extends \yii\db\ActiveRecord
@@ -77,6 +78,14 @@ class Ips extends \yii\db\ActiveRecord
             'mensaje_email' => 'Mensaje Email',
         ];
     }
+
+    /**
+    * @return \yii\db\ActiveQuery
+    */
+   public function getMedicosRemitentesIps() 
+   { 
+       return $this->hasMany(MedicosRemitentesIps::className(), ['ips_id' => 'id']); 
+   } 
 
     /**
      * @return \yii\db\ActiveQuery

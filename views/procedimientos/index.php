@@ -27,7 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="panel panel-default">
         <div class="panel-body">
             <div class="col-sm-6">
-                <h1 class="titulo"><?= Html::encode($this->title) ?></h1>
+                <h1 class="titulo tituloIndex"><?= Html::encode($this->title) ?></h1>
             </div>
             <div class="col-sm-6">
                 <?= Html::a('Crear procedimiento', ['create'], ['class' => 'crear add']);?>
@@ -114,22 +114,21 @@ $this->params['breadcrumbs'][] = $this->title;
                     // 'usuario_recibe',
                     // 'usuario_transcribe',
                     // 'descuento',
-                    // 'idbackup',
 
                     [
                         'class' => 'kartik\grid\ActionColumn',
-                        'template'=>'{update} {delete}',
+                        'template'=>'{update}',
                         'buttons' => [
                             'update'=> function ($url, $model, $key) {
                                 return '<a href="" id="actualizar" class="up" title="actualizar"></a>';
                             },
-                            'delete'=> function ($url, $model, $key) {
-                                return Html::a('', ['delete', 'id' => $model->id], ['class' => 'del',
-                                    'data' => ['confirm' => '¿Está seguro que desea borrar este elemento?','method' => 'post',],
-                                ]);
-                            },
+                            // 'delete'=> function ($url, $model, $key) {
+                            //     return Html::a('', ['delete', 'id' => $model->id], ['class' => 'del',
+                            //         'data' => ['confirm' => '¿Está seguro que desea borrar este elemento?','method' => 'post',],
+                            //     ]);
+                            // },
                         ],
-                        'width'=>'10%',
+                        // 'width'=>'10%',
                     ],
                 ],
                 'toolbar' => [
@@ -142,7 +141,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'hover' => true,
                 'panel' => [
                     'type' => GridView::TYPE_DEFAULT,
-                    'heading' => '<i class="glyphicon glyphicon-list-alt"></i>  Procedimientos',
                 ],
                 'exportConfig' => [GridView::CSV => ['label' => 'Save as CSV']],
             ]); ?>

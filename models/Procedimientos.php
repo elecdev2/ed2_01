@@ -71,7 +71,6 @@ class Procedimientos extends \yii\db\ActiveRecord
             [['autorizacion', 'numero_muestra', 'numero_cheque', 'numero_factura'], 'string', 'max' => 15],
             [['cod_cups'], 'string', 'max' => 20],
             [['observaciones'], 'string', 'max' => 200],
-            [['forma_pago', 'estado'], 'string', 'max' => 3]
         ];
     }
 
@@ -82,11 +81,11 @@ class Procedimientos extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'idpacientes' => 'Idpacientes',
+            'idpacientes' => 'Paciente',
             'fecha_atencion' => 'Fecha de atención',
             'autorizacion' => 'Autorizacion',
             'numero_muestra' => 'Número de muestra',
-            'valor_procedimiento' => 'Valor del procedimiento',
+            'valor_procedimiento' => 'valor del procedimiento',
             'eps_ideps' => 'Eps',
             'cod_cups' => 'Código Cups',
             'cantidad_muestras' => 'Cantidad de muestras',
@@ -103,7 +102,7 @@ class Procedimientos extends \yii\db\ActiveRecord
             'fecha_salida' => 'Fecha Salida',
             'fecha_entrega' => 'Fecha Entrega',
             'periodo_facturacion' => 'Periodo de facturacion',
-            'idtipo_servicio' => 'Idtipo Servicio',
+            'idtipo_servicio' => 'Tipo de servicio',
             'idmedico' => 'Idmedico',
             'usuario_recibe' => 'Usuario Recibe',
             'usuario_transcribe' => 'Usuario Transcribe',

@@ -19,7 +19,7 @@ use yii\helpers\Json;
 use kartik\mpdf\Pdf;
 
 /**
- * InformesController implements the CRUD actions for Informes model.
+ * FacturasController implements the CRUD actions for Informes model.
  */
 class FacturasController extends Controller
 {

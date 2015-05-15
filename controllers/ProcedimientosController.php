@@ -610,7 +610,7 @@ class ProcedimientosController extends Controller
         return $query->all();
     }
 
-     /*Dependencias*/
+     /*-----------------Dependencias---------------------*/
     public function actionSubeps() {
         $out = [];
         if (isset($_POST['depdrop_parents'])) {

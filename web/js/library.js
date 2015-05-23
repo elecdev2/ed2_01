@@ -1,4 +1,4 @@
-function nombrePaciente(docInput,idInput,nombreTag,direccion,telefono,fecha,edad,email)
+function nombrePaciente(docInput,idInput,nombretag,nombre1,nombre2,apellido1,apellido2,direccion,telefono,fecha,edad,email,tipoId)
 {
     $(docInput).on('blur', function(event) {
 
@@ -6,25 +6,26 @@ function nombrePaciente(docInput,idInput,nombreTag,direccion,telefono,fecha,edad
             $(idInput).val(data['id']);
             if($(docInput).val() != ''){
                 if(data['id'] == null){
-                    $(nombreTag).text('El usuario no existe...').append('<a id="n_paciente" href="#" data-toggle="modal" data-target="#pacienteModal">registrar</a>');
+                    $(nombretag).text('El usuario no existe...').append('<a id="n_paciente" href="#" data-toggle="modal" data-target="#pacienteModal">registrar</a>');
                 }else{
-                    $(nombreTag).text(data['nombre1']+' '+data['nombre2']+' '+data['apellido1']+' '+data['apellido2']);
+                    $(tipoId).val(data['tipo_identificacion']);
+                    $(nombre1).val(data['nombre1']);
+                    $(nombre2).val(data['nombre2']);
+                    $(apellido1).val(data['apellido1']);
+                    $(apellido2).val(data['apellido2']);
                     $(direccion).val(data['direccion']);
                     $(telefono).val(data['telefono']);
                     $(fecha).val(data['fecha_nacimiento']);
                     $(email).val(data['email']);
-                    // $(edad).text(_calculateAge(data['fecha_nacimiento']));
+                    $.post('calcular-edad', {fecha: data['fecha_nacimiento']}).done(function(data) {
+                        $(edad).val(data);
+                    });
                 }
             }
         });
     });
 }
 
-function _calculateAge(birthday) { // birthday is a date
-    var ageDifMs = Date.now() - birthday.getTime();
-    var ageDate = new Date(ageDifMs); // miliseconds from epoch
-    return Math.abs(ageDate.getUTCFullYear() - 1970);
-}
 
 function openModalView(idcontenedor,elemento){
    var fila = elemento.attr('data-key');

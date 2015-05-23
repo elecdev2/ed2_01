@@ -183,7 +183,7 @@ class Procedimientos extends \yii\db\ActiveRecord
         try {
             return $this->idmedico0->nombre;
         } catch (yii\base\ErrorException $e) {
-            return 'No definido';
+            return null;
         }
     }
 

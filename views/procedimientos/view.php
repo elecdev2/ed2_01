@@ -19,7 +19,7 @@ $this->title = $model->numero_muestra;
                 <h1 class="titulo tituloDetalle"><?= Html::encode($this->title) ?></h1>
             </div>
             <div class="col-md-6 tituloMd6">
-                <?php if($model->estado == 'FRM' || $model->estado == 'FCT'){ ?>
+                <?php if($model->estado == 'FRM' || $model->estado == 'FCT'|| $model->estado == 'IMP'){ ?>
 
                     <?= Html::a('Vista previa', ['print', 'id' => $model->id], [
                         'class' => 'btn btn-danger',
@@ -117,11 +117,11 @@ $this->title = $model->numero_muestra;
                 'label'=>'Estudio',
                 'value'=> $model->idtipoServicio->nombre,
             ],
-            // 'idtipo_servicio',
+            'idtipo_servicio',
             [
                 'attribute'=>'idmedico',
                 'label'=>'Médico',
-                'value'=> $model->nombreMedico,
+                'value'=> $model->nombreMedico != null ? $model->nombreMedico : '',
             ],
             // 'idmedico',
 

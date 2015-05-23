@@ -18,6 +18,9 @@ use app\models\MedicosRemitentesIps;
 use app\models\ProcedimientosSearch;
 use app\models\VlrsCamposProcedimientos;
 use app\models\MedicosRemitentes;
+use app\models\PlantillasDiagnosticos;
+
+
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -78,19 +81,19 @@ class ProcedimientosController extends Controller
 
         $searchModel = new ProcedimientosSearch();
         $lista_estados = ArrayHelper::map(ListasSistema::find()->where('tipo="estado_prc"')->all(),'codigo','descripcion');
-        if(count(Yii::$app->request->queryParams) > 0){
+        // if(count(Yii::$app->request->queryParams) > 0){
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
             return $this->render('index', [
                 'searchModel' => $searchModel,
                 'dataProvider' => $dataProvider,
                 'lista_estados'=>$lista_estados,
             ]);
-        }else{
-            return $this->render('index', [
-                'searchModel' => $searchModel,
-                'lista_estados'=>$lista_estados,
-            ]);
-        }
+        // }else{
+        //     return $this->render('index', [
+        //         'searchModel' => $searchModel,
+        //         'lista_estados'=>$lista_estados,
+        //     ]);
+        // }
 
     }
 
@@ -178,22 +181,31 @@ class ProcedimientosController extends Controller
         $paciente = new Pacientes();
         $medicoRem = new MedicosRemitentes();
 
-        if ($model->load(Yii::$app->request->post())){
+        if ($model->load(Yii::$app->request->post()))
+        {
             $model->estado = 'PND';
             $model->usuario_recibe = Yii::$app->user->id;
             $tipo_serv = $this->findModelTipos($model->idtipo_servicio);
             $model->numero_muestra = $tipo_serv->serie.$tipo_serv->consecutivo.'-'.date('y');
             $pac = $this->findModelPaciente($model->idpacientes);
-            if($paciente->load(Yii::$app->request->post())){
+            if($paciente->load(Yii::$app->request->post()))
+            {
+                $pac->tipo_identificacion = $paciente->tipo_identificacion != '' ? $paciente->tipo_identificacion : $pac->tipo_identificacion;
+                $pac->nombre1 = $paciente->nombre1;
+                $pac->nombre2 = $paciente->nombre2;
+                $pac->apellido1 = $paciente->apellido1;
+                $pac->apellido2 = $paciente->apellido2;
                 $pac->direccion = $paciente->direccion;
                 $pac->telefono = $paciente->telefono;
                 $pac->fecha_nacimiento = $paciente->fecha_nacimiento;
                 $pac->save();
 
             }
-            if($model->save()){
+            if($model->save())
+            {
                 $cons = $tipo_serv->consecutivo + 1;
-                if($model->epsIdeps->idips0->idclientes0->tipo_consecutivo == 'E'){
+                if($model->epsIdeps->idips0->idclientes0->tipo_consecutivo == 'E')
+                {
                     $tipo_serv->consecutivo = $cons;
                     $tipo_serv->save();
                 }else{
@@ -330,12 +342,34 @@ class ProcedimientosController extends Controller
     public function actionGetpaciente()
     {
         $query = new Query();
-        $query->select('id,nombre1,nombre2,apellido1,apellido2,direccion,telefono,fecha_nacimiento,email')->from('pacientes')->where('identificacion=:identificacion_p');
+        $query->select('id,nombre1,nombre2,apellido1,apellido2,direccion,telefono,fecha_nacimiento,email,tipo_identificacion')->from('pacientes')->where('identificacion=:identificacion_p');
         $query->addParams([':identificacion_p'=>$_POST['data']]);
 
         \Yii::$app->response->format = 'json';
         return $query->one();
     }
+
+    public function actionCalcularEdad() //Calcula la edad a partir de la fecha de nacimiento
+    {   
+        $fecha_nacimiento = $_POST['fecha'];
+        if($fecha_nacimiento !== '0000-00-00')
+        {
+            return date_diff(date_create($fecha_nacimiento), date_create(date('Y-m-d')))->y;
+        }else{
+            return null;
+        }
+    }
+
+    public function actionCalcularFecha() {
+        if ($_POST['age']) {
+
+            $nuevaFecha = date('Y-m-d', strtotime('-' . $_POST['age'] . ' year'));
+            return $nuevaFecha;
+        } else {
+            return null;
+        }
+    }
+
 
     /**
      * Updates an existing Procedimientos model.
@@ -351,7 +385,14 @@ class ProcedimientosController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
             $pac = $this->findModelPaciente($model->idpacientes);
-            if($paciente->load(Yii::$app->request->post())){
+            if($paciente->load(Yii::$app->request->post()))
+            {
+                $pac->identificacion = $paciente->identificacion;
+                $pac->tipo_identificacion = $paciente->tipo_identificacion != '' ? $paciente->tipo_identificacion : $pac->tipo_identificacion;
+                $pac->nombre1 = $paciente->nombre1;
+                $pac->nombre2 = $paciente->nombre2;
+                $pac->apellido1 = $paciente->apellido1;
+                $pac->apellido2 = $paciente->apellido2;
                 $pac->direccion = $paciente->direccion;
                 $pac->telefono = $paciente->telefono;
                 $pac->fecha_nacimiento = $paciente->fecha_nacimiento;
@@ -413,9 +454,11 @@ class ProcedimientosController extends Controller
                             ->join('INNER JOIN', 'ips', 'ips.id = eps.idips')
                             ->where(['eps.id'=>$model->eps_ideps])->one();
                             // $this->enviarEmail($pac->email,'Resultados de su estudio',$id_ips);
-                            $model->estado = 'EML';
+                            // $model->estado = 'EML';
                         }
 
+                    }else{
+                        $model->usuario_transcribe = Yii::$app->user->id;
                     }
         //---------------------------------------------------------------------------------------------
                 }
@@ -428,19 +471,20 @@ class ProcedimientosController extends Controller
             }
         }
         $id_ips = (new Query())->select('idips')->from('usuarios_ips')->where(['idusuario'=>Yii::$app->user->id]);
-             // $id_cliente = $this->cliente(Yii::$app->user->id);
-        $id_cliente = 1;
+        $id_cliente = $this->cliente(Yii::$app->user->id);
         $paciente = new Pacientes();
         $ips = new Ips();
+        $plantilla = new PlantillasDiagnosticos();
         $ips_list = Ips::find()->where(['idclientes'=>$id_cliente])->all();
         $lista_estados = ArrayHelper::map(ListasSistema::find()->where('tipo="estado_prc"')->all(),'codigo','descripcion');
         $lista_pago = ArrayHelper::map(ListasSistema::find()->where('tipo="forma_pago"')->all(),'codigo','descripcion');
+        $lista_tipoid = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_identificacion"')->all(),'codigo','descripcion');
         $lista_med = ArrayHelper::map($this->getMedRemIps($id_ips),'id','nombre', 'especialidad');
         $lista_especialidades = ArrayHelper::map(Especialidades::find()->all(),'id','nombre');
         $lista_med = ArrayHelper::map($this->getMedRemIps($id_ips),'id','nombre', 'especialidad');
         $lista_medRemGen = ArrayHelper::map($this->getMedRemGen(),'id','nombre', 'especialidad');
         $campos = $this->getCampos($model->idtipo_servicio);
-        // return print_r($campos);
+        // return print_r($plantilla_titulos);
         return $this->renderAjax('update', [
                     'model' => $model,
                     'paciente_model'=>$paciente,
@@ -452,7 +496,9 @@ class ProcedimientosController extends Controller
                     'medicoRemModel'=>$medicoRem,
                     'lista_especialidades'=>$lista_especialidades,
                     'lista_medRemGen'=>$lista_medRemGen,
+                    'lista_tipoid'=>$lista_tipoid,
                     'campos'=>$campos,
+                    'plantilla'=>$plantilla,
                 ]);
   
     }
@@ -474,6 +520,8 @@ class ProcedimientosController extends Controller
         $this->layout = 'resultados_layout';
         $model = $this->findModel($id);
         $campos = $this->getCampos($model->idtipo_servicio);
+        $model->estado = $model->estado == 'FCT' ? 'IMP' : 'FRM'; //cambia el estado a impreso
+        $model->save();
 
         $content = $this->renderPartial('pdf_resultados', [
                 'model' => $model,
@@ -516,6 +564,42 @@ class ProcedimientosController extends Controller
         ]);
 
         return $pdf->render(); 
+    }
+
+    public function actionGetDescripcion()
+    {
+        $plantilla = PlantillasDiagnosticos::findOne($_POST['id'])->descripcion;
+        return $plantilla;
+    }
+
+    public function actionNuevaPlantilla()
+    {
+        $titulo = $_POST['titulo'];
+        $descripcion = $_POST['desc'];
+
+        $plantilla = new PlantillasDiagnosticos();
+        $plantilla->titulo = $titulo;
+        $plantilla->descripcion = $descripcion;
+        $plantilla->id_medico = Usuarios::findOne(Yii::$app->user->id)->idmedicos;
+        if($plantilla->save())
+        {
+            return 'Plantilla guardada!';
+        }else{
+            return 'Error al guardar la plantilla';
+        }
+         
+    }
+
+    public function actionEditarPlantilla()
+    {
+        $plantilla = PlantillasDiagnosticos::findOne($_POST['id']);
+        $plantilla->descripcion = $_POST['desc'];
+        if($plantilla->save())
+        {
+            return 'Se guardaron los cambios correctamente!';
+        }else{
+            return 'Error: No se guardaron los cambios';
+        }
     }
 
     public function actionPrecio()

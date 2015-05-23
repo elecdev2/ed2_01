@@ -36,7 +36,9 @@ use yii\helpers\Html;
                     <li class="" role="presentation"><?=Html::a('<i class="fa fa-angle-double-right"></i> Reporte RIPS', ['reportes/rips'], ['class' => '']) ?></li>
                 </ul>
             </li>
-
+            <?php if(Yii::$app->user->can('medico')){ ?>
+                    <li><a href="<?=Yii::$app->request->baseUrl;?>/plantillas-diagnosticos/index"><img class="sidebar-icon" src="<?=Yii::$app->request->baseUrl;?>/images/iconos/iconos-69(1).png" alt="" >Plantillas</a></li>
+            <?php } ?>
 
             
             <?php if(Yii::$app->user->can('super_admin')){ ?>

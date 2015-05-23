@@ -127,6 +127,8 @@ class ProcedimientosSearch extends Procedimientos
             ->andFilterWhere(['like', 'tipos_servicio.nombre', $this->tipo_servicio])
             ->andFilterWhere(['like', 'numero_factura', $this->numero_factura]);
 
+        $query->limit(20);
+
         return $dataProvider;
     }
 }

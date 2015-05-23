@@ -67,6 +67,7 @@ use yii\bootstrap\ActiveForm;
 	                        'campos'=>$campos,
 	                        'model'=>$model,
 	                        'form'=>$form,
+	                        'imp'=>1,
 	                ]) ?>
 	            </div>
 	        </div>

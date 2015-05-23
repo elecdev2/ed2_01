@@ -37,25 +37,39 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div class="panel panel-default">
         <div class="panel-body">
+            <?php  if(isset($dataProvider)) echo Html::a('[+] Nueva Consulta','#',['class'=>'search-boton']);   ?><br>
             <?= $this->render('_search', ['model' => $searchModel, 'lista_estados'=>$lista_estados]); ?>
         </div>
     </div>
     
     <div class="promotores-view">
-        <?php if(isset($dataProvider)){ ?>
             <?= GridView::widget([
                 'id'=>'procedimientos',
                 'dataProvider' => $dataProvider,
+                'headerRowOptions'=>['class'=>'text-center'],
                 'filterModel' => $searchModel,
+                // 'pjax'=>true,
                 'columns' => [
                     // ['class' => 'yii\grid\SerialColumn'],
 
                     // 'id',
-                    'fecha_atencion',
+                    
+                    [
+                        'attribute'=>'fecha_atencion',
+                        'value'=>function($model){
+                            Yii::$app->timeZone = 'America/Bogota';
+                            Yii::$app->formatter->locale = 'es-ES';
+                            return Yii::$app->formatter->asDate($model->fecha_atencion, 'd-MMM-yyyy');
+                        },
+                        'hAlign'=>GridView::ALIGN_RIGHT,
+                        'filter' => yii\jui\DatePicker::widget(["dateFormat" => "yyyy-MM-dd", 'options' => ['class' => 'fecha form-control', "placeholder" => "aaaa-mm-dd"], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']),
+                        'format' => 'raw',
+                    ],
 
                     [
                         'attribute'=>'numero_muestra',
                         'label'=>'N° muestra',
+                        'hAlign'=>GridView::ALIGN_CENTER,                     
                     ],
                     // 'numero_muestra',
 
@@ -68,33 +82,25 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     [
                         'attribute'=>'numid_paciente',
-                        'label'=>'CC paciente',
+                        'label'=>'ID paciente',
                         'value'=> 'idpacientes0.identificacion',
                     ],
                     // 'idpacientes',
-                    'cod_cups',
+                    [
+                        'attribute'=>'cod_cups',
+                        'hAlign'=>GridView::ALIGN_CENTER,
+                    ],
+                    // 'cod_cups',
                     [ 
                         'attribute'=>'valor_procedimiento',
-                        'label'=>'$ estudio',
+                        'label'=>'Valor estudio',
+                        'value'=>function($model){
+                            return '$'.number_format($model->valor_procedimiento);
+                        },
+                        'hAlign'=>GridView::ALIGN_RIGHT,
                     ],
                     // 'valor_procedimiento',
-                    [ 
-                        'attribute'=>'numero_factura',
-                        'label'=>'N° factura',
-                    ],
                     // 'numero_factura',
-                    [
-                        'attribute' => 'estado',
-                        // 'vAlign'=>'middle',
-                        // 'width'=>'180px',
-                        // 'filterType'=>GridView::FILTER_SELECT2,
-                        'filter'=>ArrayHelper::map(ListasSistema::find()->where('tipo="estado_prc"')->all(),'codigo','descripcion'),
-                        // 'filterWidgetOptions'=>[
-                        //     'pluginOptions'=>['allowClear'=>true],
-                        // ],
-                        'filterInputOptions'=>['placeholder'=>'Seleccione un estado'],
-                        // 'format'=>'raw'
-                    ],
                     // 'estado',
                     // 'autorizacion',
                     // 'cantidad_muestras',
@@ -106,6 +112,33 @@ $this->params['breadcrumbs'][] = $this->title;
                     // 'forma_pago',
                     // 'numero_cheque',
                     // 'fecha_informe',
+                    [
+                        'attribute'=>'fecha_salida',
+                        'value'=>function($model){
+                            Yii::$app->timeZone = 'America/Bogota';
+                            Yii::$app->formatter->locale = 'es-ES';
+                            return Yii::$app->formatter->asDate($model->fecha_salida, 'd-MMM-yyyy');
+                        },
+                        'hAlign'=>GridView::ALIGN_RIGHT,
+                        'filter' => yii\jui\DatePicker::widget(["dateFormat" => "yyyy-MM-dd", 'options' => ['class' => 'fecha form-control', "placeholder" => "aaaa-mm-dd"], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']),
+                        'format' => 'html',
+                    ],
+                    [
+                        'attribute' => 'estado',
+                        // 'vAlign'=>'middle',
+                        // 'width'=>'180px',
+                        // 'filterType'=>GridView::FILTER_SELECT2,
+                        'filter'=>ArrayHelper::map(ListasSistema::find()->where('tipo="estado_prc"')->all(),'codigo','descripcion'),
+                        // 'filterWidgetOptions'=>[
+                        //     'pluginOptions'=>['allowClear'=>true],
+                        // ],
+                        'value'=>function($model){
+                            return ListasSistema::find()->select(['descripcion'])->where(['tipo'=>"estado_prc", 'codigo'=>$model->estado])->scalar();
+                        },
+                        'filterInputOptions'=>['style'=>'height:34px', 'placeholder'=>'Seleccione un estado'],
+                        // 'format'=>'raw'
+                        'hAlign'=>GridView::ALIGN_CENTER,  
+                    ],
                     // 'fecha_salida',
                     // 'fecha_entrega',
                     // 'periodo_facturacion',
@@ -144,7 +177,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
                 'exportConfig' => [GridView::CSV => ['label' => 'Save as CSV']],
             ]); ?>
-        <?php } ?>
     </div>
 </div>
 
@@ -202,6 +234,33 @@ Modal::end();
             .find('#vista')
             .load($(this).attr('value'));
     });
+
+    $(document).on('click','.plantillas', function(event) {
+        event.preventDefault();
+        $('#addDesc').attr('data-value', event.target.id);
+        $('#plantillaModal').modal();
+    });
+
+    $(document).on('click','.plantillasNuevas', function(event) {
+        event.preventDefault();
+        $('#descripcionNuevo').val($('#vlrscamposprocedimientos-'+event.target.id+'-valor').val());
+        $('#guardarPlantilla').attr('data-value', event.target.id);
+        $('#plantillaNuevaModal').modal();
+    });
+
+   $(document).ready(function() {
+        $('.procedimientos-search').hide();
+        $('.search-boton').on('click', function() {
+            $('.procedimientos-search').slideToggle('fast');
+            $('.search-boton').html() == '[-] Ocultar' ? $('.search-boton').html('[+] Nueva Consulta') : $('.search-boton').html('[-] Ocultar');
+            return false;
+        });
+   });
+
+
+
+
+
 
 
     // $(document).on('click','#editarPerfil', function(event) {

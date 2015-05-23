@@ -1,0 +1,60 @@
+.login {
+  font-size: 14px;
+  color: #8e8d8d;
+  font-family: Verdana, sans-serif;
+  padding: 0px 0px 0px 39px;
+  background-color: #fdfdfd;
+  width: 255px;
+  height: 38px;
+  display: block;
+  border: 1px solid #d8d8d8;
+  margin: 13px 0 -3px 0;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  box-shadow: inset 2px 2px 4px #f1f1f1;
+}
+
+.logincontent {
+  padding: 29px;
+}
+
+.bglogin {
+  /* background: url(../images/body-bg.png) repeat scroll 100% 100%; */
+  background-color: #2E394D;
+  /* overflow: auto; */
+  padding: 7% 0%;
+  width: 100%;
+}
+
+.pushLogin {
+  background-color: #2E394D;
+}
+
+.btnlogin input[type="submit"] {
+  min-width: 99%;
+  font-size: 1.2em;
+  height: 40px;
+  margin-top: 10px;
+}
+
+.buttons input[type="submit"] {
+  height: 50px;
+  width: 15%;
+  min-width: 100px;
+  padding: 6px;
+  cursor: pointer;
+  background-color: #337AB7;
+  color: #fff;
+  border: solid 0px #aaa;
+  font-size: 1.2em;
+  font-weight: bold;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  webkit-transition: background-color .15s ease-in-out;
+  -moz-transition: background-color .15s ease-in-out;
+  -ms-transition: background-color .15s ease-in-out;
+  -o-transition: background-color .15s ease-in-out;
+  transition: background-color .15s ease-in-out;
+}

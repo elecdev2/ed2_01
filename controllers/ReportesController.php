@@ -17,9 +17,7 @@ use yii\db\Query;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 use kartik\mpdf\Pdf;
- ?>
 
- <?php 
 /**
  * ReportesController implements the CRUD actions for Informes model.
  */
@@ -73,7 +71,7 @@ class ReportesController extends Controller
         $procedimientos = new Procedimientos();
         $ips = new Ips();
         $lista_ips = ArrayHelper::map(Ips::find()->all(), 'id', 'nombre');
-        $lista_rips = ArrayHelper::map(ListasSistema::find()->where(['tipo'=>'rips'])->all(), 'id', 'descripcion');
+        $lista_rips = ArrayHelper::map(ListasSistema::find()->where(['tipo'=>'rips'])->all(), 'codigo', 'descripcion');
         return $this->render('rips', [
             'lista_ips'=>$lista_ips,
             'ips'=>$ips,
@@ -206,8 +204,164 @@ class ReportesController extends Controller
         $ips = new Ips();
         if($proc->load(Yii::$app->request->post()) && $ips->load(Yii::$app->request->post()))
         {
-            //TODO consultas para los diferentes RIPS
+            $id_cliente = Usuarios::findOne(Yii::$app->user->id)->idclientes;
+            $query = new Query();
+            switch ($proc->fecha_fin) //fecha_fin tiene el valor del tipo de reporte rips
+            { 
+                case 'AF':
+                    $query->select(['i.codigo AS codigoips', 'i.nombre AS nombreips', 'i.tipo_identificacion AS tipoid_ips', 'i.nit', 't.numero_factura', 't.periodo_facturacion', 'DATE_FORMAT(t.periodo_facturacion, "%d/%m/%y") AS periodo_facturacion','DATE_FORMAT(LAST_DAY(t.periodo_facturacion), "%d/%m/%y") AS fecha_fin', 'e.codigo', 'e.nombre', 'SUM(t.valor_copago) AS copago', 'SUM(t.valor_procedimiento) AS valor_procedimiento'])
+                    ->from('procedimientos t')
+                    ->join('INNER JOIN', 'eps e', 't.eps_ideps = e.id')
+                    ->join('INNER JOIN', 'ips i', 'i.id = e.idips')
+                    ->where(['i.idclientes'=>$id_cliente]);
+                    break;
+                case 'AP':
+                    $query->select(['CONCAT(p.nombre1," ",p.nombre2," ",p.apellido1," ",p.apellido2) AS nombre', 'p.tipo_identificacion', 'p.identificacion', 'DATE_FORMAT(t.fecha_atencion, "%d/%m/%y") AS fecha_atencion', 'DATE_FORMAT( LAST_DAY( t.fecha_atencion), "%d/%m/%y") AS fecha_fin', 'e.codigo', 'DATE_FORMAT(t.periodo_facturacion, "%d/%m/%y") AS periodo_facturacion', 't.numero_factura', 'i.nit', 'i.tipo_identificacion AS tipoid_ips', 'i.codigo AS codips', 'i.nombre AS nombre_ips', 'e.nombre', 't.valor_copago', 't.valor_saldo', 't.autorizacion', 't.cod_cups', 't.valor_procedimiento'])
+                    ->from('procedimientos t')
+                    ->join('INNER JOIN', 'eps e', 't.eps_ideps = e.id')
+                    ->join('INNER JOIN', 'ips i', 'e.idips = i.id')
+                    ->join('INNER JOIN', 'pacientes p', 't.idpacientes = p.id')
+                    ->where(['i.idclientes'=>$id_cliente]);
+                    break;
+                case 'US':
+                    $query->select(['CONCAT(p.nombre1," ",p.nombre2," ",p.apellido1," ",p.apellido2) AS nombre', 'p.*', 'e.codigo', 'DATE_FORMAT((YEAR(CURDATE())-YEAR(p.fecha_nacimiento) ), "%d/%m/%y") AS edad', 'c.codigo AS ciudad', 'c.codigo_departamento AS departamento'])
+                    ->from('pacientes p')
+                    ->join('INNER JOIN', 'procedimientos t', 't.idpacientes = p.id')
+                    ->join('INNER JOIN', 'eps e', 'p.ideps = e.id')
+                    ->join('INNER JOIN', 'ciudades c', 'p.idciudad = c.id')
+                    ->where(['p.idclientes'=>$id_cliente]);
+                    break;
+                default:
+                    $query->select(['COUNT(t.numero_muestra) AS PF', 'i.codigo AS codips']);
+                    break;
+            }
+            $subQuery = (new Query())->select(['COUNT(p.id)'])->from('pacientes p')
+            ->join('INNER JOIN', 'procedimientos t', 't.idpacientes = p.id')
+            ->join('INNER JOIN', 'eps e', 'p.ideps = e.id')
+            ->join('INNER JOIN', 'ciudades c', 'p.idciudad = c.id')
+            ->where(['p.idclientes'=>$id_cliente]);
+
+            if($proc->fecha_fin == 'CT'){
+                $query->addSelect([$subQuery])
+                ->from('procedimientos t')
+                ->join('INNER JOIN', 'eps e', 't.eps_ideps = e.id')
+                ->join('INNER JOIN', 'ips i', 'i.id = e.idips')
+                ->join('INNER JOIN', 'pacientes p', 't.idpacientes = p.id')
+                ->where(['i.idclientes'=>$id_cliente]);
+            }
+
+            $sql = $this->whereCondition($query,$proc,$ips);
+
+            if(count($proc->errors) == 0)
+            {
+                $lista = $sql->all();
+                if(count($lista) > 0)
+                {
+                    switch ($proc->fecha_fin) 
+                    {
+                        case 'AF':
+                            $text = $this->lineasArchivoAF($lista);
+                            break;
+                        case 'AP':
+                            $text = $this->lineasArchivoAP($lista);
+                            break;
+                        case 'US':
+                            $text = $this->lineasArchivoUS($lista);
+                            break;
+                        default:
+                            $text = $this->lineasArchivoCT($lista);
+                            break;
+                    }
+                    // $this->download($proc->fecha_fin. date('Y-m-d'). '.txt', $text);
+                    return \Yii::$app->response->sendContentAsFile($text, $proc->fecha_fin. date('Y-m-d'). '.txt');
+                }else{
+                    $m = 'No hay registros con las condiciones seleccionadas';
+                }
+            }
         }
+        $this->actionRips();
+    }
+
+    public function download($titulo,$content)
+    {
+        $headers = Yii::$app->response->headers;
+        $headers->set('Content-Disposition', 'attachment; filename='.$titulo);
+        $headers->set('Content-Type', 'text/txt');
+        Yii::$app->response->content = $content;
+        return;
+    }
+
+    public function lineasArchivoAF($lista)
+    {   
+        $texto = '';
+        foreach ($lista as $l) {
+            $texto .= $l['codigoips'] . ',' . $l['nombreips'] . ',' . $l['tipoid_ips'] . ',' . $l['nit'] . ',' . $l['numero_factura'] . ',' . $l['periodo_facturacion'] . ',' .
+                    '01'. substr($l['periodo_facturacion'], 2) . ',' . $l['fecha_fin'] . ',' . $l['codigo'] . ',' . $l['nombre'] . ',' . ',' . ',' . ','.
+                    $l['copago'] . ',' . ',' . ',' . $l['valor_procedimiento'] . "\r\n";
+        }
+        return $texto;
+    }
+    public function lineasArchivoAP($lista)
+    {   
+        $texto = '';
+        foreach ($lista as $l) {
+            $texto .= $l['numero_factura'] . ',' . $l['codips'] . ',' . $l['tipo_identificacion'] . ',' . $l['identificacion'] . ',' . $l['fecha_atencion'] . ',' .
+                    $l['autorizacion'] . ',' . $l['cod_cups'] . ',1,1,1' . ',' . ',' . ',' . ',' . ',' . $l['valor_procedimiento'] . "\r\n";
+        }
+        return $texto;
+    }
+    public function lineasArchivoUS($lista)
+    {   
+        $texto = '';
+        foreach ($lista as $l) {
+            $texto .= $l['tipo_identificacion'] . ',' . $l['identificacion'] . ',' . $l['codigo'] . ',' .
+                    $l['tipo_usuario'] . ',' . $l['apellido1'] . ',' . $l['apellido2'] . ',' . $l['nombre1'] . ',' . $l['nombre2'] . ',' .
+                    $l['edad'] . ',1' . ',' . $l['sexo'] . ',' . $l['departamento'] . ',' . $l['ciudad'] . ',' . $l['tipo_residencia'] . "\r\n";
+        }
+        return $texto;
+    }
+    public function lineasArchivoCT($lista, $month, $year, $fecha_ini)
+    {   
+        $texto = '';
+        foreach ($lista as $l) {
+            $texto .= $l['codips'] . ',' . '01/'.$month . '/'.$year .',AP' .substr($fecha_ini, 5,6).substr($fecha_ini, 0,4). ',' . $l['PF'] . PHP_EOL.
+                      $l['codips'] . ',' . '01/'.$month . '/'.$year .',US' .substr($fecha_ini, 5,6).substr($fecha_ini, 0,4). ',' . $l['2'] . PHP_EOL.
+                      $l['codips'] . ',' . '01/'.$month . '/'.$year .',AF' .substr($fecha_ini, 5,6).substr($fecha_ini, 0,4). ',' . $l['PF'] . PHP_EOL;
+        }
+        return $texto;
+    }
+
+    public function whereCondition($query,$proc,$ips)
+    {
+        if($ips->id != null && $ips->id != 'empty')
+        {
+            $query->andWhere(['e.idips'=>$ips->id]);
+        }
+        if($proc->eps_ideps != null && $proc->eps_ideps != 'empty')
+        {
+            $query->andWhere(['e.id'=>$proc->eps_ideps]);
+        }
+        if($proc->estado != null && $proc->estado != 'empty')
+        {
+            $query->andWhere(['t.estado'=>$proc->estado]);
+        }
+        if($proc->fecha_atencion != null && $proc->fecha_atencion != 'empty')
+        {
+            $fecha_ini = $proc->fecha_atencion != null ? $proc->fecha_atencion : '1990-01';
+            if($fecha_ini >= date('Y-m'))
+            {
+                $proc->addError('fecha_atencion', 'El periodo de RIPS debe ser menor a la fecha actual');
+            }
+            $periodo = explode("-", $fecha_ini);
+            $year=$periodo[1]=='12'?intval($periodo[0])+1:$periodo[0];
+            $month=$periodo[1]=='12'?'01':intval($periodo[1])+1;   
+            $cur_month=$periodo[1]=='12'?'01':intval($periodo[1]);
+
+            $query->andWhere(['between', 't.periodo_facturacion', $year.'-'.$cur_month.'-01', $year.'-'.$month.'-05']); 
+            $query->andWhere(['t.estado'=>'FCT']);
+        }
+
+        return $query;
     }
 
     public function imprimirPDF($titulo,$proc,$lista)
@@ -273,6 +427,3 @@ class ReportesController extends Controller
     }
 
 }
-
-
-  ?>

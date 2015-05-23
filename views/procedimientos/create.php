@@ -25,6 +25,7 @@ $this->title = 'Crear procedimiento';
 
     <div class="panel panel-default">
         <div class="panel-body">
+
             <?= $this->render('_form', [
                 'model' => $model, 
                 'paciente_model'=>$paciente_model,
@@ -48,6 +49,6 @@ $this->title = 'Crear procedimiento';
 </div>
 <script type="text/javascript">
     $(document).ready(function() {
-        nombrePaciente('#documento', '#procedimientos-idpacientes', '#pacienteName', '#pacientes-direccion','#pacientes-telefono','#pacientes-fecha_nacimiento','#edad', '#pacientes-email');
+        nombrePaciente('#documento', '#procedimientos-idpacientes', '#pacienteName','#pacientes-nombre1','#pacientes-nombre2','#pacientes-apellido1','#pacientes-apellido2', '#pacientes-direccion','#pacientes-telefono','#pacientes-fecha_nacimiento','#pacientes-codeps', '#pacientes-email', '#tipoID');
     });
 </script>

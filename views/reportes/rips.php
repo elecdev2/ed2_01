@@ -47,7 +47,7 @@ use kartik\grid\GridView;
 
 
 				<div class="form-group text-center">
-			        <?= Html::submitButton('Buscar', ['class' =>'btn btn-success']) ?>
+			        <?= Html::submitButton('Generar', ['class' =>'btn btn-success']) ?>
 			    </div>
 				
 			<?php ActiveForm::end(); ?>

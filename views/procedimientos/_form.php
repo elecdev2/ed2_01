@@ -22,35 +22,50 @@ use yii\bootstrap\Modal;
     <div class="panel panel-default">
         <div class="panel-body  Panelpaciente">
         <h2>Datos del paciente</h2><br>
-            <div class="form-group">
-                <label class="control-label col-sm-3">N° de identificación *</label>
-                <div class="col-sm-6">                
-                    <input id="documento" type="number" required class="form-control" value="<?= $model->isNewRecord ? '' : $model->idpacientes0->identificacion?>">
+
+            <?php if(!$model->isNewRecord){ ?>
+                <?= $form->field($paciente_model, 'identificacion')->textInput(['value'=>$model->idpacientes0->identificacion, 'maxlength' => 15]) ?>
+            <?php }else{ ?>
+                <div class="form-group">
+                    <label class="control-label col-sm-3">N° de identificación *</label>
+                    <div class="col-sm-6">                
+                        <input id="documento" type="number" required class="form-control" value="<?= $model->isNewRecord ? '' : $model->idpacientes0->identificacion?>">
+                    </div>
                 </div>
-            </div>
+            <?php } ?>
 
             <div class="row text-center">
-                <h4 id="pacienteName"><?=$model->isNewRecord ? '' :$model->idpacientes0->nombre1.' '.$model->idpacientes0->nombre2.' '.$model->idpacientes0->apellido1.' '.$model->idpacientes0->apellido2 ?> 
-                  
-                <?php if(!$model->isNewRecord){ ?>
-                    <h5 id="edad">Edad: <?= $model->idpacientes0->fecha_nacimiento !== '0000-00-00' ? date_diff(date_create($model->idpacientes0->fecha_nacimiento), date_create(date('Y-m-d')))->y : 'N/A' ?></h5>
-                <?php } ?>
+                <h5 id="pacienteName"></h5>
             </div>
 
                 <?= $form->field($model, 'idpacientes')->hiddenInput()->label('') ?>
+                
+                
+                <?= $form->field($paciente_model, 'tipo_identificacion')->dropDownList($lista_tipoid, ['prompt'=>'', 'id'=>'tipoID'])->label('Tipo de ID');?>
 
+                <?= $form->field($paciente_model, 'nombre1')->textInput(['value'=>$model->isNewRecord ? '' : $model->idpacientes0->nombre1, 'maxlength' => 30]) ?>
+
+                <?= $form->field($paciente_model, 'nombre2')->textInput(['value'=>$model->isNewRecord ? '' : $model->idpacientes0->nombre2, 'maxlength' => 30]) ?>
+
+                <?= $form->field($paciente_model, 'apellido1')->textInput(['value'=>$model->isNewRecord ? '' : $model->idpacientes0->apellido1, 'maxlength' => 30]) ?>
+
+                <?= $form->field($paciente_model, 'apellido2')->textInput(['value'=>$model->isNewRecord ? '' : $model->idpacientes0->apellido2, 'maxlength' => 30]) ?>
+                
                 <?= $form->field($paciente_model, 'direccion')->textInput(['value'=>$model->isNewRecord ? '' : $model->idpacientes0->direccion, 'maxlength' => 100]) ?>
 
                 <?= $form->field($paciente_model, 'telefono')->textInput(['value'=>$model->isNewRecord ? '' : $model->idpacientes0->telefono, 'maxlength' => 15]) ?>
                 
                 <?= $form->field($paciente_model, 'email')->textInput(['value'=>$model->isNewRecord ? '' : $model->idpacientes0->email, 'maxlength' => 100]) ?>
+                
+    <!-- --> <?= $form->field($paciente_model, 'codeps')->textInput()->label('Edad') ?> <!-- Campo usado para la edad -->
 
                 <?= $form->field($paciente_model, 'fecha_nacimiento')->widget(yii\jui\DatePicker::classname(), ["dateFormat" => "yyyy-MM-dd", 'options' => ['value'=>$model->isNewRecord ? '' : $model->idpacientes0->fecha_nacimiento, 'class' => 'fecha form-control', "placeholder" => "aaaa-mm-dd"], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']) ?>
         </div>
     </div>
         
             <input type="text" name="url" id="url" hidden>  
-        
+            <h2>Datos del procedimiento</h2><br>
+
             <?= $form->field($model, 'fecha_atencion')->widget(yii\jui\DatePicker::classname(), ["dateFormat" => "yyyy-MM-dd", 'options' => ['value'=>$model->isNewRecord ? date('Y-m-d') : $model->fecha_atencion, 'class' => 'fecha form-control', "placeholder" => "aaaa-mm-dd"], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']) ?>
         
                 
@@ -140,13 +155,14 @@ use yii\bootstrap\Modal;
                 ])->label('Forma de pago');
             ?>
 
-        <?php if(!$model->isNewRecord && $model->estado !== 'FCT'){ ?>
+        <?php if(!$model->isNewRecord && ($model->estado !== 'FCT' && $model->estado !== 'IMP')){ ?>
         <div class="panel panel-default">
             <div class="panel-body">
                 <?= $this->render('form_estudios', [
                         'campos'=>$campos,
                         'model'=>$model,
                         'form'=>$form,
+                        'imp'=>0,
                 ]) ?>
             </div>
         </div>
@@ -208,9 +224,10 @@ use yii\bootstrap\Modal;
 
 <?php Modal::begin([
     'id'=>'medRemNuevo',
-    'header'=>'<h3></h3>',
+    'header'=>'',
+    'closeButton'=>false,
     // 'size'=>Modal::SIZE_SMALL,
-    'options'=>['data-backdrop'=>'static'],
+    'options'=>[],
 ]); ?>
     <div class="form-group required">
         <label class="control-label" for="">Médicos remitentes</label><br>
@@ -319,6 +336,18 @@ use yii\bootstrap\Modal;
                $('#procedimientos-medico').append(newOption);
             });
 
+        });
+
+        $('#pacientes-fecha_nacimiento').on('change', function(event) {
+            $.post('calcular-edad', {fecha: $(this).val()}).done(function(data) {
+                $('#pacientes-codeps').val(data);
+            });
+        });
+
+        $('#pacientes-codeps').on('change', function(event) {
+            $.post('calcular-fecha', {age:$(this).val()}).done(function(data) {
+                $('#pacientes-fecha_nacimiento').val(data);
+            });
         });
 
     });

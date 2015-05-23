@@ -1,51 +1,69 @@
 <?php
 /* @var $this yii\web\View */
-$this->title = 'My Yii Application';
+$this->title = 'Clapp';
+
 ?>
 <div class="site-index">
 
-    <div class="jumbotron">
-        <h1>Congratulations!</h1>
+     <div class="span-23 showgrid">
+        <div class="dashboardIcons span-16">
 
-        <p class="lead">You have successfully created your Yii-powered application.</p>
+            <a href="<?= Yii::$app->request->baseUrl; ?>/procedimientos/index"  style="<?= Yii::$app->user->can("admin")?'':'display:none' ?>">
+                <div class="dashIcon span-3">
+                    <img src="<?= Yii::$app->request->baseUrl; ?>/images/iconos-clapp/procedimientos.png" alt="Estudios"  />
+                    <div class="dashIconText">Estudios</div>
+                </div>
+            </a>
 
-        <p><a class="btn btn-lg btn-success" href="http://www.yiiframework.com">Get started with Yii</a></p>
-    </div>
+            <a href="<?= Yii::$app->request->baseUrl; ?>/pacientes/index" style="<?= Yii::$app->user->can("admin")?'':'display:none' ?>" >
+                <div class="dashIcon span-3">
+                    <img src="<?= Yii::$app->request->baseUrl; ?>/images/iconos-clapp/pacientes.png" alt="Pacientes"  />
+                    <div class="dashIconText">Pacientes</div>
+                </div>
+            </a>
 
-    <div class="body-content">
+            <a href="<?= Yii::$app->request->baseUrl; ?>/medicos/index"  style="<?= Yii::$app->user->can("admin")?'':'display:none' ?>">
+                <div class="dashIcon span-3">
+                    <img src="<?= Yii::$app->request->baseUrl; ?>/images/iconos-clapp/medicos.png" alt="Médicos"  />
+                    <div class="dashIconText">Médicos</div>
+                </div>
+            </a>
 
-        <div class="row">
-            <div class="col-lg-4">
-                <h2>Heading</h2>
+            <a href="<?= Yii::$app->request->baseUrl; ?>/eps/index" style="<?= Yii::$app->user->can("admin")?'':'display:none' ?>">
+                <div class="dashIcon span-3">
+                    <img src="<?= Yii::$app->request->baseUrl; ?>/images/iconos-clapp/eps.png" alt="EPS"  />
+                    <div class="dashIconText ">EPS</div>
+                </div>
+            </a>
 
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
+            <a href="<?= Yii::$app->request->baseUrl; ?>/procedimientos/indexrep.html"  style="<?= Yii::$app->user->can("admin")?'':'display:none' ?>">
+                <div class="dashIcon span-3">
+                    <img src="<?= Yii::$app->request->baseUrl; ?>/images/iconos-clapp/reportes.png" alt="Reportes RIP"  />
+                    <div class="dashIconText">Reportes</div>
+                </div> 
+            </a> 
 
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/doc/">Yii Documentation &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
+            <a href="<?= Yii::$app->request->baseUrl; ?>/procedimientos/facturacion.html" style="<?= Yii::$app->user->can("admin")?'':'display:none' ?>">
+                <div class="dashIcon span-3">
+                    <img src="<?= Yii::$app->request->baseUrl; ?>/images/iconos-clapp/facturacion.png" alt="Facturación"  />
+                    <div class="dashIconText">Facturación</div>
+                </div> 
+            </a>
 
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
+            <a href="<?= Yii::$app->request->baseUrl; ?>/usuarios/index"  style="<?= Yii::$app->user->can("admin")?'':'display:none' ?>">
+                <div class="dashIcon span-3">
+                    <img src="<?= Yii::$app->request->baseUrl; ?>/images/iconos-clapp/usuarios.png" alt="Usuarios"  />
+                    <div class="dashIconText">Usuarios</div>
+                </div>
+            </a>
 
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/forum/">Yii Forum &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
+            <a href="<?= Yii::$app->request->baseUrl; ?>/clientes/index"  style="<?= Yii::$app->user->can("admin")?'':'display:none' ?>">
+                <div class="dashIcon span-3">
+                    <img src="<?= Yii::$app->request->baseUrl; ?>/images/iconos-clapp/administracion.png" alt="Administración"  />
+                    <div class="dashIconText">Administración</div>
+                </div> 
+            </a>  
 
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/extensions/">Yii Extensions &raquo;</a></p>
-            </div>
         </div>
-
     </div>
 </div>

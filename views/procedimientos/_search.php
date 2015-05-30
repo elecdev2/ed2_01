@@ -17,7 +17,6 @@ use kartik\select2\Select2;
         'validateOnType' => true,
     ]); ?>
 
-    <!-- <?= $form->field($model, 'id') ?> -->
     <div class="col-sm-6 col-lg-4">
         <?= $form->field($model, 'numid_paciente', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'CC Paciente']); ?>
     </div>
@@ -50,90 +49,90 @@ use kartik\select2\Select2;
     ?>
     </div>
     
-    <div class="col-sm-6 col-lg-4">
+    
         <?php // echo $form->field($model, 'eps_ideps', ['template'=>"{input}{error}"]) ?>
-    </div>
+   
 
-    <div class="col-sm-6 col-lg-4">
+    
         <?php // echo $form->field($model, 'cod_cups', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Código del procedimiento']) ?>
-    </div>
+   
 
-    <div class="col-sm-6 col-lg-4">
+    
         <?php // echo $form->field($model, 'cantidad_muestras', ['template'=>"{input}{error}"]) ?>
-    </div>
+   
 
-    <div class="col-sm-6 col-lg-4">
+    
         <?php // echo $form->field($model, 'valor_copago', ['template'=>"{input}{error}"]) ?>
-    </div>
+   
 
-    <div class="col-sm-6 col-lg-4">
+    
         <?php // echo $form->field($model, 'valor_saldo', ['template'=>"{input}{error}"]) ?>
-    </div>
+   
 
-    <div class="col-sm-6 col-lg-4">
+    
         <?php // echo $form->field($model, 'valor_abono', ['template'=>"{input}{error}"]) ?>
-    </div>
+   
 
-    <div class="col-sm-6 col-lg-4">
+    
         <?php // echo $form->field($model, 'medico', ['template'=>"{input}{error}"]) ?>
-    </div>
+   
 
-    <div class="col-sm-6 col-lg-4">
+    
         <?php // echo $form->field($model, 'observaciones', ['template'=>"{input}{error}"]) ?>
-    </div>
+   
 
-    <div class="col-sm-6 col-lg-4">
+    
         <?php // echo $form->field($model, 'forma_pago', ['template'=>"{input}{error}"]) ?>
-    </div>
+   
 
-    <div class="col-sm-6 col-lg-4">
+    
         <?php // echo $form->field($model, 'numero_cheque', ['template'=>"{input}{error}"]) ?>
-    </div>
+   
 
 
-    <div class="col-sm-6 col-lg-4">
+    
         <?php // echo $form->field($model, 'fecha_informe', ['template'=>"{input}{error}"]) ?>
-    </div>
+   
 
-    <div class="col-sm-6 col-lg-4">
+    
         <?php // echo $form->field($model, 'numero_factura', ['template'=>"{input}{error}"]) ?>
-    </div>
+   
 
-    <div class="col-sm-6 col-lg-4">
+    
         <?php // echo $form->field($model, 'fecha_salida', ['template'=>"{input}{error}"]) ?>
-    </div>
+   
 
-    <div class="col-sm-6 col-lg-4">
+    
         <?php // echo $form->field($model, 'fecha_entrega', ['template'=>"{input}{error}"]) ?>
-    </div>
+   
 
-    <div class="col-sm-6 col-lg-4">
+    
         <?php // echo $form->field($model, 'periodo_facturacion', ['template'=>"{input}{error}"]) ?>
-    </div>
+   
 
-    <div class="col-sm-6 col-lg-4">
+    
         <?php // echo $form->field($model, 'idtipo_servicio', ['template'=>"{input}{error}"]) ?>
-    </div>
+   
 
-    <div class="col-sm-6 col-lg-4">
+    
         <?php // echo $form->field($model, 'idmedico', ['template'=>"{input}{error}"]) ?>
-    </div>
+   
 
-    <div class="col-sm-6 col-lg-4">
+    
         <?php // echo $form->field($model, 'usuario_recibe', ['template'=>"{input}{error}"]) ?>
-    </div>
+   
 
-    <div class="col-sm-6 col-lg-4">
+    
         <?php // echo $form->field($model, 'usuario_transcribe', ['template'=>"{input}{error}"]) ?>
-    </div>
+   
 
-    <div class="col-sm-6 col-lg-4">
+    
         <?php // echo $form->field($model, 'descuento', ['template'=>"{input}{error}"]) ?>
-    </div>
+   
 
 
-    <div class="col-sm-12 form-group text-center">
-        <?= Html::submitButton('Buscar', ['class' => 'btn btn-success']) ?>
+    <div class="col-sm-12 form-group botones-search">
+        <?= Html::submitButton('<i class="busq search-icon"></i>Buscar', ['class' => 'busqueda-boton btn btn-success']) ?>
         <?= Html::resetButton('Reset', ['class' => 'btn btn-default']) ?>
     </div>
 

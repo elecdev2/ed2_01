@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
@@ -13,20 +14,23 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
         'method' => 'get',
+        'validateOnType' => true,
     ]); ?>
 
-    <?= $form->field($model, 'id') ?>
+    <div class="col-sm-6 col-lg-6">
+        <?= $form->field($model, 'nombre', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Nombre'])->label('') ?>
+    </div>
 
-    <?= $form->field($model, 'nombre') ?>
+    <div class="col-sm-6 col-lg-6">
+        <?= $form->field($model, 'idips', ['template'=>"{input}{error}"])->dropDownList(ArrayHelper::map($ips_list,'id','nombre'), ['prompt'=>'IPS'])->label('');?>
+    </div>
 
-    <?= $form->field($model, 'idips') ?>
+    <!-- <?//echo $form->field($model, 'consecutivo') ?> -->
 
-    <?= $form->field($model, 'consecutivo') ?>
+    <!-- <?//echo $form->field($model, 'serie') ?> -->
 
-    <?= $form->field($model, 'serie') ?>
-
-    <div class="form-group">
-        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
+    <div class="col-sm-12 form-group  botones-search">
+        <?= Html::submitButton('<i class="busq search-icon"></i>Buscar', ['class' => 'busqueda-boton btn btn-success']) ?>
         <?= Html::resetButton('Reset', ['class' => 'btn btn-default']) ?>
     </div>
 

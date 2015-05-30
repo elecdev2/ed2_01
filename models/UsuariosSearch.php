@@ -68,6 +68,8 @@ class UsuariosSearch extends Usuarios
             ->andFilterWhere(['like', 'username', $this->username])
             ->andFilterWhere(['like', 'perfil', $this->perfil]);
 
+        $query->limit(20);
+
         return $dataProvider;
     }
 }

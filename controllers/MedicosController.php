@@ -55,7 +55,7 @@ class MedicosController extends Controller
     {
         $searchModel = new MedicosSearch();
         $lista_especialidades = ArrayHelper::map(Especialidades::find()->all(),'codigo','nombre');
-        if(count(Yii::$app->request->queryParams) > 0){
+        // if(count(Yii::$app->request->queryParams) > 0){
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
             return $this->render('index', [
@@ -63,12 +63,12 @@ class MedicosController extends Controller
                 'dataProvider' => $dataProvider,
                 'lista_especialidades'=>$lista_especialidades,
             ]);
-        }else{
-            return $this->render('index', [
-                'searchModel' => $searchModel,
-                'lista_especialidades'=>$lista_especialidades,
-            ]);
-        }
+        // }else{
+        //     return $this->render('index', [
+        //         'searchModel' => $searchModel,
+        //         'lista_especialidades'=>$lista_especialidades,
+        //     ]);
+        // }
     }
 
     /**

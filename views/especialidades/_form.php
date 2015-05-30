@@ -11,15 +11,14 @@ use yii\bootstrap\ActiveForm;
 
 <div class="especialidades-form">
 
-    <?php $form = ActiveForm::begin(['layout' => 'horizontal']); ?>
+    <?php $form = ActiveForm::begin(['layout'=>'horizontal', 'id'=>'espForm', 'validateOnType' => true, 'options'=>['onsubmit'=>'submitForm']]); ?>
 
     <?= $form->field($model, 'codigo')->textInput(['maxlength' => 15]) ?>
 
     <?= $form->field($model, 'nombre')->textInput(['maxlength' => 150]) ?>
 
     <div class="form-group text-center">
-        <?= Html::submitButton($model->isNewRecord ? 'Crear' : 'Actualizar', ['class' =>'btn btn-success']) ?>
-        <?= Html::a('Cancelar', ['especialidades/index'], ['class' => 'btn btn-primary'])?>
+        <?= Html::submitButton($model->isNewRecord ? '<i class="add icon-guardar"></i>Crear' : '<i class="add icon-actualizar"></i>Actualizar', ['class' =>'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

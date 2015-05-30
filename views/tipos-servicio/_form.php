@@ -15,7 +15,7 @@ use kartik\depdrop\DepDrop;
 
 <div class="tipos-servicio-form">
 
-    <?php $form = ActiveForm::begin(['layout' => 'horizontal']); ?>
+    <?php $form = ActiveForm::begin(['layout'=>'horizontal', 'id'=>'tsForm', 'validateOnType' => true, 'options'=>['onsubmit'=>'submitForm']]); ?>
 
     <?= $form->field($client_model, 'id')->dropDownList($list_client, ['prompt'=>'Seleccione una opción', 'id'=>'client_id'])->label('Cliente');?>
 
@@ -38,8 +38,7 @@ use kartik\depdrop\DepDrop;
     <?= $form->field($model, 'serie')->textInput(['maxlength' => 1]) ?>
 
     <div class="form-group text-center">
-        <?= Html::submitButton($model->isNewRecord ? 'Crear' : 'Actualizar', ['class' =>'btn btn-success']) ?>
-        <?= Html::a('Cancelar', ['tipos-servicio/index'], ['class' => 'btn btn-primary'])?>
+        <?= Html::submitButton($model->isNewRecord ? '<i class="add icon-guardar"></i>Crear' : '<i class="add icon-actualizar"></i>Actualizar', ['class' =>'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

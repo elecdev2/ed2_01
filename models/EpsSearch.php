@@ -78,6 +78,8 @@ class EpsSearch extends Eps
             ->andFilterWhere(['like', 'ips.nombre', $this->ips])
             ->andFilterWhere(['like', 'nit', $this->nit]);
 
+        $query->limit(20);
+
         return $dataProvider;
     }
 }

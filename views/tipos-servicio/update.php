@@ -12,12 +12,15 @@ $this->title = 'Actualizar';
 ?>
 <div class="tipos-servicio-update">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <input type="text" hidden name="id_help" data-value="<?=$model->id?>" data-titulo="<?=Html::encode($this->title)?>" id="helperHid">
 
-    <?= $this->render('_form', [
-        'model' => $model,
-        'client_model'=>$client_model,
-        'list_client'=>$list_client,
-    ]) ?>
-
+	<div class="panel panel-default">
+        <div class="panel-body">
+		    <?= $this->render('_form', [
+		        'model' => $model,
+		        'client_model'=>$client_model,
+		        'list_client'=>$list_client,
+		    ]) ?>
+		</div>
+	</div>
 </div>

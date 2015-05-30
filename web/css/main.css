@@ -903,7 +903,7 @@ ul.yiiPager a:visited
 }
 
 
-.nav ul {
+/*.nav ul {
 	overflow: hidden;
 	width: 100%;
 	margin: 0px;
@@ -913,13 +913,13 @@ ul.yiiPager a:visited
 	text-align: center;
 	padding: 0;
 	margin: 0;
-}
+}*/
 
-.nav li {
+/*.nav li {
 	font-family: 'Verdana', sans-serif;
 	border: none;
 	float: left;
-}
+}*/
  
 .nav a {
 	color: #fff;

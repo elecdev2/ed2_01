@@ -83,6 +83,8 @@ class MedicosSearch extends Medicos
             ->andFilterWhere(['like', 'especialidades.nombre', $this->especialidad])
             ->andFilterWhere(['like', 'ruta_firma', $this->ruta_firma]);
 
+        $query->limit(20);
+
         return $dataProvider;
     }
 }

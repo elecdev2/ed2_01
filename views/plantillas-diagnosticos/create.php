@@ -6,7 +6,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\PlantillasDiagnosticos */
 
-$this->title = 'Crear nueva plantilla';
+$this->title = 'Nueva plantilla';
 // $this->params['breadcrumbs'][] = ['label' => 'Plantillas Diagnosticos', 'url' => ['index']];
 // $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -14,11 +14,13 @@ $this->title = 'Crear nueva plantilla';
 
     <div class="panel panel-default">
         <div class="panel-body">
-            <div class="col-md-6">
-                <h1 class="titulo tituloIndex"><?= Html::encode($this->title) ?></h1>
-            </div>
-            <div class="col-md-6">
-                <?= Html::a('Regresar', ['index'], ['style'=>'float:right', 'class' => 'btn btn-success btn-lg']);?>
+            <div class="panelTituloCrear col-md-12">
+                <div class="col-md-6">
+                    <h2 class="titulo tituloIndex"><?= Html::encode($this->title) ?></h2>
+                </div>
+                <div class="col-md-6">
+                    <?= Html::a('<i class="add icon-back"></i>Regresar', ['index'], ['class' => 'btn btn-success crear']);?>
+                </div>
             </div>
         </div>
     </div>

@@ -13,23 +13,7 @@ $this->title = $model->nombre;
 ?>
 <div class="eps-view">
 
-     <div class="panel panel-default">
-        <div class="panel-body">
-            <div class="col-md-9">
-                <h2 class="titulo"><?= Html::encode($this->title) ?></h2>
-            </div>
-            <div class="col-md-3">
-                <?= Html::button(
-                'Actualizar',
-                ['value' => Url::to(['eps/update?id='.$model->id]),
-                    'class'=>'update upd updModal',
-                    'style'=>'float:right',
-         
-                ]) ?>
-                <!-- <button id="actualizar" class="btn btn-primary btn-lg"></button> -->
-            </div>
-        </div>
-    </div>
+   <input type="text" hidden name="id_help" data-value="<?=$model->id?>" data-titulo="<?=Html::encode($this->title)?>" id="helperHid">
 
     <?= DetailView::widget([
         'model' => $model,

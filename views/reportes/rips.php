@@ -15,45 +15,60 @@ use kartik\grid\GridView;
 
 	<div class="panel panel-default">
         <div class="panel-body">
-            <div class="col-md-6">
-                <h1 class="titulo tituloIndex">Reporte RIPS</h1>
-            </div>
-        </div>
-    </div>
+        	<div class="panelTituloBoton col-md-12">
+	            <div class="col-md-12">
+	                <h2 class="titulo tituloIndex">Reporte RIPS</h2>
+	            </div>
+	        </div>
+        
+			<div class="col-md-12 fomularioTitulo">
+				<?php $form = ActiveForm::begin(['action'=>'reporte-rips']); ?>
+					
+					<div class="col-sm-6 col-lg-6">
+						<?= $form->field($procedimientos, 'fecha_fin', ['template'=>"{input}{error}"])->dropDownList($lista_rips, ['prompt'=>'Reporte RIPS'])->label('');?>
+					</div>
 
-	<div class="panel panel-default">
-        <div class="panel-body">
+					<div class="col-sm-6 col-lg-6">
+						<?= $form->field($procedimientos, 'estado', ['template'=>"{input}{error}"])->dropDownList(['prompt'=>'Estado', 'FCT' => 'Facturado', 'FRM' => 'Firmado'])->label('');?>
+					</div>
+						
+					<div class="col-sm-6 col-lg-6">
+						<?= $form->field($ips, 'id', ['template'=>"{input}{error}"])->dropDownList($lista_ips, ['prompt'=>'Seleccione una IPS', 'id'=>'ips_id'])->label('');?>
+					</div>
 
-			<?php $form = ActiveForm::begin(['layout' => 'horizontal', 'action'=>'reporte-rips']); ?>
-				
-				<?= $form->field($procedimientos, 'fecha_fin')->dropDownList($lista_rips, ['prompt'=>'Seleccione una opción'])->label('Reporte RIPS');?>
+					<div class="col-sm-6 col-lg-6">
+						<?= $form->field($procedimientos, 'eps_ideps', ['template'=>"{input}{error}"])->widget(DepDrop::classname(), [
+				                    'type' => 2,
+				                    'options'=>['id'=>'eps_id'],
+				                    'pluginOptions'=>[
+				                    'depends'=>['ips_id'],
+				                    'placeholder'=>'Seleccione EPS',
+				                    'url'=>Url::to(['/reportes/subeps'])
+				                ]
+				            ])->label('');
+				        ?>
+					</div>
+					<div class="col-sm-6 col-lg-6">
+				        <?= $form->field($procedimientos, 'fecha_inicio', ['template'=>"{input}{error}"])->widget(yii\jui\DatePicker::classname(), ["dateFormat" => "yyyy-MM-dd", 'options' => ['class' => 'fecha form-control', "placeholder" => "Fecha de atención"], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es'])->label('') ?>
+					</div>
 
-				<?= $form->field($procedimientos, 'estado')->dropDownList(['prompt'=>'Seleccione una opción', 'FCT' => 'Facturado', 'FRM' => 'Firmado'])->label('Estado');?>
-				
-				<?= $form->field($ips, 'id')->dropDownList($lista_ips, ['prompt'=>'Seleccione una opción', 'id'=>'ips_id'])->label('IPS');?>
-
-				<?= $form->field($procedimientos, 'eps_ideps')->widget(DepDrop::classname(), [
-		                    'type' => 2,
-		                    'options'=>['id'=>'eps_id'],
-		                    'pluginOptions'=>[
-		                    'depends'=>['ips_id'],
-		                    'placeholder'=>'Seleccione EPS',
-		                    'url'=>Url::to(['/reportes/subeps'])
-		                ]
-		            ])->label('EPS');
-		        ?>
-
-		        <?= $form->field($procedimientos, 'fecha_inicio')->widget(yii\jui\DatePicker::classname(), ["dateFormat" => "yyyy-MM-dd", 'options' => ['class' => 'fecha form-control', "placeholder" => "aaaa-mm-dd"], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es'])->label('Fecha de atención') ?>
-
-
-				<div class="form-group text-center">
-			        <?= Html::submitButton('Generar', ['class' =>'btn btn-success']) ?>
-			    </div>
-				
-			<?php ActiveForm::end(); ?>
-
+					<div class="col-sm-12 form-group botones-search">
+				        <?= Html::submitButton('<i class="add icon-add"></i>Generar', ['class' =>'btn btn-success']) ?>
+				    </div>
+					
+				<?php ActiveForm::end(); ?>
+			</div>
 		</div>
+		<?= Html::a('<span class="busqueda glyphicon glyphicon-search"></span>Busqueda <i class="fa fa-caret-down fa-lg"></i>','#',['class'=>'search-boton']);   ?>
 	</div>
-
-
 </div>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+        // $('.fomularioTitulo').hide();
+        $('.search-boton').on('click', function() {
+            $('.fomularioTitulo').slideToggle('slow');
+            return false;
+        });
+    });
+</script>

@@ -13,16 +13,18 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
         'method' => 'get',
+        'validateOnType' => true,
     ]); ?>
 
-    <?= $form->field($model, 'id') ?>
+    <div class="col-sm-6 col-lg-6">
+        <?= $form->field($model, 'codigo', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Código'])->label('') ?>
+    </div>
+    <div class="col-sm-6 col-lg-6">
+        <?= $form->field($model, 'nombre', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Nombre'])->label('') ?>
+    </div>
 
-    <?= $form->field($model, 'codigo') ?>
-
-    <?= $form->field($model, 'nombre') ?>
-
-    <div class="form-group">
-        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
+    <div class="col-sm-12 form-group  botones-search">
+        <?= Html::submitButton('<i class="busq search-icon"></i>Buscar', ['class' => 'busqueda-boton btn btn-success']) ?>
         <?= Html::resetButton('Reset', ['class' => 'btn btn-default']) ?>
     </div>
 

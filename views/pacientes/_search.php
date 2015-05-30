@@ -78,8 +78,8 @@ use kartik\select2\Select2;
 
     <?php // echo $form->field($model, 'codeps', ['template'=>"{input}{error}"]) ?>
 
-    <div class="col-sm-12 form-group text-center">
-        <?= Html::submitButton('Buscar', ['class' => 'btn btn-success']) ?>
+    <div class="col-sm-12 form-group  botones-search">
+        <?= Html::submitButton('<i class="busq search-icon"></i>Buscar', ['class' => 'busqueda-boton btn btn-success']) ?>
         <?= Html::resetButton('Reset', ['class' => 'btn btn-default']) ?>
     </div>
 

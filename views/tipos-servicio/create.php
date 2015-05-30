@@ -8,16 +8,31 @@ use yii\helpers\ArrayHelper;
 /* @var $model app\models\TiposServicio */
 
 $this->title = 'Crear tipos de servicio';
-$this->params['breadcrumbs'][] = ['label' => 'Tipos Servicios', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+// $this->params['breadcrumbs'][] = ['label' => 'Tipos Servicios', 'url' => ['index']];
+// $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="tipos-servicio-create text-center">
+<div class="tipos-servicio-create">
 
-    <h1><?= Html::encode($this->title) ?></h1><br>
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="panelTituloCrear col-md-12">
+                <div class="col-md-6">
+                    <h2 class="titulo tituloIndex"><?= Html::encode($this->title) ?></h2>
+                </div>
+                <div class="col-md-6">
+                    <?= Html::a('<i class="add icon-back"></i>Regresar', ['index'], ['class' => 'btn btn-success crear']);?>
+                </div>
+            </div>
+        </div>
+    </div>
 
 	<?php $list_client = ArrayHelper::map($clientes, 'id', 'nombre'); ?>
-    <?= $this->render('_form', [
-        'model' => $model, 'list_client' => $list_client, 'client_model' => $client_model,
-    ]) ?>
+	<div class="panel panel-default">
+        <div class="panel-body">
+		    <?= $this->render('_form', [
+		        'model' => $model, 'list_client' => $list_client, 'client_model' => $client_model,
+		    ]) ?>
+		</div>
+	</div>
 
 </div>

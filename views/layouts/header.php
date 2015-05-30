@@ -1,4 +1,6 @@
 <?php
+use app\models\usuarios;
+
 use \app\assets\AppAsset;
 use yii\helpers\Html;
 use yii\bootstrap\Nav;
@@ -12,15 +14,12 @@ AppAsset::register($this);
 
 <header class="header">
 
-<?php //= Html::a('', '', ['class' => 'logo']) ?>
-
 <nav class="navbar navbar-fixed-top" role="navigation">
 
+<a href="<?= Yii::$app->homeUrl?>" class="logo" style="background-color:#2e394d;"><img src="<?= Yii::$app->request->baseUrl; ?>/images/LogoFin50pxapp.png" alt="" class="logo-lg"></a>
 <a href="#" class="navbar-btn sidebar-toggle" data-toggle="offcanvas" role="button">
     <span class="sr-only">Toggle navigation</span>
-    <span class="icon-bar"></span>
-    <span class="icon-bar"></span>
-    <span class="icon-bar"></span>
+    <i class="btn-toggle"></i>
 </a>
 
 <div class="navbar-right">
@@ -37,19 +36,19 @@ if (Yii::$app->user->isGuest) {
 } else {
     ?>
     <li class="dropdown user user-menu">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            <i class="glyphicon glyphicon-user"></i>
-            <span><?= @Yii::$app->user->identity->username ?> <i class="caret"></i></span>
+        <?php $usuario = Usuarios::findOne(Yii::$app->user->id) ?>
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding: 4px 15px;">
+            <i class="glyphicon" style="width: 40px;"><img src="<?= Yii::$app->request->baseUrl; ?>/images/iconos/UsuarioAvatar.png" class="" alt="User Image"/></i>
+            <span style="font-size:17px; vertical-align: sub;"><?= $usuario->nombre ?> <i class="fa fa-caret-down"></i></span>
         </a>
-        <ul class="dropdown-menu">
+        <ul class="dropdown-menu menu-avatar" style="width: 350px;">
             <!-- User image -->
             <li class="user-header bg-light-blue">
-                <img src="<?= $directoryAsset ?>/img/avatar5.png" class="img-circle" alt="User Image"/>
-
-                <p>
-                    <?= @Yii::$app->user->identity->username ?> - Perfil
-                    <!-- <small>Member since Nov. 2012</small> -->
-                </p>
+                <img src="<?= Yii::$app->request->baseUrl; ?>/images/iconos/UsuarioAvatar.png" class="" alt="User Image" style="width: 140px;height: 140px; border:none;"/>
+                <div class="texto-avatar">
+                    <p><?= $usuario->nombre ?></p>
+                    <p><?= $usuario->username ?> - Perfil</p>
+                </div>
             </li>
             <!-- Menu Body -->
             <!-- <li class="user-body">
@@ -57,15 +56,16 @@ if (Yii::$app->user->isGuest) {
             </li> -->
             <!-- Menu Footer-->
             <li class="user-footer">
-                <div class="pull-left">
-                    <a href="#" class="btn btn-default btn-flat">Mi perfil</a>
-                </div>
-                <div class="pull-right">
+                <div class="botones-footer">
                     <?= Html::a(
-                            'Cerrar sesión',
+                            '<i class="logOut"></i>Cerrar sesión',
                             ['/site/logout'],
-                            ['data-method' => 'post','class'=>'btn btn-default btn-flat']
+                            ['data-method' => 'post','class'=>'btn']
                         ) ?>
+                </div>
+
+                <div class="botones-footer">
+                    <?= Html::a('<i class="usuarioAv"></i>Mi perfil', ['site/update', 'id'=>Yii::$app->user->id], ['class'=>'btn']) ?>
                 </div>
             </li>
         </ul>

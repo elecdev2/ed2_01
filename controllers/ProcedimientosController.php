@@ -104,8 +104,9 @@ class ProcedimientosController extends Controller
      */
     public function actionView($id)
     {
+        $model = $this->findModel($id);
         return $this->renderPartial('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
         ]);
     }
 
@@ -608,6 +609,12 @@ class ProcedimientosController extends Controller
         $query = (new Query())->select('valor_procedimiento, descuento')->from('tarifas')->where(['idestudios'=>$_POST['cod'], 'eps_id'=>$_POST['id']]);
         return $query->one();
     }
+
+    // public function actionTituloModal()
+    // {
+    //     Yii::$app->response->format = 'json';
+    //     return Procedimientos::find()->select($_POST['campo'])->where(['id'=>$_POST['key']])->one();
+    // }
 
     /**
      * Deletes an existing Procedimientos model.

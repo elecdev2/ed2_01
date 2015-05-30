@@ -7,6 +7,7 @@ use app\models\TiposServicio;
 use app\models\Ips;
 use app\models\Clientes;
 use app\models\TiposServicioSearch;
+
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -52,11 +53,13 @@ class TiposServicioController extends Controller
     public function actionIndex()
     {
         $searchModel = new TiposServicioSearch();
+        $ips_list = Ips::find()->all();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'ips_list'=>$ips_list,
         ]);
     }
 
@@ -67,7 +70,7 @@ class TiposServicioController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
+        return $this->renderPartial('view', [
             'model' => $this->findModel($id),
         ]);
     }
@@ -103,11 +106,13 @@ class TiposServicioController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            $model->refresh();
+            Yii::$app->response->format = 'json';
+            return $this->redirect(['index']);
         } else {
             $client_model = new Clientes();
             $clientes = ArrayHelper::map(Clientes::find()->all(), 'id', 'nombre');
-            return $this->render('update', [
+            return $this->renderAjax('update', [
                 'model' => $model,
                 'client_model'=>$client_model,
                 'list_client'=>$clientes,

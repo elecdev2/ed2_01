@@ -6,7 +6,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\Procedimientos */
 
-$this->title = 'Crear procedimiento';
+$this->title = 'Nuevo procedimiento';
 // $this->params['breadcrumbs'][] = ['label' => 'Procedimientos', 'url' => ['index']];
 // $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -14,17 +14,19 @@ $this->title = 'Crear procedimiento';
 
     <div class="panel panel-default">
         <div class="panel-body">
-            <div class="col-md-6">
-                <h1 class="titulo tituloIndex"><?= Html::encode($this->title) ?></h1>
-            </div>
-            <div class="col-md-6">
-                <?= Html::a('Regresar', ['index'], ['style'=>'float:right', 'class' => 'btn btn-success btn-lg']);?>
+            <div class="panelTituloCrear col-md-12">
+                <div class="col-md-6">
+                    <h2 class="titulo tituloIndex"><?= Html::encode($this->title) ?></h2>
+                </div>
+                <div class="col-md-6">
+                    <?= Html::a('<i class="add icon-back"></i>Regresar', ['index'], ['class' => 'btn btn-success crear']);?>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="panel panel-default">
-        <div class="panel-body">
+   <!--  <div class="panel panel-default">
+        <div class="panel-body"> -->
 
             <?= $this->render('_form', [
                 'model' => $model, 
@@ -43,8 +45,8 @@ $this->title = 'Crear procedimiento';
                 'lista_especialidades'=>$lista_especialidades,
                 'lista_medRemGen'=>$lista_medRemGen,
             ]) ?>
-        </div>
-    </div>
+        <!-- </div>
+    </div> -->
 
 </div>
 <script type="text/javascript">

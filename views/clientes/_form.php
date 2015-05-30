@@ -11,7 +11,7 @@ use yii\bootstrap\ActiveForm;
 
 <div class="clientes-form">
 
-    <?php $form = ActiveForm::begin(['layout' => 'horizontal']); ?>
+    <?php $form = ActiveForm::begin(['layout'=>'horizontal', 'id'=>'cliForm', 'validateOnType' => true, 'options'=>['onsubmit'=>'submitForm']]); ?>
 
     <?= $form->field($model, 'nombre')->textInput(['maxlength' => 100])->label('Cliente *') ?>
 
@@ -26,8 +26,7 @@ use yii\bootstrap\ActiveForm;
     <?= $form->field($model, 'tipo_consecutivo')->dropDownList(['prompt'=>'Seleccione una opción', 'G' => 'General', 'E' => 'Especifico']); ?>
 
     <div class="form-group text-center">
-        <?= Html::submitButton($model->isNewRecord ? 'Crear' : 'Actualizar', ['class' =>'btn btn-success']) ?>
-        <?= Html::a('Cancelar', ['clientes/index'], ['class' => 'btn btn-primary'])?>
+        <?= Html::submitButton($model->isNewRecord ? '<i class="add icon-guardar"></i>Crear' : '<i class="add icon-actualizar"></i>Actualizar', ['class' =>'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

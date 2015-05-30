@@ -9,25 +9,29 @@ use yii\bootstrap\Modal;
 /* @var $searchModel app\models\PlantillasDiagnosticosSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Plantillas Diagnosticos';
-$this->params['breadcrumbs'][] = $this->title;
+$this->title = 'Plantillas diagnosticos';
+// $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="plantillas-diagnosticos-index">
 
     <div class="panel panel-default">
         <div class="panel-body">
-            <div class="col-sm-6">
-                <h1 class="titulo tituloIndex"><?= Html::encode($this->title) ?></h1>
-            </div>
-            <div class="col-sm-6">
-                <?= Html::a('Plantilla nueva', ['create'], ['class' => 'crear add']);?>
+            <div class="panelTituloCrear col-md-12">
+                <div class="col-sm-6">
+                    <h2 class="titulo tituloIndex"><?= Html::encode($this->title) ?></h2>
+                </div>
+                <div class="col-sm-6">
+                    <?= Html::a('<i class="add icon-add"></i>Plantilla nueva', ['create'], ['class' => 'btn btn-success crear']);?>
+                </div>
             </div>
         </div>
     </div>
 
     <?= GridView::widget([
+        'id'=>'plantillaTab',
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        'pjax'=>true,
         'columns' => [
             // 'id',
             'titulo',
@@ -36,8 +40,11 @@ $this->params['breadcrumbs'][] = $this->title;
 
             [
                 'class' => 'kartik\grid\ActionColumn',
-                'template'=>'{update} {delete}',
+                'template'=>'{view} {update} {delete}',
                 'buttons' => [
+                    'view'=> function ($url, $model, $key) {
+                            return '<a href="" id="ver" class="vi" title="Ver"></a>';
+                    },
                     'update'=> function ($url, $model, $key) {
                         return '<a href="" id="actualizar" class="up" title="actualizar"></a>';
                     },
@@ -47,6 +54,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         ]);
                     },
                 ],
+                'width'=>'10%',
             ],
         ],
         'toolbar' => [
@@ -64,19 +72,13 @@ $this->params['breadcrumbs'][] = $this->title;
     ]); ?>
 
 </div>
-<?php Modal::begin([
-    'id'=>'updateModal',
-    'header'=>'<h3></h3>',
-    // 'size'=>Modal::SIZE_LARGE,
-    'options'=>['data-backdrop'=>'static'],
-]);  
-echo "<div id='act'></div>";
-Modal::end();
-?>
+
+<?=$this->render('//site/modals');  ?>
 
 <script type="text/javascript">
-    $(document).on('click', '#actualizar' ,function(event) {
+    $(document).on('click', '#plantillaTab tr td:not(#plantillaTab tr td.skip-export)',function(event) {
         event.preventDefault();
-        openModalUpdate('act',$($(this).parent()).parent());
+        openModalView('vista',$(this).parent());
     });
+
 </script>

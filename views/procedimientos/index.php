@@ -20,33 +20,32 @@ use kartik\select2\Select2;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Procedimientos';
-$this->params['breadcrumbs'][] = $this->title;
+// $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="procedimientos-index">
     <!-- <div class="text-center"><?php //echo Html::tag('h3', (isset($_GET['message'])) ? $_GET['message'] : '' ,['class'=> 'help-block']);?></div> -->
     <div class="panel panel-default">
         <div class="panel-body">
-            <div class="col-sm-6">
-                <h1 class="titulo tituloIndex"><?= Html::encode($this->title) ?></h1>
+            <div class="panelTituloBoton col-md-12">
+                <div class="col-sm-6">
+                    <h2 class="titulo tituloIndex"><?= Html::encode($this->title) ?></h2>
+                </div>
+                <div class="col-sm-6">
+                    <?= Html::a('<i class="add icon-add"></i>Crear procedimiento', ['create'], ['class' => 'btn btn-success crear']);?>
+                </div>
             </div>
-            <div class="col-sm-6">
-                <?= Html::a('Crear procedimiento', ['create'], ['class' => 'crear add']);?>
+            <div class="col-md-12 fomularioTitulo">
+                <?= $this->render('_search', ['model' => $searchModel, 'lista_estados'=>$lista_estados]); ?>
             </div>
         </div>
+        <?php  if(isset($dataProvider)) echo Html::a('<span class="busqueda glyphicon glyphicon-search"></span> Busqueda <i class="fa fa-caret-down fa-lg"></i>','#',['class'=>'search-boton']);   ?>
     </div>
 
-    <div class="panel panel-default">
-        <div class="panel-body">
-            <?php  if(isset($dataProvider)) echo Html::a('[+] Nueva Consulta','#',['class'=>'search-boton']);   ?><br>
-            <?= $this->render('_search', ['model' => $searchModel, 'lista_estados'=>$lista_estados]); ?>
-        </div>
-    </div>
-    
     <div class="promotores-view">
             <?= GridView::widget([
                 'id'=>'procedimientos',
                 'dataProvider' => $dataProvider,
-                'headerRowOptions'=>['class'=>'text-center'],
+                'headerRowOptions'=>['class'=>'cabecera'],
                 'filterModel' => $searchModel,
                 // 'pjax'=>true,
                 'columns' => [
@@ -57,13 +56,12 @@ $this->params['breadcrumbs'][] = $this->title;
                     [
                         'attribute'=>'fecha_atencion',
                         'value'=>function($model){
-                            Yii::$app->timeZone = 'America/Bogota';
-                            Yii::$app->formatter->locale = 'es-ES';
-                            return Yii::$app->formatter->asDate($model->fecha_atencion, 'd-MMM-yyyy');
+                            // Yii::$app->formatter->locale = 'es-ES';
+                            return Yii::$app->formatter->asDate($model->fecha_atencion, 'long');
                         },
                         'hAlign'=>GridView::ALIGN_RIGHT,
-                        'filter' => yii\jui\DatePicker::widget(["dateFormat" => "yyyy-MM-dd", 'options' => ['class' => 'fecha form-control', "placeholder" => "aaaa-mm-dd"], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']),
-                        'format' => 'raw',
+                        'filter' => yii\jui\DatePicker::widget(['name' => 'ProcedimientosSearch[fecha_atencion]', 'dateFormat' => 'yyyy-MM-dd', 'options' => ['class' => 'form-control'], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']),
+                        'format' => 'html',
                     ],
 
                     [
@@ -115,12 +113,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     [
                         'attribute'=>'fecha_salida',
                         'value'=>function($model){
-                            Yii::$app->timeZone = 'America/Bogota';
-                            Yii::$app->formatter->locale = 'es-ES';
-                            return Yii::$app->formatter->asDate($model->fecha_salida, 'd-MMM-yyyy');
+                            return Yii::$app->formatter->asDate($model->fecha_salida, 'long');
                         },
                         'hAlign'=>GridView::ALIGN_RIGHT,
-                        'filter' => yii\jui\DatePicker::widget(["dateFormat" => "yyyy-MM-dd", 'options' => ['class' => 'fecha form-control', "placeholder" => "aaaa-mm-dd"], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']),
+                        'filter' => yii\jui\DatePicker::widget(['name' => 'ProcedimientosSearch[fecha_salida]',"dateFormat" => 'yyyy-MM-dd', 'options' => ['class' => 'form-control'], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']),
                         'format' => 'html',
                     ],
                     [
@@ -135,7 +131,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'value'=>function($model){
                             return ListasSistema::find()->select(['descripcion'])->where(['tipo'=>"estado_prc", 'codigo'=>$model->estado])->scalar();
                         },
-                        'filterInputOptions'=>['style'=>'height:34px', 'placeholder'=>'Seleccione un estado'],
+                        'filterInputOptions'=>['class'=>'filtro-opciones', 'placeholder'=>'Seleccione un estado'],
                         // 'format'=>'raw'
                         'hAlign'=>GridView::ALIGN_CENTER,  
                     ],
@@ -150,8 +146,11 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     [
                         'class' => 'kartik\grid\ActionColumn',
-                        'template'=>'{update}',
+                        'template'=>'{view}{update}',
                         'buttons' => [
+                            'view'=> function ($url, $model, $key) {
+                                return '<a href="" id="ver" class="vi" title="Ver"></a>';
+                            },
                             'update'=> function ($url, $model, $key) {
                                 return '<a href="" id="actualizar" class="up" title="actualizar"></a>';
                             },
@@ -180,61 +179,19 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 </div>
 
-<!-- <div id="updateModal" class="modal fade bs-example-modal-lg" data-backdrop="false" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span></button>
-                <h4 class="modal-title"><h3></h3></h4>
-            </div>
-            <div class="modal-body">
-                <div id="act"></div> 
-            </div>
-        </div>
-    </div>
-</div> -->
 
-<?php Modal::begin([
-    'id'=>'updateModal',
-    'header'=>'<h3></h3>',
-    'size'=>Modal::SIZE_LARGE,
-    'options'=>['data-backdrop'=>'static'],
-]);  
-echo "<div id='act'></div>";
-Modal::end();
-?>
-
-<?php Modal::begin([
-    'id'=>'viewModal',
-    'header'=>'<h3></h3>',
-    'size'=>Modal::SIZE_LARGE,
-    'options'=>['data-backdrop'=>'static'],
-]);  
-echo "<div id='vista'></div>";
-Modal::end();
-?>
-
+<?=$this->render('//site/modals'); ?>
 
 
 <script type="text/javascript">
+
+// abrir ventana ver haciendo click en la fila
     $(document).on('click', '#procedimientos tr td:not(#procedimientos tr td.skip-export)',function(event) {
         event.preventDefault();
         openModalView('vista',$(this).parent());
-    });
+    }); 
 
-    $(document).on('click', '#actualizar' ,function(event) {
-        event.preventDefault();
-        openModalUpdate('act',$($(this).parent()).parent());
-    });
-   
-    
-    $(document).on('click','.updModal', function(event) {
-        event.preventDefault();
-            $('#viewModal').modal({backdrop:'static'})
-            .find('#vista')
-            .load($(this).attr('value'));
-    });
-
+// Modal del plantillas
     $(document).on('click','.plantillas', function(event) {
         event.preventDefault();
         $('#addDesc').attr('data-value', event.target.id);
@@ -249,24 +206,11 @@ Modal::end();
     });
 
    $(document).ready(function() {
-        $('.procedimientos-search').hide();
+        $('.fomularioTitulo').hide();
         $('.search-boton').on('click', function() {
-            $('.procedimientos-search').slideToggle('fast');
-            $('.search-boton').html() == '[-] Ocultar' ? $('.search-boton').html('[+] Nueva Consulta') : $('.search-boton').html('[-] Ocultar');
+            $('.fomularioTitulo').slideToggle('slow');
             return false;
         });
    });
 
-
-
-
-
-
-
-    // $(document).on('click','#editarPerfil', function(event) {
-    //     event.preventDefault();
-    //         $('#viewModal').modal({backdrop:'static'})
-    //         .find('#vista')
-    //         .load($(this).attr('value'));
-    // });
 </script>

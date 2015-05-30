@@ -6,30 +6,23 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model app\models\Campos */
 
-$this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Campos', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title = $model->nombre_campo;
+// $this->params['breadcrumbs'][] = ['label' => 'Campos', 'url' => ['index']];
+// $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="campos-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
-    <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
+    <input type="text" hidden name="id_help" data-value="<?=$model->id?>" data-titulo="<?=Html::encode($this->title)?>" id="helperHid">
 
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
             // 'id',
-            'idtipos_servicio',
+            [
+                'attribute'=>'idtipos_servicio',
+                'value'=>$model->idtiposServicio->nombre,
+            ],
+            
             'tipo_campo',
             'nombre_campo',
             'titulos_idtitulos',

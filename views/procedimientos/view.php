@@ -1,5 +1,7 @@
 <?php
 
+use app\models\ListasSistema;
+
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\DetailView;
@@ -15,130 +17,147 @@ $this->title = $model->numero_muestra;
 
     <div class="panel panel-default">
         <div class="panel-body">
-            <div class="col-md-6 tituloMd6">
-                <h1 class="titulo tituloDetalle"><?= Html::encode($this->title) ?></h1>
-            </div>
-            <div class="col-md-6 tituloMd6">
+            <!-- <div class="col-md-6 tituloMd6">
+                <h1 class="titulo tituloDetalle"><?//echo Html::encode($this->title) ?></h1>
+            </div> -->
+            <div class="col-md-12 tituloMd6">
                 <?php if($model->estado == 'FRM' || $model->estado == 'FCT'|| $model->estado == 'IMP'){ ?>
 
-                    <?= Html::a('Vista previa', ['print', 'id' => $model->id], [
-                        'class' => 'btn btn-danger',
+                    <?= Html::a('<i class="add icon-imprimir"></i>Imprimir', ['print', 'id' => $model->id], [
+                        'class' => 'imprimir btn btn-primary',
+                        'target'=>'_blank',
+                        // 'data' => [
+                        //     'confirm' => '¿Seguro que desea visualizar el resultado?',
+                        //     'method' => 'post',
+                        // ],
+                    ]); ?>
+
+                    <?= Html::a('<i class="add icon-recibo"></i>Recibo', ['generar-recibo', 'id' => $model->id, 'vista'=>3], [
+                        'class' => 'btn btn-success crear',
+                        'style'=>'margin-right:10px;',
                         'target'=>'_blank',
                         'data' => [
-                            'confirm' => '¿Seguro que desea visualizar el resultado?',
+                            'confirm' => 'Se generará el último recibo',
                             'method' => 'post',
                         ],
                     ]); ?>
 
-                    <?= Html::a('Imprimir recibo', ['generar-recibo', 'id' => $model->id, 'vista'=>3], [
-                        'class' => 'btn btn-default',
-                        'target'=>'_blank',
-                        'data' => [
-                            'confirm' => '¿Seguro que desea imprimir el último recibo?',
-                            'method' => 'post',
-                        ],
-                    ]); ?>
-
-                    <?= Html::button(
-                    'Recibos',
-                    ['value' => Url::to(['procedimientos/generar-recibo?id='.$model->id.'&vista=1']),
-                        'class'=>'btn btn-default updModal',
-             
-                    ]) ?>
+                    <!-- <?//echo Html::button('Recibos',['value' => Url::to(['procedimientos/generar-recibo?id='.$model->id.'&vista=1']),'class'=>'btn btn-default updModal']) ?> -->
 
                 <?php } ?>
-                <?= Html::button(
-                'Actualizar',
-                ['value' => Url::to(['procedimientos/update?id='.$model->id]),
-                    'class'=>'update upd updModal',
-                    'style'=>'float:right',
-         
-                ]) ?>
+                <input type="text" hidden name="id_help" data-value="<?=$model->id?>" data-titulo="<?=Html::encode($this->title)?>" id="helperHid">
                 <!-- <button id="actualizar" class="btn btn-primary btn-lg"></button> -->
             </div>
         </div>
     </div>
 
 
- <!--    <p>
-        <?= Html::a('Actualizar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Borrar', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p> -->
-
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            // 'id',
 
             [
                 'attribute'=>'idpacientes',
                 'label'=>'Cédula del paciente',
                 'value'=> $model->idpacientes0->identificacion,
             ],
-            // 'idpacientes',
-            'fecha_atencion',
+            [
+                'attribute'=>'fecha_atencion',
+                'value'=>isset($model->fecha_atencion) ? Yii::$app->formatter->asDate($model->fecha_atencion, 'long') : '',
+            ],
             'autorizacion',
             'numero_muestra',
-            'valor_procedimiento',
+            [
+                'attribute'=>'valor_procedimiento',
+                'value'=>'$'.number_format($model->valor_procedimiento),
+            ],
             [
                 'attribute'=>'eps_ideps',
                 'label'=>'EPS',
                 'value'=> $model->epsIdeps->nombre,
             ],
-            // 'eps_ideps',
             'cod_cups',
             'cantidad_muestras',
-            'valor_copago',
-            'valor_saldo',
-            'valor_abono',
+            [
+                'attribute'=>'valor_copago',
+                'value'=>'$'.number_format($model->valor_copago),
+            ],
+            [
+                'attribute'=>'valor_saldo',
+                'value'=>'$'.number_format($model->valor_saldo),
+            ],
+            [
+                'attribute'=>'valor_abono',
+                'value'=>'$'.number_format($model->valor_abono),
+            ],
             [
                 'attribute',
                 'label'=>'Médico remitente',
                 'value'=>$model->medico == null ? '' : $model->medico0->nombre,
             ],
-            // 'medico',
-            'observaciones',
-            'forma_pago',
-            'numero_cheque',
-            'estado',
-            'fecha_informe',
+            [
+                'attribute'=>'observaciones',
+                'value'=>isset($model->observaciones) ? $model->observaciones : '',
+            ],
+            [
+                'attribute'=>'forma_pago',
+                'value'=>isset($model->forma_pago) ? ListasSistema::find()->select('descripcion')->where(['codigo'=>$model->forma_pago])->scalar() : '',
+            ],
+            [
+                'attribute'=>'numero_cheque',
+                'value'=>isset($model->numero_cheque) ? $model->numero_cheque : '',
+            ],
+            [
+                'attribute'=>'estado',
+                'value'=>isset($model->estado) ? ListasSistema::find()->select('descripcion')->where(['codigo'=>$model->estado])->scalar() : '',
+            ],
+            
+            [
+                'attribute'=>'fecha_informe',
+                'value'=>isset($model->fecha_informe) ? Yii::$app->formatter->asDate($model->fecha_informe, 'long') : '',
+            ],
             'numero_factura',
-            'fecha_salida',
-            'fecha_entrega',
-            'periodo_facturacion',
+            [
+                'attribute'=>'fecha_salida',
+                'value'=>isset($model->fecha_salida) ? Yii::$app->formatter->asDate($model->fecha_salida, 'long') : '',
+            ],
+            [
+                'attribute'=>'fecha_salida',
+                'value'=>isset($model->fecha_salida) ? Yii::$app->formatter->asDate($model->fecha_salida, 'long') : '',
+            ],
+            [
+                'attribute'=>'fecha_entrega',
+                'value'=>isset($model->fecha_entrega) ? Yii::$app->formatter->asDate($model->fecha_entrega, 'long') : '',
+            ],
+            [
+                'attribute'=>'periodo_facturacion',
+                'value'=>isset($model->periodo_facturacion) ? Yii::$app->formatter->asDate($model->periodo_facturacion, 'long') : '',
+            ],
             [
                 'attribute'=>'idtipo_servicio',
                 'label'=>'Estudio',
                 'value'=> $model->idtipoServicio->nombre,
             ],
-            'idtipo_servicio',
             [
                 'attribute'=>'idmedico',
                 'label'=>'Médico',
                 'value'=> $model->nombreMedico != null ? $model->nombreMedico : '',
             ],
-            // 'idmedico',
-
             [
                 'attribute'=>'usuario_recibe',
                 'label'=>'Usurio recibe',
                 'value'=> $model->usuarioRecibe->nombre,
             ],
-            // 'usuario_recibe',
-
             [
                 'attribute'=>'usuario_transcribe',
                 'label'=>'Usurio transcribe',
                 'value'=> $model->nombreUsuarioTrasncribe,
             ],
-            // 'usuario_transcribe',
-            'descuento',
+            [
+                'attribute'=>'descuento',
+                'value'=>number_format($model->descuento).'%',
+            ],
+            
         ],
     ]) ?>
 

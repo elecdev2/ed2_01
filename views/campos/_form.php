@@ -18,7 +18,7 @@ use kartik\depdrop\DepDrop;
 
 <div class="campos-form">
 
-    <?php $form = ActiveForm::begin(['layout' => 'horizontal']); ?>
+    <?php $form = ActiveForm::begin(['layout'=>'horizontal', 'id'=>'camposForm', 'validateOnType' => true, 'options'=>['onsubmit'=>'submitForm']]); ?>
 
   
 
@@ -77,8 +77,7 @@ use kartik\depdrop\DepDrop;
     <!-- <?= $form->field($model, 'orden')->textInput() ?> -->
 
     <div class="form-group text-center">
-        <?= Html::submitButton($model->isNewRecord ? 'Crear' : 'Actualizar', ['class' =>'btn btn-success']) ?>
-        <?= Html::a('Cancelar', ['campos/index'], ['class' => 'btn btn-primary'])?>
+        <?= Html::submitButton($model->isNewRecord ? '<i class="add icon-guardar"></i>Crear' : '<i class="add icon-actualizar"></i>Actualizar', ['class' =>'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

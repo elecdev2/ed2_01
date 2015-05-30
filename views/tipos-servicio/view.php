@@ -2,35 +2,29 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use app\models\Ips;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\TiposServicio */
-
-$this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Tipos Servicios', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$ips = Ips::find()->select(['nombre'])->where(['id'=>$model->idips])->scalar();
+$this->title = $model->nombre.' - '.$ips;
+// $this->params['breadcrumbs'][] = ['label' => 'Tipos Servicios', 'url' => ['index']];
+// $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="tipos-servicio-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <input type="text" hidden name="id_help" data-value="<?=$model->id?>" data-titulo="<?=Html::encode($this->title)?>" id="helperHid">
 
-    <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
 
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'id',
+            // 'id',
             'nombre',
-            'idips',
+            [
+                'attribute'=>'idips',
+                'value'=>$ips,
+            ],            
             'consecutivo',
             'serie',
         ],

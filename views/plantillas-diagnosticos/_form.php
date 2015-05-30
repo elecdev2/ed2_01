@@ -21,7 +21,7 @@ use app\models\Usuarios;
     <?= $form->field($model, 'id_medico')->hiddenInput(['value'=>$model->isNewRecord ? Usuarios::findOne(Yii::$app->user->id)->idmedicos : $model->id_medico])->label('') ?>
 
     <div class="form-group text-center">
-        <?= Html::submitButton($model->isNewRecord ? 'Crear' : 'Actualizar', ['class' =>'btn btn-success']) ?>
+        <?= Html::submitButton($model->isNewRecord ? '<i class="add icon-guardar"></i>Crear' : '<i class="add icon-actualizar"></i>Actualizar', ['class' =>'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

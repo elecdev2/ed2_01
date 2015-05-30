@@ -66,7 +66,7 @@ class IpsController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
+        return $this->renderPartial('view', [
             'model' => $this->findModel($id),
         ]);
     }
@@ -104,11 +104,13 @@ class IpsController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            $model->refresh();
+            Yii::$app->response->format = 'json';
+            return $this->redirect(['index']);
         } else {
             $tipo_id = ArrayHelper::map(ListasSistema::find()->where(['tipo'=>'tipo_identificacion'])->all(), 'codigo', 'descripcion');
             $list_clientes = ArrayHelper::map(Clientes::find()->all(),'id','nombre');
-            return $this->render('update', [
+            return $this->renderAjax('update', [
                 'model' => $model,
                 'list_clientes'=>$list_clientes,
                 'listdata'=>$tipo_id,

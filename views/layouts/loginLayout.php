@@ -11,7 +11,6 @@ $this->beginPage();
 		<meta charset="<?= Yii::$app->charset ?>" />
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" type="text/css" href="<?= Yii::$app->request->baseUrl; ?>/css/estilos.css">
-		<link rel="stylesheet" type="text/css" href="<?= Yii::$app->request->baseUrl; ?>/css/screen.css">
 		<script type="text/javascript" charset="utf8" src="<?= Yii::$app->request->baseUrl; ?>/js/jquery.min.js"></script>
 		<?= Html::csrfMetaTags() ?>
 		<title><?= Html::encode($this->title) ?></title>

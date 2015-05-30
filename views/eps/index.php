@@ -10,32 +10,32 @@ use yii\bootstrap\Modal;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'EPS';
-$this->params['breadcrumbs'][] = $this->title;
+// $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="eps-index">
 
     <div class="panel panel-default">
         <div class="panel-body">
-            <div class="col-sm-6">
-                <h1 class="titulo tituloIndex"><?= Html::encode($this->title) ?></h1>
+            <div class="panelTituloBoton col-md-12">
+                <div class="col-sm-6">
+                    <h2 class="titulo tituloIndex"><?= Html::encode($this->title) ?></h2>
+                </div>
+                <div class="col-sm-6">
+                    <?= Html::a('<i class="add icon-add"></i>Crear EPS', ['create'], ['class' => 'crear btn btn-success']);?>
+                </div>
             </div>
-            <div class="col-sm-6">
-                <?= Html::a('Crear EPS', ['create'], ['class' => 'crear add']);?>
-
+            <div class="col-md-12 fomularioTitulo">
+                <?= $this->render('_search', ['model' => $searchModel]); ?>
             </div>
         </div>
-    </div>
-    <div class="panel panel-default">
-        <div class="panel-body">
-            <?= $this->render('_search', ['model' => $searchModel]); ?>
-        </div>
+        <?php  if(isset($dataProvider)) echo Html::a('<span class="busqueda glyphicon glyphicon-search"></span> Busqueda <i class="fa fa-caret-down fa-lg"></i>','#',['class'=>'search-boton']);   ?>
     </div>
 
-<?php if(isset($dataProvider)){ ?>
     <?= GridView::widget([
         'id'=>'eps',
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        'pjax'=>true,
         'columns' => [
             // ['class' => 'yii\grid\SerialColumn'],
 
@@ -57,7 +57,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     return $model->generar_rip == 1 ? 'Si' : 'No';
                 },
                 'filter'=>['1'=>'Si','2'=>'No'],
-                'filterInputOptions'=>['placeholder'=>'Generar RIPs'],
+                'filterInputOptions'=>['class'=>'filtro-opciones', 'placeholder'=>'Generar RIPs'],
             ],
             // 'generar_rip',
             // 'idinformes',
@@ -67,7 +67,7 @@ $this->params['breadcrumbs'][] = $this->title;
                   return $model->activo == 1 ? 'Si' : 'No';
                 },
                 'filter'=>['1'=>'Si','2'=>'No'],
-                'filterInputOptions'=>['placeholder'=>'Estado'],
+                'filterInputOptions'=>['class'=>'filtro-opciones', 'placeholder'=>'Seleccione un estado'],
             ],
             // 'activo',
 
@@ -87,7 +87,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         ]);
                     },
                 ],
-                'width'=>'10%',
+                'width'=>'120px',
             ],
 
         ],
@@ -104,29 +104,10 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
         'exportConfig' => [GridView::CSV => ['label' => 'Save as CSV']],
     ]); ?>
-<?php } ?>
 
 </div>
 
-<?php Modal::begin([
-    'id'=>'updateModal',
-    'header'=>'<h3></h3>',
-    'size'=>Modal::SIZE_LARGE,
-    'options'=>['data-backdrop'=>'static'],
-]);  
-echo "<div id='act'></div>";
-Modal::end();
-?>
-
-<?php Modal::begin([
-    'id'=>'viewModal',
-    'header'=>'<h3></h3>',
-    'size'=>Modal::SIZE_LARGE,
-    'options'=>['data-backdrop'=>'static'],
-]);  
-echo "<div id='vista'></div>";
-Modal::end();
-?>
+<?=$this->render('//site/modals'); ?>
 
 <script type="text/javascript">
    
@@ -135,15 +116,12 @@ Modal::end();
         openModalView('vista',$(this).parent());
     });
 
-    $(document).on('click', '#actualizar' ,function(event) {
-        event.preventDefault();
-        openModalUpdate('act',$($(this).parent()).parent());
-    });
-    
-    $(document).on('click','.updModal', function(event) {
-        event.preventDefault();
-            $('#viewModal').modal({backdrop:'static'})
-            .find('#vista')
-            .load($(this).attr('value'));
+
+    $(document).ready(function() {
+        $('.fomularioTitulo').hide();
+        $('.search-boton').on('click', function() {
+            $('.fomularioTitulo').slideToggle('slow');
+            return false;
+        });
     });
 </script>

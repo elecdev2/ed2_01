@@ -13,26 +13,7 @@ $this->title = $model->nombre;
 ?>
 <div class="medicos-view">
 
-    <div class="panel panel-default">
-        <div class="panel-body">
-            <div class="col-md-6 col-sm-6 col-xs-6">
-                <h1 class="titulo tituloDetalle"><?= Html::encode($this->title) ?></h1>
-            </div>
-            <div class="col-md-6 col-sm-6 col-xs-6">
-                <?= Html::button(
-                'Actualizar',
-                ['value' => Url::to(['medicos/update?id='.$model->id]),
-                    'class'=>'update upd updModal',
-                    'style'=>'float:right',
-         
-                ]) ?>
-                <!-- <button id="actualizar" class="btn btn-primary btn-lg"></button> -->
-            </div>
-
-        </div>
-    </div>
-
-
+    <input type="text" hidden name="id_help" data-value="<?=$model->id?>" data-titulo="<?=Html::encode($this->title)?>" id="helperHid">
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [

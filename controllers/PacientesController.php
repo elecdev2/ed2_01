@@ -58,19 +58,19 @@ class PacientesController extends Controller
     {
         $lista_tipoid = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_identificacion"')->all(),'codigo','descripcion');
         $searchModel = new PacientesSearch();
-        if(count(Yii::$app->request->queryParams) > 0){
+        // if(count(Yii::$app->request->queryParams) > 0){
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
             return $this->render('index', [
                 'searchModel' => $searchModel,
                 'dataProvider' => $dataProvider,
                 'lista_tipoid'=>$lista_tipoid,
             ]);
-        }else{
-            return $this->render('index', [
-                'searchModel' => $searchModel,
-                'lista_tipoid'=>$lista_tipoid,
-            ]);
-        }
+        // }else{
+        //     return $this->render('index', [
+        //         'searchModel' => $searchModel,
+        //         'lista_tipoid'=>$lista_tipoid,
+        //     ]);
+        // }
     }
 
     /**
@@ -163,6 +163,15 @@ class PacientesController extends Controller
 
         return $this->redirect(['index']);
     }
+
+    /**
+    *Hace la busqueda del titulo de la barra de las ventanas flotantes
+    */
+    // public function actionTituloModal()
+    // {
+    //     Yii::$app->response->format = 'json';
+    //     return Pacientes::find()->select($_POST['campo'])->where(['id'=>$_POST['key']])->one();
+    // }
 
     /**
      * Finds the Pacientes model based on its primary key value.

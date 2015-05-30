@@ -56,18 +56,18 @@ class EpsController extends Controller
     {
         $searchModel = new EpsSearch();
 
-        if(count(Yii::$app->request->queryParams) > 0){
+        // if(count(Yii::$app->request->queryParams) > 0){
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
             return $this->render('index', [
                 'searchModel' => $searchModel,
                 'dataProvider' => $dataProvider,
             ]);
-        }else{
-            return $this->render('index', [
-                'searchModel' => $searchModel,
-            ]);
-        }
+        // }else{
+        //     return $this->render('index', [
+        //         'searchModel' => $searchModel,
+        //     ]);
+        // }
     }
 
     /**

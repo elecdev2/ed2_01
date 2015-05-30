@@ -16,14 +16,14 @@ $this->title = $model->numero_muestra;
 ?>
 <div class="procedimientos-update">
 
-    <div class="panel panel-default">
+   <!--  <div class="panel panel-default">
         <div class="panel-body">
             <div class="">
-                <h1 class="titulo tituloDetalle"><?= Html::encode($this->title) ?></h1>
+                <h1 class="titulo tituloDetalle"><?//echo Html::encode($this->title) ?></h1>
             </div>
         </div>
-    </div>
-
+    </div> -->
+<input type="text" hidden name="id_help" data-value="<?=$model->id?>" data-titulo="<?=Html::encode($this->title)?>" id="helperHid">
     <?= $this->render('_form', [
         'model' => $model,
         'paciente_model'=>$paciente_model,
@@ -48,7 +48,7 @@ $this->title = $model->numero_muestra;
         <div class="modal-content">
             <div class="modal-header">
                 <!-- <button type="button" class="close" data-dismiss="plant"><span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span></button> -->
-                <!-- <h4 class="modal-title"><h3></h3></h4> -->
+                <h4 class="titulo-tarifa">Plantillas</h4>
             </div>
             <div class="modal-body">
 
@@ -65,8 +65,8 @@ $this->title = $model->numero_muestra;
                          </div><br>
                          
                          <div class="col-md-12 text-center">
-                            <a href="" id="addDesc" class="btn btn-success">Agregar</a>
-                            <a href="" disabled id="edicion" class="btn btn-default">Guardar cambios</a>
+                            <a href="" disabled id="edicion" class="btn btn-default"><i class="add icon-guardar"></i>Guardar cambios</a>
+                            <a href="" id="addDesc" class="btn btn-success"><i class="add icon-add"></i>Agregar</a>
                         </div>
                     </div>
                 </div>
@@ -79,9 +79,9 @@ $this->title = $model->numero_muestra;
 <div id="plantillaNuevaModal" class="modal fade bs-example-modal-md plant" data-backdrop="true" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-md">
         <div class="modal-content">
-            <div class="modal-header">
+           <div class="modal-header">
                 <!-- <button type="button" class="close" data-dismiss="plant"><span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span></button> -->
-                <!-- <h4 class="modal-title"><h3></h3></h4> -->
+                <h4 class="titulo-tarifa">Crear plantilla</h4>
             </div>
             <div class="modal-body">
 
@@ -96,7 +96,7 @@ $this->title = $model->numero_muestra;
                          </div><br>
                          
                          <div class="col-md-12 text-center">
-                            <a href="" id="guardarPlantilla" onClick="pasarTexto()" class="btn btn-success">Guardar</a>
+                            <a href="" id="guardarPlantilla" onClick="pasarTexto()" class="btn btn-success"><i class="add icon-guardar"></i>Guardar</a>
                         </div>
                     </div>
                 </div>

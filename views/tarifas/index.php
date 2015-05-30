@@ -17,25 +17,21 @@ $this->title = 'Tarifas'.' - '.$eps;
 
     <div class="panel panel-default">
         <div class="panel-body">
-            <div class="col-sm-7" style="padding-left:0;">
-                <h2 class="titulo"><a href="" onclick="goBack()" style="vertical-align: middle;" title="Volver"><i class="glyphicon glyphicon-chevron-left"></i></a> <?= Html::encode($this->title) ?></h2>
-            </div>
-            <div class="col-sm-5">
-                 <?= Html::button(
-                'Crear tarifa',
-                ['value' => Url::to(['tarifas/create?ideps='.$ideps]),
-                    'id'=>'tar',
-                    'class'=>'crear add tarifa',
-                    'style'=>'float:right',
-         
-                ]) ?>
-
-                <!-- <?php //echo Html::a('Crear Tarifa', ['create'], ['class' => 'crear add']);?> -->
+            <div class="panelTituloBoton col-md-12">
+                <div class="col-sm-6">
+                    <h2 class="titulo tituloIndex"><?= Html::encode($this->title) ?></h2>
+                </div>
+                <div class="col-sm-6">
+                    <?= Html::a('<i class="add icon-add"></i>Nueva tarifa', ['create'], ['id'=>'tar','class' => 'crear btn btn-success tarifa']);?>
+                    <?= Html::a('<i class="add icon-back"></i>Regresar', ['eps/index'], ['class' => 'btn btn-success crear', 'style'=>'margin-right:10px;']);?>
+                    <!-- <a href="" onclick="goBack()" style="vertical-align: middle;" title="Volver"><i class="glyphicon glyphicon-chevron-left"></i></a>  -->
+                </div>
             </div>
         </div>
     </div>
 
     <?= GridView::widget([
+        'id'=>'tarifasTab',
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'pjax'=>true,
@@ -49,9 +45,19 @@ $this->title = 'Tarifas'.' - '.$eps;
                 'label'=>'Estudios',
                 'value'=> 'idestudios0.descripcion',
             ],
-            // 'idestudios',
-            'valor_procedimiento',
-            'descuento',
+            [
+                'attribute'=>'valor_procedimiento',
+                'value'=>function($model){
+                    return '$'.number_format($model->valor_procedimiento);
+                },
+            ],
+            [
+                'attribute'=>'descuento',
+                'value'=>function($model){
+                    return number_format($model->descuento).'%';
+                },
+            ],
+            
 
             [
                 'class' => 'kartik\grid\ActionColumn',
@@ -78,44 +84,36 @@ $this->title = 'Tarifas'.' - '.$eps;
             'hover' => true,
             'panel' => [
                 'type' => GridView::TYPE_DEFAULT,
-                'heading' => '<i class="glyphicon glyphicon-list-alt"></i>  Tarifas',
             ],
             'exportConfig' => [GridView::CSV => ['label' => 'Save as CSV']],
     ]); ?>
 
 </div>
 
-<?php Modal::begin([
-    'id'=>'tarModal',
-    'header'=>'<h3></h3>',
-    'size'=>Modal::SIZE_LARGE,
-    'options'=>['data-backdrop'=>'static'],
-]);  
-echo "<div id='tarifas'></div>";
-Modal::end();
-?>
 
-<?php Modal::begin([
-    'id'=>'updateModal',
-    'header'=>'<h3></h3>',
-    'size'=>Modal::SIZE_LARGE,
-    'options'=>['data-backdrop'=>'static'],
-]);  
-echo "<div id='act'></div>";
-Modal::end();
-?>
+<div id="tarModal" class="modal fade bs-example-modal-lg" data-backdrop="false" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><img src="<?=Yii::$app->request->baseUrl;?>/images/iconos/IconoBarraCerrar.png" alt=""></button>
+                <h3 class="titulo-tarifa">Nueva tarifa</h3>
+            </div>
+            <div class="modal-body">
+               <div id='tarifas'></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?=$this->render('//site/modals');  ?>
 
 <script type="text/javascript">
+
      $(document).on('click', '#tar' ,function(event) {
         event.preventDefault();
-        openModalTarifas('tarifas','<?=$ideps;?>','create');
+        openModalTarifas('tarifas','<?=$ideps;?>');
     });
 
-     $(document).on('click', '#actualizar' ,function(event) {
-        event.preventDefault();
-        openModalUpdate('act',$($(this).parent()).parent());
-    });
 
-    function goBack() {window.history.back()};
 </script>
 

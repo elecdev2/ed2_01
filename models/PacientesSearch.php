@@ -79,6 +79,8 @@ class PacientesSearch extends Pacientes
             ->andFilterWhere(['like', 'email', $this->email])
             ->andFilterWhere(['like', 'codeps', $this->codeps]);
 
+        $query->limit(20);
+
         return $dataProvider;
     }
 }

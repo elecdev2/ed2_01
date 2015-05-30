@@ -8,29 +8,11 @@ use yii\helpers\Url;
 /* @var $model app\models\Pacientes */
 
 $this->title = $model->nombre1.' '.$model->nombre2.' '.$model->apellido1.' '.$model->apellido2;
-$this->params['breadcrumbs'][] = ['label' => 'Pacientes', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+// $this->params['breadcrumbs'][] = ['label' => 'Pacientes', 'url' => ['index']];
+// $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="pacientes-view">
-
-    <div class="panel panel-default">
-        <div class="panel-body">
-            <div class="col-md-9">
-                <h2 class="titulo tituloDetalle"><?= Html::encode($this->title) ?></h2>
-            </div>
-            <div class="col-md-3">
-                <?= Html::button(
-                'Actualizar',
-                ['value' => Url::to(['pacientes/update?id='.$model->id]),
-                    'class'=>'update upd updModal',
-                    'style'=>'float:right',
-         
-                ]) ?>
-                <!-- <button id="actualizar" class="btn btn-primary btn-lg"></button> -->
-            </div>
-        </div>
-    </div>
-
+   
+    <input type="text" hidden name="id_help" data-value="<?=$model->id?>" data-titulo="<?=Html::encode($this->title)?>" id="helperHid">
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [

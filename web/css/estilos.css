@@ -82,7 +82,7 @@
 	/*background: url(../images/body-bg.png) repeat scroll 100% 100%;*/
 	background-color: #fff;
 	overflow:auto;
-	padding: 2.5% 0% 0% 0%;
+	padding: 1% 0% 0% 0%;
 	/*position: absolute;
 	height: calc(95% - 65px);*/
 	width: 100%;
@@ -312,11 +312,12 @@ div.form {
 }
 
 .dashIcon img {
-  width: 40%; 
+  width: 50%; 
   min-width: 80px; 
   height: auto;
-  padding: 15px 0 0 0;
+  padding: 25px 0 0 0;
 }
+
 
 div[id$="-grid"] table tr:hover{
 	cursor: pointer;
@@ -425,6 +426,7 @@ html, body {
 }
 
 .wrapperLogin {
+	background-color: #2E394D;
 	min-height: 100%;
 	height: auto !important;
 	height: 100%;

@@ -12,7 +12,7 @@ use kartik\select2\Select2;
 
 <div class="ips-form">
 
-    <?php $form = ActiveForm::begin(['layout' => 'horizontal']); ?>
+    <?php $form = ActiveForm::begin(['layout'=>'horizontal', 'id'=>'ipsForm', 'validateOnType' => true, 'options'=>['onsubmit'=>'submitForm']]); ?>
 
     <?= $form->field($model, 'idclientes')->widget(Select2::classname(), [
             'data' => array_merge(["" => ""], $list_client),
@@ -55,8 +55,7 @@ use kartik\select2\Select2;
     <!-- <?= $form->field($model, 'activo')->textInput() ?> -->
 
     <div class="form-group text-center">
-        <?= Html::submitButton($model->isNewRecord ? 'Crear' : 'Actualizar', ['class' =>'btn btn-success']) ?>
-        <?= Html::a('Cancelar', ['ips/index'], ['class' => 'btn btn-primary'])?>
+        <?= Html::submitButton($model->isNewRecord ? '<i class="add icon-guardar"></i>Crear' : '<i class="add icon-actualizar"></i>Actualizar', ['class' =>'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

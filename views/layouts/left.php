@@ -9,9 +9,9 @@ use yii\helpers\Html;
 
        
 
-        <p class="text-center">
-            <img src="<?= Yii::$app->request->baseUrl; ?>/images/LogoFin50pxapp.png" alt="" style="width:90%" class="responsive">
-        </p>
+        <!-- <p class="text-center">
+            <img src="<?//echo Yii::$app->request->baseUrl; ?>/images/LogoFin50pxapp.png" alt="" style="width:90%" class="responsive">
+        </p> -->
 
 
 
@@ -19,45 +19,43 @@ use yii\helpers\Html;
 
         <ul class="sidebar-menu">
 
-            <li><a href="<?=Yii::$app->request->baseUrl;?>/procedimientos/index"><img class="sidebar-icon" src="<?=Yii::$app->request->baseUrl;?>/images/iconos/iconos-65(1).png" alt="">Procedimientos</a></li>
-            <li><a href="<?=Yii::$app->request->baseUrl;?>/pacientes/index"><img class="sidebar-icon" src="<?=Yii::$app->request->baseUrl;?>/images/iconos/iconos-66(1).png" alt="" >Pacientes</a></li>
-            <li><a href="<?=Yii::$app->request->baseUrl;?>/medicos/index"><img class="sidebar-icon" src="<?=Yii::$app->request->baseUrl;?>/images/iconos/iconos-67(1).png" alt="" >Médicos</a></li>
-            <li><a href="<?=Yii::$app->request->baseUrl;?>/eps/index"><img class="sidebar-icon" src="<?=Yii::$app->request->baseUrl;?>/images/iconos/iconos-68(1).png" alt="" >EPS</a></li>
-            <li><a href="<?=Yii::$app->request->baseUrl;?>/usuarios/index"><img class="sidebar-icon" src="<?=Yii::$app->request->baseUrl;?>/images/iconos/iconos-70(1).png" alt="" >Usuarios</a></li>
-            <li><a href="<?=Yii::$app->request->baseUrl;?>/facturas/index"><img class="sidebar-icon" src="<?=Yii::$app->request->baseUrl;?>/images/iconos/iconos-711.png" alt="" >Facturación</a></li>
+            <li><a href="<?=Yii::$app->request->baseUrl;?>/procedimientos/index"><img class="sidebar-icon" src="<?=Yii::$app->request->baseUrl;?>/images/iconos/IconProcedimiento.png" alt="">Procedimientos</a></li>
+            <li><a href="<?=Yii::$app->request->baseUrl;?>/pacientes/index"><img class="sidebar-icon" src="<?=Yii::$app->request->baseUrl;?>/images/iconos/IconPacientes.png" alt="" >Pacientes</a></li>
+            <li><a href="<?=Yii::$app->request->baseUrl;?>/medicos/index"><img class="sidebar-icon" src="<?=Yii::$app->request->baseUrl;?>/images/iconos/IconMedicos.png" alt="" >Médicos</a></li>
+            <li><a href="<?=Yii::$app->request->baseUrl;?>/eps/index"><img class="sidebar-icon" src="<?=Yii::$app->request->baseUrl;?>/images/iconos/IconEPS.png" alt="" >EPS</a></li>
+            <li><a href="<?=Yii::$app->request->baseUrl;?>/usuarios/index"><img class="sidebar-icon" src="<?=Yii::$app->request->baseUrl;?>/images/iconos/IconUsuarios.png" alt="" >Usuarios</a></li>
+            <li><a href="<?=Yii::$app->request->baseUrl;?>/facturas/index"><img class="sidebar-icon" src="<?=Yii::$app->request->baseUrl;?>/images/iconos/IconFacturacion.png" alt="" >Facturación</a></li>
             <li class="treeview">
-               <a href=""><img class="sidebar-icon" src="<?=Yii::$app->request->baseUrl?>/images/iconos/iconos-69(1).png" alt="" >
-                    <span>Reprotes</span>
-                    <i class="fa fa-angle-right pull-right"></i>
+               <a href=""><img class="sidebar-icon" src="<?=Yii::$app->request->baseUrl?>/images/iconos/IconReportes.png" alt="" >Reportes
+                    <i class="fa fa-angle-down pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
-                    <li class="" role="presentation"><?=Html::a('<i class="fa fa-angle-double-right"></i> Consultar estudios', ['reportes/index','t'=>1], ['class' => '']) ?></li>
-                    <li class="" role="presentation"><?=Html::a('<i class="fa fa-angle-double-right"></i> Saldos pendientes', ['reportes/index', 't'=>2], ['class' => '']) ?></li>
-                    <li class="" role="presentation"><?=Html::a('<i class="fa fa-angle-double-right"></i> Reporte RIPS', ['reportes/rips'], ['class' => '']) ?></li>
+                    <li class="" role="presentation"><?=Html::a('<img class="subsidebar-icon" src="'.Yii::$app->request->baseUrl.'/images/iconos/consultEstudios.png" alt="" > Consultar estudios', ['reportes/index','t'=>1], ['class' => '']) ?></li>
+                    <li class="" role="presentation"><?=Html::a('<img class="subsidebar-icon" src="'.Yii::$app->request->baseUrl.'/images/iconos/SaldosPendientes.png" alt="" > Saldos pendientes', ['reportes/index', 't'=>2], ['class' => '']) ?></li>
+                    <li class="" role="presentation"><?=Html::a('<img class="subsidebar-icon" src="'.Yii::$app->request->baseUrl.'/images/iconos/ReportesRips.png" alt="" > Reporte RIPS', ['reportes/rips'], ['class' => '']) ?></li>
                 </ul>
             </li>
             <?php if(Yii::$app->user->can('medico')){ ?>
-                    <li><a href="<?=Yii::$app->request->baseUrl;?>/plantillas-diagnosticos/index"><img class="sidebar-icon" src="<?=Yii::$app->request->baseUrl;?>/images/iconos/iconos-69(1).png" alt="" >Plantillas</a></li>
+                    <li><a href="<?=Yii::$app->request->baseUrl;?>/plantillas-diagnosticos/index"><img class="sidebar-icon" src="<?=Yii::$app->request->baseUrl;?>/images/iconos/IconPlantillas.png" alt="" >Plantillas</a></li>
             <?php } ?>
 
             
             <?php if(Yii::$app->user->can('super_admin')){ ?>
             <li class="treeview">
-               <a href=""><img class="sidebar-icon" src="<?=Yii::$app->request->baseUrl?>/images/iconos/iconos-72(1).png" alt="" >
-                    <span>Panel admin...</span>
-                    <i class="fa fa-angle-right pull-right"></i>
+               <a href=""><img class="sidebar-icon" src="<?=Yii::$app->request->baseUrl?>/images/iconos/IconAdmin.png" alt="" >Admin
+                    <i class="fa fa-angle-down pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
-                    <li class="" role="presentation"><?=Html::a('<i class="fa fa-angle-double-right"></i> Clientes', ['clientes/index'], ['class' => '']) ?></li>
-                    <li class="" role="presentation"><?=Html::a('<i class="fa fa-angle-double-right"></i> Ips\'s', ['ips/index'], ['class' => '']) ?></li>
-                    <li class="" role="presentation"><?=Html::a('<i class="fa fa-angle-double-right"></i> Tipos de servicio', ['tipos-servicio/index'], ['class' => '']) ?></li>
-                    <li class="" role="presentation"><?=Html::a('<i class="fa fa-angle-double-right"></i> Listas del sistema', ['listas-sistema/index'], ['class' => '']) ?></li>
-                    <li class="" role="presentation"><?=Html::a('<i class="fa fa-angle-double-right"></i> Campos', ['campos/index'], ['class' => '']) ?></li>
-                    <li class="" role="presentation"><?=Html::a('<i class="fa fa-angle-double-right"></i> Especialidades', ['especialidades/index'], ['class' => '']) ?></li>
-                    <li class="" role="presentation"><?=Html::a('<i class="fa fa-angle-double-right"></i> Perfiles', ['#'], ['class' => '']) ?></li>
-                    <li class="" role="presentation"><?=Html::a('<i class="fa fa-angle-double-right"></i> Informes', ['informes/index'], ['class' => '']) ?></li>
-                    <li class="" role="presentation"><?=Html::a('<i class="fa fa-angle-double-right"></i> Estudios', ['estudios/index'], ['class' => '']) ?></li>
-                    <li class="" role="presentation"><?=Html::a('<i class="fa fa-angle-double-right"></i> Resultados', ['#'], ['class' => '']) ?></li>
+                    <li class="" role="presentation"><?=Html::a('<img class="subsidebar-icon" src="'.Yii::$app->request->baseUrl.'/images/iconos/AdminIconClientes.png" alt="" > Clientes', ['clientes/index'], ['class' => '']) ?></li>
+                    <li class="" role="presentation"><?=Html::a('<img class="subsidebar-icon" src="'.Yii::$app->request->baseUrl.'/images/iconos/AdminIconIPS.png" alt="" > Ips\'s', ['ips/index'], ['class' => '']) ?></li>
+                    <li class="" role="presentation"><?=Html::a('<img class="subsidebar-icon" src="'.Yii::$app->request->baseUrl.'/images/iconos/AdminIconServicios.png" alt="" > Tipos de servicio', ['tipos-servicio/index'], ['class' => '']) ?></li>
+                    <li class="" role="presentation"><?=Html::a('<img class="subsidebar-icon" src="'.Yii::$app->request->baseUrl.'/images/iconos/AdminIconListas.png" alt="" > Listas del sistema', ['listas-sistema/index'], ['class' => '']) ?></li>
+                    <li class="" role="presentation"><?=Html::a('<img class="subsidebar-icon" src="'.Yii::$app->request->baseUrl.'/images/iconos/AdminIconCampos.png" alt="" > Campos', ['campos/index'], ['class' => '']) ?></li>
+                    <li class="" role="presentation"><?=Html::a('<img class="subsidebar-icon" src="'.Yii::$app->request->baseUrl.'/images/iconos/AdminIconEspeciali.png" alt="" > Especialidades', ['especialidades/index'], ['class' => '']) ?></li>
+                    <li class="" role="presentation"><?=Html::a('<img class="subsidebar-icon" src="'.Yii::$app->request->baseUrl.'/images/iconos/AdminIconPerfiles.png" alt="" > Perfiles', ['intems/index'], ['class' => '']) ?></li>
+                    <li class="" role="presentation"><?=Html::a('<img class="subsidebar-icon" src="'.Yii::$app->request->baseUrl.'/images/iconos/AdminIconInformes.png" alt="" > Informes', ['informes/index'], ['class' => '']) ?></li>
+                    <li class="" role="presentation"><?=Html::a('<img class="subsidebar-icon" src="'.Yii::$app->request->baseUrl.'/images/iconos/AdminIconEstudios.png" alt="" > Estudios', ['estudios/index'], ['class' => '']) ?></li>
+                    <li class="" role="presentation"><?=Html::a('<img class="subsidebar-icon" src="'.Yii::$app->request->baseUrl.'/images/iconos/AdminIconResultados.png" alt="" > Resultados', ['#'], ['class' => '']) ?></li>
                 </ul>
             </li>
             <?php } ?>

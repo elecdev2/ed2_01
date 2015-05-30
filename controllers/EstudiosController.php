@@ -63,7 +63,7 @@ class EstudiosController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
+        return $this->renderPartial('view', [
             'model' => $this->findModel($id),
         ]);
     }
@@ -97,9 +97,11 @@ class EstudiosController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->cod_cups]);
+            $model->refresh();
+            Yii::$app->response->format = 'json';
+            return $this->redirect(['index']);
         } else {
-            return $this->render('update', [
+            return $this->renderAjax('update', [
                 'model' => $model,
             ]);
         }
@@ -127,7 +129,7 @@ class EstudiosController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Estudios::findOne($id)) !== null) {
+        if (($model = Estudios::find()->where(['cod_cups'=>$id])->one()) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

@@ -24,7 +24,7 @@ if (Yii::$app->controller->action->id === 'login') {
         <link href='http://fonts.googleapis.com/css?family=Muli:300,400,400italic,300italic|Montserrat:700,400' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="<?= Yii::$app->request->baseUrl; ?>/css/screen.css">
         <link rel="stylesheet" href="<?= Yii::$app->request->baseUrl; ?>/css/estilos.css">
-        <link rel="stylesheet" href="<?= Yii::$app->request->baseUrl; ?>/css/main.css">
+        <link rel="stylesheet" href="<?= Yii::$app->request->baseUrl; ?>/css/main_index.css">
         <?= Html::csrfMetaTags() ?>
         <!-- <title><?= Html::encode($this->title) ?></title> -->
         <?php $this->head() ?>
@@ -33,14 +33,15 @@ if (Yii::$app->controller->action->id === 'login') {
     <?php $this->beginBody() ?>
 
     <?= $this->render(
-        'header.php',
+        'header_index.php',
         ['directoryAsset' => $directoryAsset]
     ) ?>
 
     <div class="row-offcanvas">
+        
 
 
-        <div class="wrapper container" id="page" style="padding-top:5%">
+        <div class="wrapper container-fluid" id="page" style="padding-top:50px">
             <div class="bginicio">
                 <?= $content; ?>
             </div>

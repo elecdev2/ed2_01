@@ -26,12 +26,24 @@ function nombrePaciente(docInput,idInput,nombretag,nombre1,nombre2,apellido1,ape
     });
 }
 
+// function tituloModal(campo,key){
+//     $.post('titulo-modal', {campo: campo, key:key}).done(function(data) {
+//         var titulo = '';
+//         $.each(data, function(index, val) {
+//              titulo = titulo +' '+val;
+//         });
+//         $('.modal-title').html(titulo);
+//     });
+// }
 
 function openModalView(idcontenedor,elemento){
    var fila = elemento.attr('data-key');
+   // tituloModal(campo,fila);
     $.get('view', {id: fila}).done(function(data) {
         $('#'+idcontenedor).html(data);
+        $('.modal-title').html($('#helperHid').attr('data-titulo'));
         $('#viewModal').modal({backdrop:'static'});
+        $('#update').attr('value', $('#helperHid').attr('data-value'));
     });
 }
 
@@ -39,12 +51,30 @@ function openModalUpdate(idcontenedor,elemento){
    var fila = elemento.attr('data-key');
     $.get('update', {id: fila}).done(function(data) {
         $('#'+idcontenedor).html(data);
+        $('.modal-title').html($('#helperHid').attr('data-titulo'));
         $('#updateModal').modal({backdrop:'static'});
+        $('#view').attr('value', $('#helperHid').attr('data-value'));
     });
 }
 
-function openModalTarifas(idcontenedor,id,destino){
-    $.get(destino, {ideps: id}).done(function(data) {
+function openModalUpdateBarra(idcontenedor,id){
+    $.get('update', {id: id}).done(function(data) {
+        $('#'+idcontenedor).html(data);
+        $('#updateModal').modal({backdrop:'static'});
+        $('#view').attr('value', $('#helperHid').attr('data-value'));
+    });
+}
+
+function openModalViewBarra(idcontenedor,id){
+    $.get('view', {id: id}).done(function(data) {
+        $('#'+idcontenedor).html(data);
+        $('#viewModal').modal({backdrop:'static'});
+        $('#update').attr('value', $('#helperHid').attr('data-value'));
+    });
+}
+
+function openModalTarifas(idcontenedor,id){
+    $.get('create', {ideps: id}).done(function(data) {
         $('#'+idcontenedor).html(data);
         $('#tarModal').modal({backdrop:'static'});
     });
@@ -75,3 +105,25 @@ function getUrlVars() {
     });
     return window.location.href;
 }
+
+// botones del actionColumn
+    $(document).on('click', '#ver',function(event) {
+        event.preventDefault();
+        openModalView('vista',$($(this).parent()).parent());
+    });
+
+    $(document).on('click', '#actualizar' ,function(event) {
+        event.preventDefault();
+        openModalUpdate('act',$($(this).parent()).parent());
+    });
+   
+// botones cabecera modal    
+    $(document).on('click','.updModal', function(event) {
+        event.preventDefault();
+        openModalUpdateBarra('act', $(this).val());
+    });
+
+    $(document).on('click','.verModal', function(event) {
+        event.preventDefault();
+        openModalViewBarra('vista', $(this).val());
+    });

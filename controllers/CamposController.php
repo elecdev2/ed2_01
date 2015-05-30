@@ -9,6 +9,8 @@ use app\models\Clientes;
 use app\models\Ips;
 use app\models\CamposSearch;
 use app\models\ListasSistema;
+use app\models\TiposServicio;
+
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -40,10 +42,12 @@ class CamposController extends Controller
     {
         $searchModel = new CamposSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $lista_tipos = ArrayHelper::map(TiposServicio::find()->all(), 'id', 'nombre');
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'lista_tipos'=>$lista_tipos,
         ]);
     }
 
@@ -54,7 +58,7 @@ class CamposController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
+        return $this->renderPartial('view', [
             'model' => $this->findModel($id),
         ]);
     }
@@ -100,7 +104,9 @@ class CamposController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            $model->refresh();
+            Yii::$app->response->format = 'json';
+            return $this->redirect(['index']);
         } else {
             $titulos_model = new Titulos();
             $titulos = ArrayHelper::map(Titulos::find()->all(), 'id', 'descripcion');
@@ -108,7 +114,7 @@ class CamposController extends Controller
             $client_model = new Clientes();
             $clientes = ArrayHelper::map(Clientes::find()->all(), 'id', 'nombre');
             $tipo_campos = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_campo"')->all(),'id','descripcion');
-            return $this->render('update', [
+            return $this->renderAjax('update', [
                 'model' => $model,
                 'titulos_model'=>$titulos_model,
                 'titulos_list'=>$titulos,

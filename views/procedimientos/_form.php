@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 // use yii\widgets\ActiveForm;
+use app\models\TiposServicio;
 use yii\bootstrap\ActiveForm;
 use app\models\Ips;
 use kartik\depdrop\DepDrop;
@@ -76,12 +77,12 @@ use yii\bootstrap\Modal;
                     </div>
                     <div class="modal-body">
         
-                    <div class="form-group">
-                        <div class="col-sm-6">
-                            <input type="text" name="url" id="url" hidden>  
-                            <div class="help-block help-block-error "></div>
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <input type="text" name="url" id="url" hidden>  
+                                <div class="help-block help-block-error "></div>
+                            </div>
                         </div>
-                    </div>
                         <?= $form->field($model, 'fecha_atencion')->widget(yii\jui\DatePicker::classname(), ["dateFormat" => "yyyy-MM-dd", 'options' => ['value'=>$model->isNewRecord ? date('Y-m-d') : $model->fecha_atencion, 'class' => 'fecha form-control', "placeholder" => "aaaa-mm-dd"], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']) ?>
                     
                             
@@ -171,15 +172,15 @@ use yii\bootstrap\Modal;
                             ])->label('Forma de pago');
                         ?>
 
+                    </div>
                 </div>
-            </div>
 
 
-                    <?php if(!$model->isNewRecord && ($model->estado !== 'FCT' && $model->estado !== 'IMP')){ ?>
-                    <div class="panelFormulario-contenido">
-                        <div class="panelFormulario-header">
-                            <h3 class="titulo-tarifa"><?=$model->idtipo_servicio?></h3>
-                        </div>
+                <?php if(!$model->isNewRecord && ($model->estado !== 'FCT' && $model->estado !== 'IMP')){ ?>
+                        <div class="panelFormulario-contenido">
+                            <div class="panelFormulario-header">
+                                <h3 class="titulo-tarifa"><?=TiposServicio::find()->select('nombre')->where(['id'=>$model->idtipo_servicio])->scalar()?></h3>
+                            </div>
                             <div class="modal-body">
                                 <?= $this->render('form_estudios', [
                                         'campos'=>$campos,
@@ -188,8 +189,8 @@ use yii\bootstrap\Modal;
                                         'imp'=>0,
                                 ]) ?>
                             </div>
-                    </div>
-                    <?php } ?>  
+                        </div>
+                <?php } ?>  
 
 
                     <div class="panel panel-default">
@@ -228,12 +229,12 @@ use yii\bootstrap\Modal;
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title">Registrar paciente</h4>
+                <button type="button" class="close" data-dismiss="modal"><img src="<?=Yii::$app->request->baseUrl;?>/images/iconos/IconoBarraCerrar.png" alt=""></button>
+                <h3 class="modal-title">Registrar paciente</h3>
             </div>
             <div class="modal-body">
                 <?php if($model->isNewRecord){ ?>
-                   <?= $this->render('//pacientes/_form', [
+                   <?= $this->render('pacientes_create', [
                         'model' => $paciente_model,
                         'lista_tipos'=>$lista_tipos,
                         'lista_tipoid'=>$lista_tipoid,
@@ -241,6 +242,7 @@ use yii\bootstrap\Modal;
                         'lista_ciudades'=>$lista_ciudades,
                         'lista_eps'=>$lista_eps,
                         'id_cliente'=>$id_cliente,
+                        'rango_fecha'=>$rango_fecha
                     ]) ?>
                 <?php } ?>
             </div>

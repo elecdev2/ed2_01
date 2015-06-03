@@ -21,16 +21,16 @@ use kartik\grid\GridView;
 	            </div>
 	        </div>
         
-			<div class="col-md-12 fomularioTitulo">
+			<div class="col-md-12 fomularioTituloReporte">
 				<?php $form = ActiveForm::begin(['action'=>'reporte-rips']); ?>
 					
 					<div class="col-sm-6 col-lg-6">
 						<?= $form->field($procedimientos, 'fecha_fin', ['template'=>"{input}{error}"])->dropDownList($lista_rips, ['prompt'=>'Reporte RIPS'])->label('');?>
 					</div>
 
-					<div class="col-sm-6 col-lg-6">
-						<?= $form->field($procedimientos, 'estado', ['template'=>"{input}{error}"])->dropDownList(['prompt'=>'Estado', 'FCT' => 'Facturado', 'FRM' => 'Firmado'])->label('');?>
-					</div>
+					<!-- <div class="col-sm-6 col-lg-6"> -->
+						<!-- <?//echo $form->field($procedimientos, 'estado', ['template'=>"{input}{error}"])->dropDownList(['prompt'=>'Estado', 'FCT' => 'Facturado', 'FRM' => 'Firmado'])->label('');?> -->
+					<!-- </div> -->
 						
 					<div class="col-sm-6 col-lg-6">
 						<?= $form->field($ips, 'id', ['template'=>"{input}{error}"])->dropDownList($lista_ips, ['prompt'=>'Seleccione una IPS', 'id'=>'ips_id'])->label('');?>
@@ -59,15 +59,18 @@ use kartik\grid\GridView;
 				<?php ActiveForm::end(); ?>
 			</div>
 		</div>
-		<?= Html::a('<span class="busqueda glyphicon glyphicon-search"></span>Busqueda <i class="fa fa-caret-down fa-lg"></i>','#',['class'=>'search-boton']);   ?>
+		<?= Html::a('<span class="busqueda glyphicon glyphicon-search"></span>Busqueda <i class="fa fa-caret-down fa-lg"></i>','#',['class'=>'search-botonReporte', 'data-value'=>$cerrar]);   ?>
 	</div>
 </div>
 
 <script type="text/javascript">
 	$(document).ready(function() {
         // $('.fomularioTitulo').hide();
-        $('.search-boton').on('click', function() {
-            $('.fomularioTitulo').slideToggle('slow');
+        if($('.search-botonReporte').attr('data-value') != 1){
+        	$('.fomularioTituloReporte').hide();
+        }
+        $('.search-botonReporte').on('click', function() {
+            $('.fomularioTituloReporte').slideToggle('fast');
             return false;
         });
     });

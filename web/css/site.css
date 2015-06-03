@@ -4,13 +4,12 @@ body {
     height: 100%;
     font-family: 'Muli', sans-serif;
     background-color: white;
+    padding-right: 0 !important;
 }
 
-/*th{
-    text-align: center;
+#main-nav {
+    padding-right: 0 !important;
 }
-*/
-
 
 a{
     color: #3e5068;
@@ -189,11 +188,16 @@ body > .header .navbar{
     height: 15px;
 }
 
+.btn-toggle-abrir{
+    content:url(../images/iconos/MenuAbrir.png);
+    height: 15px;
+}
+
 /*--------------------------*/
 
 
 /*-----------Panel busqueda---------------*/
-.search-boton{
+.search-boton,.search-botonFactura, .search-botonReporte{
     background-color: #3E5068;
     border-radius: 0 0 5px 5px;
     color: white;
@@ -212,7 +216,7 @@ body > .header .navbar{
     padding: 3px;
 }
 
-.fomularioTitulo{
+.fomularioTitulo, .fomularioTituloFactura, .fomularioTituloReporte{
       padding: 20px 0 0;
 }
 
@@ -225,6 +229,11 @@ body > .header .navbar{
 }
 
 /*------tabla--------*/
+
+table > thead > tr > th{
+    text-align: center;
+}
+
 .kv-panel-before, .kv-panel-after{
     padding: 0;
     border-bottom:0;
@@ -248,9 +257,16 @@ body > .header .navbar{
 }
 
 .filtro-opciones{
-    height:34px; 
+    display: block;
     width: 100%;
-    -webkit-appearance:none;
+    height: 34px;
+    /* padding: 6px 12px; */
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
 }
 
 /*sidebar*/
@@ -307,7 +323,7 @@ div.wrapper.row-offcanvas.row-offcanvas-left > aside.left-side.sidebar-offcanvas
     font-size: 1.3em;
 }
 
-.fa-angle-down:before, .fa-angle-left:before{
+.fa-angle-down:before, .fa-angle-right:before{
     vertical-align: sub;    
 }
 

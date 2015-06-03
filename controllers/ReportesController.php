@@ -17,6 +17,7 @@ use yii\db\Query;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 use kartik\mpdf\Pdf;
+use yii\data\ActiveDataProvider;
 
 /**
  * ReportesController implements the CRUD actions for Informes model.
@@ -63,6 +64,7 @@ class ReportesController extends Controller
             'procedimientos'=>$procedimientos,
             'accion'=>$t == 1 ? 'reporte-estudios' : 'reporte-saldos',
             'titulo'=>$t == 1 ? 'Consultar muestras' : 'Saldos pendientes',
+            'cerrar'=>1,
         ]);
     }
 
@@ -77,6 +79,7 @@ class ReportesController extends Controller
             'ips'=>$ips,
             'procedimientos'=>$procedimientos,
             'lista_rips'=>$lista_rips,
+            'cerrar'=>1,
         ]);
     }
 
@@ -94,20 +97,21 @@ class ReportesController extends Controller
         	->join('INNER JOIN', 'ips', 'ips.id = eps.idips')
         	->where(['ips.idclientes'=>Usuarios::findOne(Yii::$app->user->id)->idclientes]);
 
-        	if($proc->idtipo_servicio != null && $proc->idtipo_servicio != 'empty'){
-        		$lista->andWhere(['p.idtipo_servicio'=>$proc->idtipo_servicio]);
-        	}
-        	if($ips->id != null && $ips->id != 'empty'){
-        		$lista->andWhere(['eps.idips'=>$ips->id]);
-        	}
-            if ($proc->estado != null && $proc->estado != 'empty') {
-                $lista->andWhere(['procedimientos.estado'=>$proc->estado]);
+
+            if($proc->idtipo_servicio != null && $proc->idtipo_servicio != 'empty'){
+                $lista->andWhere(['p.idtipo_servicio'=>$proc->idtipo_servicio]);
             }
-        	if($proc->eps_ideps != null || $proc->eps_ideps != 'empty'){
-        		$lista->andWhere(['p.eps_ideps'=>$proc->eps_ideps]);
-        	}
-        	if($proc->fecha_inicio != null && $proc->fecha_fin != null){
-    			$fecha_ini = $proc->fecha_inicio != null ? $proc->fecha_inicio : '1990-01-01';
+            if($ips->id != null && $ips->id != 'empty'){
+                $lista->andWhere(['eps.idips'=>$ips->id]);
+            }
+            if ($proc->estado != null && $proc->estado != 'empty') {
+                $lista->andWhere(['p.estado'=>$proc->estado]);
+            }
+            if($proc->eps_ideps != null || $proc->eps_ideps != 'empty'){
+                $lista->andWhere(['p.eps_ideps'=>$proc->eps_ideps]);
+            }
+            if($proc->fecha_inicio != null && $proc->fecha_fin != null){
+                $fecha_ini = $proc->fecha_inicio != null ? $proc->fecha_inicio : '1990-01-01';
                 $fecha_fin = $proc->fecha_fin != null ? $proc->fecha_fin : date('Y-m-d');
 
                 if ($fecha_ini > date('Y-m-d')) {
@@ -124,15 +128,33 @@ class ReportesController extends Controller
                 }
 
                 $lista->andWhere(['between','recibos.fecha',$fecha_ini,$fecha_fin]);
-        	}
+            }
 
+
+            $dataProvider = new ActiveDataProvider([
+                'query' => $lista,
+                'sort'=>false,
+            ]);
 
             if(count($proc->errors) == 0){
-                $lista->orderBy('recibos.fecha');
-                $lista = $lista->all();
-                // return print_r($lista);
+                // $lista->orderBy('recibos.fecha');
+                // $lista = $lista->all();
 
-                $this->imprimirPDF('reporte_estudios',$proc,$lista);
+                $ips = new Ips();
+                $lista_ips = ArrayHelper::map(Ips::find()->all(), 'id', 'nombre');
+                $procedimientos = new Procedimientos();
+                return $this->render('index',[
+                        'dataProvider'=>$dataProvider,
+                        'lista_ips'=>$lista_ips,
+                        'ips'=>$ips,
+                        'procedimientos'=>$procedimientos,
+                        'accion'=>'reporte-estudios',
+                        'titulo'=>'Consultar muestras',
+                        'tabla'=>1,
+                        'cerrar'=>2,
+                    ]);
+
+                //$this->imprimirPDF('reporte_estudios',$proc,$lista);
         	}
             return $this->actionIndex(1);
         }
@@ -186,12 +208,27 @@ class ReportesController extends Controller
             $cond2 ='procedimientos.valor_copago = 0 AND procedimientos.valor_abono != 0 AND procedimientos.valor_saldo != 0';
             $lista->andWhere(['OR', $cond1, $cond2]);
 
+            $dataProvider = new ActiveDataProvider([
+                'query' => $lista,
+                'sort'=>false,
+            ]);            
 
             if(count($proc->errors) == 0){
-                $lista->orderBy('procedimientos.fecha_atencion');
-                $lista = $lista->all();
-                // return print_r($lista);
-                $this->imprimirPDF('reporte_saldos',$proc,$lista);
+
+                $ips = new Ips();
+                $lista_ips = ArrayHelper::map(Ips::find()->all(), 'id', 'nombre');
+                $procedimientos = new Procedimientos();
+                return $this->render('index',[
+                        'dataProvider'=>$dataProvider,
+                        'lista_ips'=>$lista_ips,
+                        'ips'=>$ips,
+                        'procedimientos'=>$procedimientos,
+                        'accion'=>'reporte-saldos',
+                        'titulo'=>'Saldos pendientes',
+                        'tabla'=>2,
+                        'cerrar'=>2,
+                    ]);
+
             }
 
         }
@@ -341,10 +378,10 @@ class ReportesController extends Controller
         {
             $query->andWhere(['e.id'=>$proc->eps_ideps]);
         }
-        if($proc->estado != null && $proc->estado != 'empty')
-        {
-            $query->andWhere(['t.estado'=>$proc->estado]);
-        }
+        // if($proc->estado != null && $proc->estado != 'empty')
+        // {
+        //     $query->andWhere(['t.estado'=>$proc->estado]);
+        // }
         if($proc->fecha_atencion != null && $proc->fecha_atencion != 'empty')
         {
             $fecha_ini = $proc->fecha_atencion != null ? $proc->fecha_atencion : '1990-01';

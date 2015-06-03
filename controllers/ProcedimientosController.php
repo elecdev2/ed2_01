@@ -222,8 +222,9 @@ class ProcedimientosController extends Controller
             }
         }
         $id_ips = (new Query())->select('idips')->from('usuarios_ips')->where(['idusuario'=>Yii::$app->user->id]);
-        // $id_cliente = $this->cliente(Yii::$app->user->id);
-        $id_cliente = 1;
+        $id_cliente = Usuarios::findOne(Yii::$app->user->id)->idclientes;
+        // $id_cliente = 1;
+        $rango_fecha = $this->rangoFecha();
         $ips = new Ips();
         $ips_list = Ips::find()->where(['idclientes'=>$id_cliente])->all();
         $lista_tipos = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_usuario"')->all(),'codigo','descripcion');
@@ -251,6 +252,7 @@ class ProcedimientosController extends Controller
             'medicoRemModel'=>$medicoRem,
             'lista_especialidades'=>$lista_especialidades,
             'lista_medRemGen'=>$lista_medRemGen,
+            'rango_fecha'=>$rango_fecha,
         ]);
         
     }
@@ -468,12 +470,13 @@ class ProcedimientosController extends Controller
             if($model->save()){
                 $model->refresh();
                 Yii::$app->response->format = 'json';
-                return $this->redirect($_POST['url'].'&message=Registro actualizado');
+                return $this->redirect(['index']);
             }
         }
         $id_ips = (new Query())->select('idips')->from('usuarios_ips')->where(['idusuario'=>Yii::$app->user->id]);
-        $id_cliente = $this->cliente(Yii::$app->user->id);
+        $id_cliente = Usuarios::findOne(Yii::$app->user->id)->idclientes;
         $paciente = new Pacientes();
+        $rango_fecha = $this->rangoFecha();
         $ips = new Ips();
         $plantilla = new PlantillasDiagnosticos();
         $ips_list = Ips::find()->where(['idclientes'=>$id_cliente])->all();
@@ -500,8 +503,20 @@ class ProcedimientosController extends Controller
                     'lista_tipoid'=>$lista_tipoid,
                     'campos'=>$campos,
                     'plantilla'=>$plantilla,
+                    'rango_fecha'=>$rango_fecha,
                 ]);
   
+    }
+
+    public function actionPacientesCreate()
+    {
+        $model = new Pacientes();
+        $model->scenario = 'paciente';
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['create']);
+        } 
+        
     }
 
     public function enviarEmail($email,$asunto,$id_ips)
@@ -661,6 +676,17 @@ class ProcedimientosController extends Controller
         } else {
             throw new NotFoundHttpException('La página solicitada no existe.');
         }
+    }
+
+    public function rangoFecha()
+    {
+        $fecha = date('Y');
+        $fecha_min = strtotime('-85 year', strtotime($fecha));
+        $fecha_max = strtotime('-0 year', strtotime($fecha));
+        $fecha_min = date('Y', $fecha_min);
+        $fecha_max = date('Y', $fecha_max);
+
+        return $fecha_min.':'.$fecha_max;
     }
 
     /*Consulta de listados*/

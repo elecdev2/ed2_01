@@ -14,42 +14,42 @@ $this->title = $model->numero_muestra;
 // $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="procedimientos-view">
+    <?php if($model->estado == 'FRM' || $model->estado == 'FCT'|| $model->estado == 'IMP'){ ?>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <!-- <div class="col-md-6 tituloMd6">
+                    <h1 class="titulo tituloDetalle"><?//echo Html::encode($this->title) ?></h1>
+                </div> -->
+                    
+                <div class="col-md-12 tituloMd6">
 
-    <div class="panel panel-default">
-        <div class="panel-body">
-            <!-- <div class="col-md-6 tituloMd6">
-                <h1 class="titulo tituloDetalle"><?//echo Html::encode($this->title) ?></h1>
-            </div> -->
-            <div class="col-md-12 tituloMd6">
-                <?php if($model->estado == 'FRM' || $model->estado == 'FCT'|| $model->estado == 'IMP'){ ?>
+                        <?= Html::a('<i class="add icon-imprimir"></i>Imprimir', ['print', 'id' => $model->id], [
+                            'class' => 'imprimir btn btn-primary',
+                            'target'=>'_blank',
+                            // 'data' => [
+                            //     'confirm' => '¿Seguro que desea visualizar el resultado?',
+                            //     'method' => 'post',
+                            // ],
+                        ]); ?>
 
-                    <?= Html::a('<i class="add icon-imprimir"></i>Imprimir', ['print', 'id' => $model->id], [
-                        'class' => 'imprimir btn btn-primary',
-                        'target'=>'_blank',
-                        // 'data' => [
-                        //     'confirm' => '¿Seguro que desea visualizar el resultado?',
-                        //     'method' => 'post',
-                        // ],
-                    ]); ?>
+                        <?= Html::a('<i class="add icon-recibo"></i>Recibo', ['generar-recibo', 'id' => $model->id, 'vista'=>3], [
+                            'class' => 'btn btn-success crear',
+                            'style'=>'margin-right:10px;',
+                            'target'=>'_blank',
+                            'data' => [
+                                'confirm' => 'Se generará el último recibo',
+                                'method' => 'post',
+                            ],
+                        ]); ?>
 
-                    <?= Html::a('<i class="add icon-recibo"></i>Recibo', ['generar-recibo', 'id' => $model->id, 'vista'=>3], [
-                        'class' => 'btn btn-success crear',
-                        'style'=>'margin-right:10px;',
-                        'target'=>'_blank',
-                        'data' => [
-                            'confirm' => 'Se generará el último recibo',
-                            'method' => 'post',
-                        ],
-                    ]); ?>
+                        <!-- <?//echo Html::button('Recibos',['value' => Url::to(['procedimientos/generar-recibo?id='.$model->id.'&vista=1']),'class'=>'btn btn-default updModal']) ?> -->
 
-                    <!-- <?//echo Html::button('Recibos',['value' => Url::to(['procedimientos/generar-recibo?id='.$model->id.'&vista=1']),'class'=>'btn btn-default updModal']) ?> -->
-
-                <?php } ?>
-                <input type="text" hidden name="id_help" data-value="<?=$model->id?>" data-titulo="<?=Html::encode($this->title)?>" id="helperHid">
-                <!-- <button id="actualizar" class="btn btn-primary btn-lg"></button> -->
+                    <!-- <button id="actualizar" class="btn btn-primary btn-lg"></button> -->
+                </div>
             </div>
         </div>
-    </div>
+    <?php } ?>
+    <input type="text" hidden name="id_help" data-value="<?=$model->id?>" data-titulo="<?=Html::encode($this->title)?>" id="helperHid">
 
 
     <?= DetailView::widget([

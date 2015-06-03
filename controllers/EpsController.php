@@ -9,6 +9,9 @@ use app\models\Informes;
 use app\models\TiposServicio;
 use app\models\EpsTipos;
 use app\models\EpsSearch;
+use app\models\Usuarios;
+
+
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -106,8 +109,7 @@ class EpsController extends Controller
 
             return $this->redirect(['index']);
         } 
-        // $id_cliente = $this->cliente(Yii::$app->user->id);
-        $id_cliente = 1;
+        $id_cliente = Usuarios::findOne(Yii::$app->user->id)->idclientes;;
         $lista_ips = ArrayHelper::map(Ips::find()->where(['idclientes'=>$id_cliente])->all(), 'id', 'nombre');
         $lista_informes = ArrayHelper::map(Informes::find()->all(), 'id', 'nombre');
         $lista_tipos = ArrayHelper::map(TiposServicio::find()->all(), 'id', 'nombre');
@@ -163,12 +165,21 @@ class EpsController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            if(isset($_POST['tipos_estudios'])){
+                EpsTipos::deleteAll(['eps_id'=>$id]);
+                foreach ($_POST['tipos_estudios'] as $key => $value) {
+                    $eps_tipos = new EpsTipos();
+                    $eps_tipos->eps_id = $id;
+                    $eps_tipos->tipos_servicio_id = $value;
+                    $eps_tipos->save();
+                }
+            }
             $model->refresh();
             Yii::$app->response->format = 'json';
-            return $this->redirect($_POST['url'].'&message=Registro actualizado');
+            return $this->redirect(['index']);
         }
 
-        $id_cliente = 1;
+        $id_cliente = Usuarios::findOne(Yii::$app->user->id)->idclientes;
         $lista_ips = ArrayHelper::map(Ips::find()->all(), 'id', 'nombre');
         $lista_informes = ArrayHelper::map(Informes::find()->all(), 'id', 'nombre');
         return $this->renderAjax('update', [

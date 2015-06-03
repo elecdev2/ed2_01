@@ -27,7 +27,7 @@ use yii\helpers\Html;
             <li><a href="<?=Yii::$app->request->baseUrl;?>/facturas/index"><img class="sidebar-icon" src="<?=Yii::$app->request->baseUrl;?>/images/iconos/IconFacturacion.png" alt="" >Facturación</a></li>
             <li class="treeview">
                <a href=""><img class="sidebar-icon" src="<?=Yii::$app->request->baseUrl?>/images/iconos/IconReportes.png" alt="" >Reportes
-                    <i class="fa fa-angle-down pull-right"></i>
+                    <i class="fa fa-angle-right pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
                     <li class="" role="presentation"><?=Html::a('<img class="subsidebar-icon" src="'.Yii::$app->request->baseUrl.'/images/iconos/consultEstudios.png" alt="" > Consultar estudios', ['reportes/index','t'=>1], ['class' => '']) ?></li>
@@ -43,7 +43,7 @@ use yii\helpers\Html;
             <?php if(Yii::$app->user->can('super_admin')){ ?>
             <li class="treeview">
                <a href=""><img class="sidebar-icon" src="<?=Yii::$app->request->baseUrl?>/images/iconos/IconAdmin.png" alt="" >Admin
-                    <i class="fa fa-angle-down pull-right"></i>
+                    <i class="fa fa-angle-right pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
                     <li class="" role="presentation"><?=Html::a('<img class="subsidebar-icon" src="'.Yii::$app->request->baseUrl.'/images/iconos/AdminIconClientes.png" alt="" > Clientes', ['clientes/index'], ['class' => '']) ?></li>
@@ -52,7 +52,7 @@ use yii\helpers\Html;
                     <li class="" role="presentation"><?=Html::a('<img class="subsidebar-icon" src="'.Yii::$app->request->baseUrl.'/images/iconos/AdminIconListas.png" alt="" > Listas del sistema', ['listas-sistema/index'], ['class' => '']) ?></li>
                     <li class="" role="presentation"><?=Html::a('<img class="subsidebar-icon" src="'.Yii::$app->request->baseUrl.'/images/iconos/AdminIconCampos.png" alt="" > Campos', ['campos/index'], ['class' => '']) ?></li>
                     <li class="" role="presentation"><?=Html::a('<img class="subsidebar-icon" src="'.Yii::$app->request->baseUrl.'/images/iconos/AdminIconEspeciali.png" alt="" > Especialidades', ['especialidades/index'], ['class' => '']) ?></li>
-                    <li class="" role="presentation"><?=Html::a('<img class="subsidebar-icon" src="'.Yii::$app->request->baseUrl.'/images/iconos/AdminIconPerfiles.png" alt="" > Perfiles', ['intems/index'], ['class' => '']) ?></li>
+                    <li class="" role="presentation"><?=Html::a('<img class="subsidebar-icon" src="'.Yii::$app->request->baseUrl.'/images/iconos/AdminIconPerfiles.png" alt="" > Perfiles', ['items/index'], ['class' => '']) ?></li>
                     <li class="" role="presentation"><?=Html::a('<img class="subsidebar-icon" src="'.Yii::$app->request->baseUrl.'/images/iconos/AdminIconInformes.png" alt="" > Informes', ['informes/index'], ['class' => '']) ?></li>
                     <li class="" role="presentation"><?=Html::a('<img class="subsidebar-icon" src="'.Yii::$app->request->baseUrl.'/images/iconos/AdminIconEstudios.png" alt="" > Estudios', ['estudios/index'], ['class' => '']) ?></li>
                     <li class="" role="presentation"><?=Html::a('<img class="subsidebar-icon" src="'.Yii::$app->request->baseUrl.'/images/iconos/AdminIconResultados.png" alt="" > Resultados', ['#'], ['class' => '']) ?></li>

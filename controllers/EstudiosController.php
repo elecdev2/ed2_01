@@ -78,7 +78,7 @@ class EstudiosController extends Controller
         $model = new Estudios();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->cod_cups]);
+            return $this->redirect(['index']);
         } else {
             return $this->render('create', [
                 'model' => $model,

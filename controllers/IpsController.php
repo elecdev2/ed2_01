@@ -81,7 +81,7 @@ class IpsController extends Controller
         $model = new Ips();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['index']);
         } else {
             $tipo_id = ListasSistema::find()->where('tipo="tipo_identificacion"')->all();
             $clientes = Clientes::find()->all();

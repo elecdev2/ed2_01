@@ -13,24 +13,27 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
         'method' => 'get',
+        'validateOnType' => true,
     ]); ?>
 
-    <?= $form->field($model, 'name') ?>
+    <div class="col-sm-6 col-lg-12">
+        <?= $form->field($model, 'description', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Perfil']); ?>
+    </div>
 
-    <?= $form->field($model, 'type') ?>
+    <!-- <?//echo $form->field($model, 'type') ?> -->
 
-    <?= $form->field($model, 'description') ?>
+    <!-- <?//echo $form->field($model, 'name') ?> -->
 
-    <?= $form->field($model, 'rule_name') ?>
+    <!-- <?//echo $form->field($model, 'rule_name') ?> -->
 
-    <?= $form->field($model, 'data') ?>
+    <!-- <?//echo $form->field($model, 'data') ?> -->
 
-    <?php // echo $form->field($model, 'created_at') ?>
+    <!-- <?php // echo $form->field($model, 'created_at') ?> -->
 
-    <?php // echo $form->field($model, 'updated_at') ?>
+    <!-- <?php // echo $form->field($model, 'updated_at') ?> -->
 
-    <div class="form-group">
-        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
+    <div class="col-sm-12 form-group  botones-search">
+        <?= Html::submitButton('<i class="busq search-icon"></i>Buscar', ['class' => 'busqueda-boton btn btn-success']) ?>
         <?= Html::resetButton('Reset', ['class' => 'btn btn-default']) ?>
     </div>
 

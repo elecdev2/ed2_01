@@ -74,6 +74,8 @@ class TarifasSearch extends Tarifas
         $query->andFilterWhere(['like', 'estudios.descripcion', $this->estudio]);
         $query->andFilterWhere(['like', 'idestudios', $this->idestudios]);
 
+        $query->limit(20);
+
         return $dataProvider;
     }
 }

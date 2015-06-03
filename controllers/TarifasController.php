@@ -81,12 +81,13 @@ class TarifasController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate($ideps)
+    public function actionCreate()
     {
+        $ideps = $_POST['ideps'];
         $model = new Tarifas();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index']);
+            return $this->redirect(['index', 'ideps'=>$ideps]);
         } else {
             
             $lista_estudios = ArrayHelper::map($this->getEstudios($ideps,'crear',$model), 'id', 'name');
@@ -129,14 +130,17 @@ class TarifasController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index']);
-        } else {
-            $lista_estudios = ArrayHelper::map($this->getEstudios($model->eps_id,'act',$model), 'id', 'name');
-            return $this->renderAjax('update', [
-                'model' => $model,
-                'lista_estudios'=>$lista_estudios,
-            ]);
+            $model->refresh();
+            Yii::$app->response->format = 'json';
+            return $this->redirect(['index', 'ideps'=>$id]);
         }
+        $lista_estudios = ArrayHelper::map($this->getEstudios($model->eps_id,'act',$model), 'id', 'name');
+        return $this->renderAjax('update', [
+            'model' => $model,
+            'lista_estudios'=>$lista_estudios,
+            'ideps'=>$id,
+        ]);
+        
     }
 
     /**
@@ -145,11 +149,11 @@ class TarifasController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionDelete($id)
+    public function actionDelete($id, $ideps)
     {
         $this->findModel($id)->delete();
 
-        return $this->redirect(['index']);
+        return $this->redirect(['index', 'ideps'=>$ideps]);
     }
 
     /**

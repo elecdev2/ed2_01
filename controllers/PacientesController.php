@@ -8,6 +8,8 @@ use app\models\Ciudades;
 use app\models\ListasSistema;
 use app\models\Eps;
 use app\models\PacientesSearch;
+use app\models\Usuarios;
+
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -98,8 +100,9 @@ class PacientesController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['index']);
         } 
-        // $id_cliente = $this->cliente(Yii::$app->user->id);
-        $id_cliente = 1; 
+        $id_cliente = Usuarios::findOne(Yii::$app->user->id)->idclientes;
+        // $id_cliente = 1; 
+        $rango_fecha = $this->rangoFecha();
         $lista_tipos = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_usuario"')->all(),'codigo','descripcion');
         $lista_tipoid = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_identificacion"')->all(),'codigo','descripcion');
         $lista_resid = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_residencia"')->all(),'codigo','descripcion');
@@ -113,6 +116,7 @@ class PacientesController extends Controller
             'lista_ciudades'=>$lista_ciudades,
             'lista_eps'=>$lista_eps,
             'id_cliente'=>$id_cliente,
+            'rango_fecha'=>$rango_fecha,
         ]);
         
     }
@@ -130,10 +134,11 @@ class PacientesController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             $model->refresh();
             Yii::$app->response->format = 'json';
-            return $this->redirect($_POST['url'].'&message=Registro actualizado');
+            return $this->redirect(['index']);
         }
-        // $id_cliente = $this->cliente(Yii::$app->user->id);
-        $id_cliente = 1; 
+        $id_cliente = Usuarios::findOne(Yii::$app->user->id)->idclientes;
+        // $id_cliente = 1; 
+        $rango_fecha = $this->rangoFecha();
         $lista_tipos = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_usuario"')->all(),'codigo','descripcion');
         $lista_tipoid = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_identificacion"')->all(),'codigo','descripcion');
         $lista_resid = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_residencia"')->all(),'codigo','descripcion');
@@ -147,8 +152,20 @@ class PacientesController extends Controller
             'lista_ciudades'=>$lista_ciudades,
             'lista_eps'=>$lista_eps,
             'id_cliente'=>$id_cliente,
+            'rango_fecha'=>$rango_fecha,
         ]);
         
+    }
+
+    public function rangoFecha()
+    {
+        $fecha = date('Y');
+        $fecha_min = strtotime('-85 year', strtotime($fecha));
+        $fecha_max = strtotime('-0 year', strtotime($fecha));
+        $fecha_min = date('Y', $fecha_min);
+        $fecha_max = date('Y', $fecha_max);
+
+        return $fecha_min.':'.$fecha_max;
     }
 
     /**

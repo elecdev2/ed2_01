@@ -72,7 +72,7 @@ class EpsSearch extends Eps
         ]);
 
         $query->andFilterWhere(['like', 'codigo', $this->codigo])
-            ->andFilterWhere(['like', 'nombre', $this->nombre])
+            ->andFilterWhere(['like', 'eps.nombre', $this->nombre])
             ->andFilterWhere(['like', 'direccion', $this->direccion])
             ->andFilterWhere(['like', 'telefono', $this->telefono])
             ->andFilterWhere(['like', 'ips.nombre', $this->ips])

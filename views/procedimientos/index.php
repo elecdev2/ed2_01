@@ -57,7 +57,7 @@ $this->title = 'Procedimientos';
                         'attribute'=>'fecha_atencion',
                         'value'=>function($model){
                             // Yii::$app->formatter->locale = 'es-ES';
-                            return Yii::$app->formatter->asDate($model->fecha_atencion, 'long');
+                            return Yii::$app->formatter->asDate($model->fecha_atencion, 'd-MMM-yyyy');
                         },
                         'hAlign'=>GridView::ALIGN_RIGHT,
                         'filter' => yii\jui\DatePicker::widget(['name' => 'ProcedimientosSearch[fecha_atencion]', 'dateFormat' => 'yyyy-MM-dd', 'options' => ['class' => 'form-control'], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']),
@@ -113,7 +113,7 @@ $this->title = 'Procedimientos';
                     [
                         'attribute'=>'fecha_salida',
                         'value'=>function($model){
-                            return Yii::$app->formatter->asDate($model->fecha_salida, 'long');
+                            return Yii::$app->formatter->asDate($model->fecha_salida, 'd-MMM-yyyy');
                         },
                         'hAlign'=>GridView::ALIGN_RIGHT,
                         'filter' => yii\jui\DatePicker::widget(['name' => 'ProcedimientosSearch[fecha_salida]',"dateFormat" => 'yyyy-MM-dd', 'options' => ['class' => 'form-control'], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']),
@@ -204,13 +204,5 @@ $this->title = 'Procedimientos';
         $('#guardarPlantilla').attr('data-value', event.target.id);
         $('#plantillaNuevaModal').modal();
     });
-
-   $(document).ready(function() {
-        $('.fomularioTitulo').hide();
-        $('.search-boton').on('click', function() {
-            $('.fomularioTitulo').slideToggle('slow');
-            return false;
-        });
-   });
 
 </script>

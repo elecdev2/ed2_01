@@ -14,7 +14,7 @@ use kartik\select2\Select2;
 
 <div class="pacientes-form">
 
-    <?php $form = ActiveForm::begin(['layout'=>'horizontal', 'id'=>'pacForm', 'validateOnType' => true, 'options'=>['onsubmit'=>'submitForm']]); ?>
+    <?php $form = ActiveForm::begin(['layout'=>'horizontal', 'id'=>'pacProcForm', 'validateOnType' => true, 'action'=>'pacientes-create']); ?>
     
      <input type="text" name="url" id="url" hidden>
     <?= $form->field($model, 'idclientes')->hiddenInput(['value'=>$model->isNewRecord ? $id_cliente : $model->idclientes])->label('') ?>

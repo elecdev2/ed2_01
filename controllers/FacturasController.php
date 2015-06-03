@@ -59,6 +59,7 @@ class FacturasController extends Controller
             'lista_ips'=>$lista_ips,
             'ips'=>$ips,
             'procedimientos'=>$procedimientos,
+            'fact'=>1,
         ]);
     }
 
@@ -99,7 +100,7 @@ class FacturasController extends Controller
             $fecha = ' AND periodo_facturacion between "'.$proc->fecha_inicio.'" AND "'.$proc->fecha_fin.'"';
         }
 
-        $query .= $fecha.' AND t.estado= "FCT"'.$ips_id.$eps_id;
+        $query .= $fecha.' AND (t.estado= "FCT" OR t.estado="IMP")'.$ips_id.$eps_id;
         $query .= ' GROUP BY t.numero_factura';
         
 
@@ -113,7 +114,6 @@ class FacturasController extends Controller
         if($proc->load(Yii::$app->request->post()) && $ips->load(Yii::$app->request->post())){
        
             $ips = Ips::findOne($_POST['Ips']['id']);
-
             if($proc->estado == 'FCT'){
                 $query = $this->facturados($proc,$ips);
                 $campos = ['0'=>'Fecha', '1'=>'Factura', '2'=>'EPS', '3'=>'IPS', '4'=>'TOTAL'];
@@ -226,6 +226,7 @@ class FacturasController extends Controller
         }
 
         $query = $select.$query;
+
 
         $lista = Yii::$app->db->createCommand($query)->queryAll();
 

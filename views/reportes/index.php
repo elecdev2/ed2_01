@@ -21,7 +21,7 @@ use kartik\grid\GridView;
                 </div>
             </div>
         
-			<div class="col-md-12 fomularioTitulo">
+			<div class="col-md-12 fomularioTituloReporte">
 				<?php $form = ActiveForm::begin(['action'=>$accion]); ?>
 
 					<div class="col-sm-6 col-lg-6">
@@ -69,15 +69,180 @@ use kartik\grid\GridView;
 			</div>
 
 		</div>
-		<?= Html::a('<span class="busqueda glyphicon glyphicon-search"></span>Busqueda <i class="fa fa-caret-down fa-lg"></i>','#',['class'=>'search-boton']);   ?>
+		<?= Html::a('<span class="busqueda glyphicon glyphicon-search"></span>Busqueda <i class="fa fa-caret-down fa-lg"></i>','#',['class'=>'search-botonReporte', 'data-value'=>$cerrar]);   ?>
 	</div>
 </div>
 
+<?php if(isset($dataProvider) && $tabla == 1){ ?>
+	<?= GridView::widget([
+	        'id'=>'reporteEstudios',
+	        'dataProvider' => $dataProvider,
+	        // 'filterModel' => $searchModel,
+	        'columns' => [
+	            // 'id',
+		        [
+		        	'attribute'=>'idprocedimiento',
+		        	'label'=>'Tipo de estudio',
+		        	'value'=>function($model){
+		        		return $model->idprocedimiento0->idtipoServicio->nombre;
+		        	},
+		        ],
+		        [
+		        	'attribute'=>'idprocedimiento',
+		        	'label'=>'Numero de muestra',
+		        	'value'=>function($model){
+		        		return $model->idprocedimiento0->numero_muestra;
+		        	},
+		        ],
+		        [
+		        	'attribute'=>'idprocedimiento',
+		        	'label'=>'Paciente',
+		        	'value'=>function($model){
+		        		return $model->idprocedimiento0->idpacientes0->nombre1.' '.$model->idprocedimiento0->idpacientes0->nombre2.' '.$model->idprocedimiento0->idpacientes0->apellido1.' '.$model->idprocedimiento0->idpacientes0->apellido2;
+		        	},
+		        ],
+		        [
+		        	'attribute'=>'idprocedimiento',
+		        	'label'=>'EPS',
+		        	'value'=>function($model){
+		        		return $model->idprocedimiento0->epsIdeps->nombre;
+		        	},
+		        ],
+		        [
+		        	'attribute'=>'idprocedimiento',
+		        	'label'=>'Valor estudio',
+		        	'value'=>function($model){
+		        		return '$'.number_format($model->idprocedimiento0->valor_procedimiento);
+		        	},
+		        ],
+		        [
+		        	'attribute'=>'idprocedimiento',
+		        	'label'=>'Valor copago',
+		        	'value'=>function($model){
+		        		return '$'.number_format($model->idprocedimiento0->valor_copago);
+		        	},
+		        ],
+	            [
+		        	'attribute'=>'valor_abono',
+		        	'value'=>function($model){
+		        		return '$'.number_format($model->valor_abono);
+		        	},
+		        ],
+	            'num_recibo',
+	            // 'fecha',
+
+	        ],
+	        'toolbar' => [
+	        //     ['content'=>
+	        //         Html::a('Crear cliente', ['create'], ['class' => 'btn btn-success']),
+	        //     ],
+	            '{export}',
+	        //     '{toggleData}',
+	        ],
+	        'hover' => true,
+	        'panel' => [
+	            'type' => GridView::TYPE_DEFAULT,
+	        ],
+	        'exportConfig' => [GridView::PDF => ['label' => 'Guardar como PDF']],
+	    ]); ?>
+
+<?php } ?>
+
+<?php if(isset($dataProvider) && $tabla == 2){ ?>
+	<?= GridView::widget([
+	        'id'=>'reporteEstudios',
+	        'dataProvider' => $dataProvider,
+	        // 'filterModel' => $searchModel,
+	        'columns' => [
+	            // 'id',
+	        	[
+		        	'attribute'=>'idprocedimiento',
+		        	'label'=>'Fecha de atención',
+		        	'value'=>function($model){
+		        		return $model->idprocedimiento0->fecha_atencion;
+		        	},
+		        ],
+		        [
+		        	'attribute'=>'idprocedimiento',
+		        	'label'=>'Tipo de estudio',
+		        	'value'=>function($model){
+		        		return $model->idprocedimiento0->idtipoServicio->nombre;
+		        	},
+		        ],
+		        [
+		        	'attribute'=>'idprocedimiento',
+		        	'label'=>'Numero de muestra',
+		        	'value'=>function($model){
+		        		return $model->idprocedimiento0->numero_muestra;
+		        	},
+		        ],
+		        [
+		        	'attribute'=>'idprocedimiento',
+		        	'label'=>'Paciente',
+		        	'value'=>function($model){
+		        		return $model->idprocedimiento0->idpacientes0->nombre1.' '.$model->idprocedimiento0->idpacientes0->nombre2.' '.$model->idprocedimiento0->idpacientes0->apellido1.' '.$model->idprocedimiento0->idpacientes0->apellido2;
+		        	},
+		        ],
+		        [
+		        	'attribute'=>'idprocedimiento',
+		        	'label'=>'EPS',
+		        	'value'=>function($model){
+		        		return $model->idprocedimiento0->epsIdeps->nombre;
+		        	},
+		        ],
+		        [
+		        	'attribute'=>'idprocedimiento',
+		        	'label'=>'Valor estudio',
+		        	'value'=>function($model){
+		        		return '$'.number_format($model->idprocedimiento0->valor_procedimiento);
+		        	},
+		        ],
+		        [
+		        	'attribute'=>'idprocedimiento',
+		        	'label'=>'Valor copago',
+		        	'value'=>function($model){
+		        		return '$'.number_format($model->idprocedimiento0->valor_copago);
+		        	},
+		        ],
+	            [
+		        	'attribute'=>'valor_abono',
+		        	'value'=>function($model){
+		        		return '$'.number_format($model->valor_abono);
+		        	},
+		        ],
+		        [
+		        	'attribute'=>'valor_saldo',
+		        	'value'=>function($model){
+		        		return '$'.number_format($model->valor_saldo);
+		        	},
+		        ],
+	            // 'num_recibo',
+	            // 'fecha',
+
+	        ],
+	        'toolbar' => [
+	        //     ['content'=>
+	        //         Html::a('Crear cliente', ['create'], ['class' => 'btn btn-success']),
+	        //     ],
+	            '{export}',
+	        //     '{toggleData}',
+	        ],
+	        'hover' => true,
+	        'panel' => [
+	            'type' => GridView::TYPE_DEFAULT,
+	        ],
+	        'exportConfig' => [GridView::PDF => ['label' => 'Guardar como PDF']],
+	    ]); ?>
+
+<?php } ?>
 <script type="text/javascript">
 	$(document).ready(function() {
         // $('.fomularioTitulo').hide();
-        $('.search-boton').on('click', function() {
-            $('.fomularioTitulo').slideToggle('slow');
+        if($('.search-botonReporte').attr('data-value') != 1){
+        	$('.fomularioTituloReporte').hide();
+        }
+        $('.search-botonReporte').on('click', function() {
+            $('.fomularioTituloReporte').slideToggle('fast');
             return false;
         });
     });

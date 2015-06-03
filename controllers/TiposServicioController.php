@@ -85,7 +85,7 @@ class TiposServicioController extends Controller
         $model = new TiposServicio();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['index']);
         } else {
             $client_model = new Clientes();
             $clientes = Clientes::find()->all();

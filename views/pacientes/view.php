@@ -3,6 +3,8 @@
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 use yii\helpers\Url;
+use app\models\ListasSistema;
+use app\models\Ciudades;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Pacientes */
@@ -27,18 +29,38 @@ $this->title = $model->nombre1.' '.$model->nombre2.' '.$model->apellido1.' '.$mo
             'telefono',
             'sexo',
             'fecha_nacimiento',
-            'tipo_usuario',
-            'tipo_residencia',
+            [
+                'attribute'=>'tipo_usuario',
+                'label'=>'Tipo de usuario',
+                'value'=> ListasSistema::find()->select(['descripcion'])->where(['codigo'=>$model->tipo_usuario])->scalar(),
+            ],
+            [
+                'attribute'=>'tipo_residencia',
+                'label'=>'Tipo de residencia',
+                'value'=> ListasSistema::find()->select(['descripcion'])->where(['codigo'=>$model->tipo_residencia])->scalar(),
+            ],
             // 'idclientes',
-            'activo',
-            'idciudad',
-            // [
-            //     'attribute'=>'ideps',
-            //     'value'=>$model->ideps0->nombre,
-            // ],
-            'ideps',
+            [
+                'attribute'=>'activo',
+                'value'=>$model->activo = 1 ? 'Si' : 'No',
+            ],
+            [
+                'attribute'=>'idciudad',
+                'label'=>'Ciudad',
+                'value'=>Ciudades::findOne($model->idciudad)->nombre,
+            ],
+            
+            [
+                'attribute'=>'ideps',
+                'label'=>'EPS',
+                'value'=>$model->ideps != null ? $model->ideps0->nombre : '',
+            ],
             'email:email',
-            'envia_email:email',
+            [
+                'attribute'=>'envia_email',
+                'label'=>'Enviar email',
+                'value'=>$model->email = 1 ? 'Si' : 'No',
+            ],
             'codeps',
         ],
     ]) ?>

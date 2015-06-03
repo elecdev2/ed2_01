@@ -6,35 +6,27 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model app\models\Items */
 
-$this->title = $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Items', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title = $model->description;
+// $this->params['breadcrumbs'][] = ['label' => 'Items', 'url' => ['index']];
+// $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="items-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
-    <p>
-        <?= Html::a('Update', ['update', 'id' => $model->name], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->name], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
+    <input type="text" hidden name="id_help" data-value="<?=$model->name?>" data-titulo="<?=Html::encode($this->title)?>" id="helperHid">
 
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'name',
-            'type',
+            [
+                'attribute'=>'name',
+                'label'=>'Nombre',
+            ],
+            // 'type',
             'description:ntext',
-            'rule_name',
-            'data:ntext',
-            'created_at',
-            'updated_at',
+            // 'rule_name',
+            // 'data:ntext',
+            // 'created_at',
+            // 'updated_at',
         ],
     ]) ?>
 

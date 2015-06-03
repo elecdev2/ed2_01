@@ -40,8 +40,11 @@ function openModalView(idcontenedor,elemento){
    var fila = elemento.attr('data-key');
    // tituloModal(campo,fila);
     $.get('view', {id: fila}).done(function(data) {
+        $('#act').html('');
         $('#'+idcontenedor).html(data);
-        $('.modal-title').html($('#helperHid').attr('data-titulo'));
+        var titulo = $("#helperHid").attr("data-titulo");
+        $('.modal-title').text('');
+        $('.modal-title').text(titulo);
         $('#viewModal').modal({backdrop:'static'});
         $('#update').attr('value', $('#helperHid').attr('data-value'));
     });
@@ -50,8 +53,11 @@ function openModalView(idcontenedor,elemento){
 function openModalUpdate(idcontenedor,elemento){
    var fila = elemento.attr('data-key');
     $.get('update', {id: fila}).done(function(data) {
+         $('#vista').html('');
         $('#'+idcontenedor).html(data);
-        $('.modal-title').html($('#helperHid').attr('data-titulo'));
+        var titulo = $("#helperHid").attr("data-titulo");
+        $('.modal-title').text('');
+        $('.modal-title').text(titulo);
         $('#updateModal').modal({backdrop:'static'});
         $('#view').attr('value', $('#helperHid').attr('data-value'));
     });
@@ -59,6 +65,7 @@ function openModalUpdate(idcontenedor,elemento){
 
 function openModalUpdateBarra(idcontenedor,id){
     $.get('update', {id: id}).done(function(data) {
+        $('#vista').html('');
         $('#'+idcontenedor).html(data);
         $('#updateModal').modal({backdrop:'static'});
         $('#view').attr('value', $('#helperHid').attr('data-value'));
@@ -67,6 +74,7 @@ function openModalUpdateBarra(idcontenedor,id){
 
 function openModalViewBarra(idcontenedor,id){
     $.get('view', {id: id}).done(function(data) {
+        $('#act').html('');
         $('#'+idcontenedor).html(data);
         $('#viewModal').modal({backdrop:'static'});
         $('#update').attr('value', $('#helperHid').attr('data-value'));
@@ -74,7 +82,7 @@ function openModalViewBarra(idcontenedor,id){
 }
 
 function openModalTarifas(idcontenedor,id){
-    $.get('create', {ideps: id}).done(function(data) {
+    $.post('create', {ideps: ideps}).done(function(data) {
         $('#'+idcontenedor).html(data);
         $('#tarModal').modal({backdrop:'static'});
     });
@@ -127,3 +135,11 @@ function getUrlVars() {
         event.preventDefault();
         openModalViewBarra('vista', $(this).val());
     });
+
+    $(document).ready(function() {
+        $('.fomularioTitulo').hide();
+        $('.search-boton').on('click', function() {
+            $('.fomularioTitulo').slideToggle('fast');
+            return false;
+        });
+   });

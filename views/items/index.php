@@ -1,14 +1,16 @@
 <?php
 
 use yii\helpers\Html;
-use yii\grid\GridView;
+// use yii\grid\GridView;
+use kartik\grid\GridView;
+use yii\bootstrap\Modal;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\ItemsSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Items';
-$this->params['breadcrumbs'][] = $this->title;
+// $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="items-index">
 
@@ -35,11 +37,14 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            'name',
-            'type',
-            'description:ntext',
-            'rule_name',
-            'data:ntext',
+            // 'name',
+            [
+                'attribute'=>'description',
+                'label'=>'Perfil',
+            ],
+            // 'type',
+            // 'rule_name',
+            // 'data:ntext',
             // 'created_at',
             // 'updated_at',
 
@@ -63,22 +68,27 @@ $this->params['breadcrumbs'][] = $this->title;
                 
             ],
         ],
+        'toolbar' => [
+            //     ['content'=>
+            //         Html::a('Crear médico', ['create'], ['class' => 'btn btn-success'])
+            //     ],
+            //     // '{export}',
+            //     // '{toggleData}',
+            ],
+            'hover' => true,
+            'panel' => [
+                'type' => GridView::TYPE_DEFAULT,
+            ],
+            'exportConfig' => [GridView::CSV => ['label' => 'Save as CSV']],
     ]); ?>
 
 </div>
 <?=$this->render('//site/modals'); ?>
 
 <script type="text/javascript">
-    $(document).on('click', '#ipsTab tr td:not(#ipsTab tr td.skip-export)',function(event) {
+    $(document).on('click', '#perfilesTab tr td:not(#perfilesTab tr td.skip-export)',function(event) {
         event.preventDefault();
         openModalView('vista',$(this).parent());
     });
 
-    $(document).ready(function() {
-        $('.fomularioTitulo').hide();
-        $('.search-boton').on('click', function() {
-            $('.fomularioTitulo').slideToggle('slow');
-            return false;
-        });
-   });
 </script>

@@ -92,11 +92,4 @@ $this->title = 'Tipos Servicios';
         openModalView('vista',$(this).parent());
     });
 
-    $(document).ready(function() {
-        $('.fomularioTitulo').hide();
-        $('.search-boton').on('click', function() {
-            $('.fomularioTitulo').slideToggle('slow');
-            return false;
-        });
-   });
 </script>

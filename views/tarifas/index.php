@@ -22,7 +22,7 @@ $this->title = 'Tarifas'.' - '.$eps;
                     <h2 class="titulo tituloIndex"><?= Html::encode($this->title) ?></h2>
                 </div>
                 <div class="col-sm-6">
-                    <?= Html::a('<i class="add icon-add"></i>Nueva tarifa', ['create'], ['id'=>'tar','class' => 'crear btn btn-success tarifa']);?>
+                    <?= Html::a('<i class="add icon-add"></i>Nueva tarifa', ['#'], ['id'=>'tar','class' => 'crear btn btn-success tarifa']);?>
                     <?= Html::a('<i class="add icon-back"></i>Regresar', ['eps/index'], ['class' => 'btn btn-success crear', 'style'=>'margin-right:10px;']);?>
                     <!-- <a href="" onclick="goBack()" style="vertical-align: middle;" title="Volver"><i class="glyphicon glyphicon-chevron-left"></i></a>  -->
                 </div>
@@ -67,7 +67,7 @@ $this->title = 'Tarifas'.' - '.$eps;
                         return '<a href="" id="actualizar" class="up" title="actualizar"></a>';
                     },
                     'delete'=> function ($url, $model, $key) {
-                        return Html::a('', ['delete', 'id' => $model->id], ['class' => 'del',
+                        return Html::a('', ['delete', 'id' => $model->id, 'ideps'=>$model->eps_id], ['class' => 'del',
                             'data' => ['confirm' => '¿Está seguro que desea borrar este elemento?','method' => 'post',],
                         ]);
                     },

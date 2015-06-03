@@ -19,6 +19,7 @@ $this->title = $model->idestudios0->descripcion;
 		    <?= $this->render('_form', [
 		        'model' => $model,
 		        'lista_estudios'=>$lista_estudios,
+		        'ideps'=>$ideps,
 		    ]) ?>
 		</div>
 	</div>

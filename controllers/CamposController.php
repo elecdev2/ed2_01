@@ -73,7 +73,7 @@ class CamposController extends Controller
         $model = new Campos();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['index']);
         } else {
             $titulos_model = new Titulos();
             $titulos = Titulos::find()->all();

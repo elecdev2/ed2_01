@@ -44,6 +44,7 @@ $this->title = 'Nuevo procedimiento';
                 'medicoRemModel'=>$medicoRemModel,
                 'lista_especialidades'=>$lista_especialidades,
                 'lista_medRemGen'=>$lista_medRemGen,
+                'rango_fecha'=>$rango_fecha,
             ]) ?>
         <!-- </div>
     </div> -->

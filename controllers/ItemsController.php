@@ -8,6 +8,7 @@ use app\models\ItemsSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
  * ItemsController implements the CRUD actions for Items model.
@@ -48,7 +49,7 @@ class ItemsController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
+        return $this->renderPartial('view', [
             'model' => $this->findModel($id),
         ]);
     }
@@ -61,14 +62,31 @@ class ItemsController extends Controller
     public function actionCreate()
     {
         $model = new Items();
+        $auth = Yii::$app->authManager;
+        $lista_perfiles = ArrayHelper::map(Items::find()->where(['data'=>1])->all(), 'name', 'description');
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->name]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
-        }
+        if (Yii::$app->request->post()) 
+        {
+            // return print_r($_POST['perf']);
+            $model->name = str_replace(' ', '_', $_POST['Items']['description']);
+            $role = $auth->createRole($model->name);
+            $role->description = $_POST['Items']['description'];
+            $role->data = '';
+
+            if($auth->add($role)) {
+                foreach ($_POST['perf'] as $value) {
+                    $child = $auth->getRole($value);
+                    $auth->addChild($role,$child);
+                }
+                return $this->redirect(['index']);
+            }
+
+        } 
+        return $this->render('create', [
+            'model' => $model,
+            'lista_perfiles'=>$lista_perfiles,
+        ]);
+        
     }
 
     /**
@@ -79,15 +97,34 @@ class ItemsController extends Controller
      */
     public function actionUpdate($id)
     {
+        $auth = Yii::$app->authManager;
         $model = $this->findModel($id);
+        $lista_perfiles = ArrayHelper::map(Items::find()->where(['data'=>1])->all(), 'name', 'description');
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->name]);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
-        }
+        if (Yii::$app->request->post()) 
+        {
+            $padre = $auth->getRole($id);
+            $auth->removeChildren($padre);
+            $model->name = $id; 
+            $model->description = $_POST['Items']['description'];
+
+            foreach ($_POST['perf'] as  $value) {
+                $child = $auth->getRole($value);
+                $auth->addChild($padre,$child);
+            }
+            
+            if($model->save())
+            {
+                $model->refresh();
+                Yii::$app->response->format = 'json';
+                return $this->redirect(['index']);
+            }
+        } 
+        return $this->renderAjax('update', [
+            'model' => $model,
+            'lista_perfiles'=>$lista_perfiles,
+        ]);
+        
     }
 
     /**

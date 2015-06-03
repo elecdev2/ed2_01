@@ -37,6 +37,7 @@ $this->title = $model->numero_muestra;
         'lista_especialidades'=>$lista_especialidades,
         'lista_tipoid'=>$lista_tipoid,
         'campos'=>$campos,
+        'rango_fecha'=>$rango_fecha,
 
     ]) ?>
 

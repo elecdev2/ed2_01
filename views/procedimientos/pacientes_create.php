@@ -12,22 +12,9 @@ $this->title = 'Nuevo paciente';
 ?>
 <div class="pacientes-create">
 
-	 <div class="panel panel-default">
-        <div class="panel-body">
-            <div class="panelTituloCrear col-md-12">
-                <div class="col-md-6">
-                    <h2 class="titulo tituloIndex"><?= Html::encode($this->title) ?></h2>
-                </div>
-                <div class="col-md-6">
-                    <?= Html::a('<i class="add icon-back"></i>Regresar', ['index'], ['class' => 'btn btn-success crear']);?>
-                </div>
-            </div>
-        </div>
-    </div>
-
      <div class="panel panel-default">
         <div class="panel-body">
-		    <?= $this->render('_form', [
+		    <?= $this->render('pacientes_form', [
 		        'model' => $model,
 		        'lista_tipos'=>$lista_tipos,
 		        'lista_tipoid'=>$lista_tipoid,

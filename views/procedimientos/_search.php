@@ -18,7 +18,7 @@ use kartik\select2\Select2;
     ]); ?>
 
     <div class="col-sm-6 col-lg-4">
-        <?= $form->field($model, 'numid_paciente', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'CC Paciente']); ?>
+        <?= $form->field($model, 'numid_paciente', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'ID Paciente']); ?>
     </div>
 
     <div class="col-sm-6 col-lg-4">

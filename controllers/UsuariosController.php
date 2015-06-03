@@ -94,12 +94,16 @@ class UsuariosController extends Controller
         if ($model->load(Yii::$app->request->post())) {
             $model->password = sha1($model->password);
             $role = Yii::$app->authManager->getRole($model->perfil);
-            if($modelMedico->load(Yii::$app->request->post()) && Model::validateMultiple([$model, $modelMedico])){
-                $cod = $modelMedico->codigo;
-                $modelMedico->idespecialidades = (new Query())->select('id')->from('especialidades')->where(['codigo'=>$modelMedico->idespecialidades])->scalar();
-                $modelMedico->nombre = $model->nombre;
-                $modelMedico->save(false);
-                $model->idmedicos = (new Query())->select('id')->from('medicos')->where(['codigo'=>$cod])->scalar();
+
+            if(!empty($_POST['Medicos']['ips_idips']) && !empty($_POST['Medicos']['idespecialidades']) && !empty($_POST['Medicos']['codigo']))
+            {
+                if($modelMedico->load(Yii::$app->request->post()) && Model::validateMultiple([$model, $modelMedico])){
+                    $cod = $modelMedico->codigo;
+                    $modelMedico->idespecialidades = (new Query())->select('id')->from('especialidades')->where(['codigo'=>$modelMedico->idespecialidades])->scalar();
+                    $modelMedico->nombre = $model->nombre;
+                    $modelMedico->save(false);
+                    $model->idmedicos = (new Query())->select('id')->from('medicos')->where(['codigo'=>$cod])->scalar();
+                }
             }
             if($model->save()){
                 Yii::$app->authManager->assign($role, $model->id);
@@ -107,8 +111,8 @@ class UsuariosController extends Controller
             }
 
         }
-         // $id_cliente = $this->cliente(Yii::$app->user->id);
-        $id_cliente = 1;
+         $id_cliente = $this->findModel(Yii::$app->user->id)->idclientes;
+        // $id_cliente = 1;
         $lista_perf = ArrayHelper::map(Items::find()->where(['<>','data','1'])->all(),'name','description');
         $lista_ips = ArrayHelper::map(Ips::find()->all(),'id','nombre');
         $lista_especialidades = ArrayHelper::map(Especialidades::find('SELECT (codigo) AS id, (nombre) AS name')->all(),'codigo','nombre');

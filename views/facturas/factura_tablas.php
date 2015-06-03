@@ -16,20 +16,18 @@ use yii\helpers\Url;
 						$totales = true;
 					}?>
 		        	<th class="" > <?= Html::encode($c->idcolumna0->descripcion); ?></th>
-
 		    <?php } ?>
 		</tr>
-
 		<?php foreach ($lista as $l) { ?>
+
 				<tr>
 					<?php foreach ($campos as $c) {
-
 						if($c->idcolumna0->total){
-							${$c->idcolumna0->alias}+=$fact == false ? $l[$c->idcolumna0->alias] : $l->{$c->idcolumna0->alias}; 
+							${$c->idcolumna0->alias}+=$l[$c->idcolumna0->alias]; 
 						?>
-							<td class="">$<?= Html::encode(number_format($fact == false ? $l[$c->idcolumna0->alias] : $l->{$c->idcolumna0->alias})); ?></td>
+							<td class="">$<?= Html::encode(number_format($l[$c->idcolumna0->alias])); ?></td>
 						<?php }else{ ?>
-							<td class=""><?= Html::encode(strtoupper($fact == false ? $l[$c->idcolumna0->alias] : $l->{$c->idcolumna0->alias})); ?></td>
+							<td class=""><?= Html::encode(strtoupper($l[$c->idcolumna0->alias])); ?></td>
 						<?php } ?>
 
 					<?php } ?>
@@ -61,10 +59,10 @@ use yii\helpers\Url;
 		<?php } ?>
 	</table>
 
-		<?php if(!$fact){ ?>
+		<?php if($tipo == 1 && $fact == false){ ?>
 			</br><div class="form-group">
 				<?php $a = json_encode($lista);?>
-				<?= Html::a('Facturar', ['facturar', 'ips'=>$ips->id, 'eps'=>$procedimientos->eps_ideps, 'fecha_inicio'=>$fecha_inicio, 'fecha_fin'=>$fecha_fin, 'lista'=>$a], ['class'=>'btn btn-success', 'target'=>'_blank']); ?>
+				<?= Html::a('Facturar', ['facturar', 'ips'=>$ips->id, 'eps'=>$procedimientos->eps_ideps, 'fecha_inicio'=>$fecha_inicio, 'fecha_fin'=>$fecha_fin, 'lista'=>$a], ['class'=>'btn btn-success', 'target'=>'_blank', 'style'=>count($lista) > 0 ? 'display:initial' : 'display:none']); ?>
 			</div>	
 		<?php } ?>
 

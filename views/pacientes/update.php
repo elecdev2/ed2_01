@@ -22,6 +22,7 @@ $this->title = $model->nombre1. ' ' . $model->nombre2. ' ' . $model->apellido1. 
 		        'lista_ciudades'=>$lista_ciudades,
 		        'lista_eps'=>$lista_eps,
 		        'id_cliente'=>$id_cliente,
+		        'rango_fecha'=>$rango_fecha,
 		    ]) ?>
 		</div>
 	</div>

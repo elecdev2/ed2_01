@@ -133,7 +133,7 @@ class MedicosController extends Controller
             if($model->save()){
                 $model->refresh();
                 Yii::$app->response->format = 'json';
-                return $this->redirect($_POST['url'].'&message=Registro actualizado');
+                return $this->redirect(['index']);
             }
         } 
         

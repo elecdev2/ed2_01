@@ -31,9 +31,11 @@ $this->title = 'Nuevo usuario';
 		        'model' => $model,
 		        'id_cliente'=>$id_cliente,
                 'lista_perf'=>$lista_perf,
-                'modelMedico'=>$modelMedico,
                 'lista_ips'=>$lista_ips,
                 'lista_especialidades'=>$lista_especialidades,
+                'ipsModel'=>$ipsModel,
+                
+                // 'lista_clientes'=>$lista_clientes,
 		    ]) ?>
 		</div>
 	</div>

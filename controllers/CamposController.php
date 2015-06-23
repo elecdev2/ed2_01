@@ -73,6 +73,7 @@ class CamposController extends Controller
         $model = new Campos();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            \Yii::$app->getSession()->setFlash('success', 'Campo creado con exito!');
             return $this->redirect(['index']);
         } else {
             $titulos_model = new Titulos();
@@ -106,7 +107,8 @@ class CamposController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             $model->refresh();
             Yii::$app->response->format = 'json';
-            return $this->redirect(['index']);
+            \Yii::$app->getSession()->setFlash('success', 'Campo actualizado con exito!');
+            return $this->redirect($_POST['url']);
         } else {
             $titulos_model = new Titulos();
             $titulos = ArrayHelper::map(Titulos::find()->all(), 'id', 'descripcion');
@@ -114,6 +116,7 @@ class CamposController extends Controller
             $client_model = new Clientes();
             $clientes = ArrayHelper::map(Clientes::find()->all(), 'id', 'nombre');
             $tipo_campos = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_campo"')->all(),'id','descripcion');
+            $this->getView()->registerJs('$("#url").val(getUrlVars());', yii\web\View::POS_READY,null);
             return $this->renderAjax('update', [
                 'model' => $model,
                 'titulos_model'=>$titulos_model,

@@ -13,22 +13,27 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
         'method' => 'get',
+        'validateOnType' => true,
     ]); ?>
 
-    <?= $form->field($model, 'id') ?>
+    <div class="col-sm-6 col-lg-4">
+        <?= $form->field($model, 'codigo', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Código']) ?>
+    </div>
 
-    <?= $form->field($model, 'codigo') ?>
+    <div class="col-sm-6 col-lg-4">
+        <?= $form->field($model, 'nombre', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Nombre']) ?>
+    </div>
 
-    <?= $form->field($model, 'nombre') ?>
+    <div class="col-sm-6 col-lg-4">
+        <?= $form->field($model, 'telefono', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Télefono']) ?>
+    </div>
 
-    <?= $form->field($model, 'telefono') ?>
+        <!-- <?php //echo $form->field($model, 'email', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Email']) ?> -->
 
-    <?= $form->field($model, 'email') ?>
+    <!-- <?php // echo $form->field($model, 'especialidades_id') ?> -->
 
-    <?php // echo $form->field($model, 'especialidades_id') ?>
-
-    <div class="form-group">
-        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
+    <div class="col-sm-12 form-group  botones-search">
+        <?= Html::submitButton('<i class="busq search-icon"></i>Buscar', ['class' => 'busqueda-boton btn btn-success']) ?>
         <?= Html::resetButton('Reset', ['class' => 'btn btn-default']) ?>
     </div>
 

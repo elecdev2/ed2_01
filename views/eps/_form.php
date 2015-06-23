@@ -18,6 +18,7 @@ use kartik\depdrop\DepDrop;
     <?php $form = ActiveForm::begin(['layout'=>'horizontal', 'id'=>'epsForm', 'validateOnType' => true, 'options'=>['onsubmit'=>'submitForm']]); ?>
     
      <input type="text" name="url" id="url" hidden>
+     <div class="help-block help-block-error "></div>
 
     <?= $form->field($model, 'idips')->dropDownList($lista_ips, ['prompt'=>'Seleccione una opción', 'id'=>'ips_id'])->label('IPS');?>
 

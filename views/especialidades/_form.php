@@ -13,6 +13,8 @@ use yii\bootstrap\ActiveForm;
 
     <?php $form = ActiveForm::begin(['layout'=>'horizontal', 'id'=>'espForm', 'validateOnType' => true, 'options'=>['onsubmit'=>'submitForm']]); ?>
 
+	<input type="text" name="url" id="url" hidden>
+
     <?= $form->field($model, 'codigo')->textInput(['maxlength' => 15]) ?>
 
     <?= $form->field($model, 'nombre')->textInput(['maxlength' => 150]) ?>

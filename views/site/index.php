@@ -8,7 +8,7 @@ $this->title = 'Clapp';
      <div class="span-23 showgrid">
         <div class="dashboardIcons span-16">
             
-            <?php if(Yii::$app->user->can('auxiliar') || Yii::$app->user->can('medico')){ ?>
+            <?php if(Yii::$app->user->can('procedimientos')){ ?>
                 <a href="<?= Yii::$app->request->baseUrl; ?>/procedimientos/index">
                     <div class="dashIcon span-3">
                         <img src="<?= Yii::$app->request->baseUrl; ?>/images/iconos/procedimientosIndex.png" alt="Estudios"  />
@@ -17,7 +17,7 @@ $this->title = 'Clapp';
                 </a>
             <?php } ?>    
             
-            <?php if(Yii::$app->user->can('auxiliar') || Yii::$app->user->can('medico')){ ?>
+            <?php if(Yii::$app->user->can('pacientes')){ ?>
                 <a href="<?= Yii::$app->request->baseUrl; ?>/pacientes/index">
                     <div class="dashIcon span-3">
                         <img src="<?= Yii::$app->request->baseUrl; ?>/images/iconos/pacientesIndex.png" alt="Pacientes"  />
@@ -26,7 +26,7 @@ $this->title = 'Clapp';
                 </a>
             <?php } ?>
 
-            <?php if(Yii::$app->user->can('admin')){ ?>
+            <?php if(Yii::$app->user->can('medicos')){ ?>
                 <a href="<?= Yii::$app->request->baseUrl; ?>/medicos/index">
                     <div class="dashIcon span-3">
                         <img src="<?= Yii::$app->request->baseUrl; ?>/images/iconos/medicosIndex.png" alt="Médicos"  />
@@ -35,7 +35,7 @@ $this->title = 'Clapp';
                 </a>
             <?php } ?>
 
-            <?php if(Yii::$app->user->can('admin')){ ?>
+            <?php if(Yii::$app->user->can('eps')){ ?>
                 <a href="<?= Yii::$app->request->baseUrl; ?>/eps/index">
                     <div class="dashIcon span-3">
                         <img src="<?= Yii::$app->request->baseUrl; ?>/images/iconos/epsIndex.png" alt="EPS"  />
@@ -44,7 +44,7 @@ $this->title = 'Clapp';
                 </a>
             <?php } ?>
 
-            <?php if(Yii::$app->user->can('admin')){ ?>
+            <?php if(Yii::$app->user->can('reportes')){ ?>
                 <a href="<?= Yii::$app->request->baseUrl; ?>/reportes/rips">
                     <div class="dashIcon span-3">
                         <img src="<?= Yii::$app->request->baseUrl; ?>/images/iconos/reportesIndex.png" alt="Reportes RIP"  />
@@ -53,7 +53,7 @@ $this->title = 'Clapp';
                 </a> 
             <?php } ?>
 
-            <?php if(Yii::$app->user->can('admin')){ ?>
+            <?php if(Yii::$app->user->can('facturacion')){ ?>
                 <a href="<?= Yii::$app->request->baseUrl; ?>/facturas/index">
                     <div class="dashIcon span-3">
                         <img src="<?= Yii::$app->request->baseUrl; ?>/images/iconos/facturacionIndex.png" alt="Facturación"  />
@@ -62,7 +62,7 @@ $this->title = 'Clapp';
                 </a>
             <?php } ?>
 
-            <?php if(Yii::$app->user->can('admin')){ ?>
+            <?php if(Yii::$app->user->can('usuarios')){ ?>
                 <a href="<?= Yii::$app->request->baseUrl; ?>/usuarios/index">
                     <div class="dashIcon span-3">
                         <img src="<?= Yii::$app->request->baseUrl; ?>/images/iconos/usuariosIndex.png" alt="Usuarios"  />

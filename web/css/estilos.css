@@ -349,7 +349,7 @@ div[id$="-grid"] table tr:hover{
 }
 
 .btnlogin button[type="submit"]{
-	min-width: 99%;
+	min-width: 100%;
 	font-size: 1.2em;
 	height: 40px;
 	margin-top: 10px;

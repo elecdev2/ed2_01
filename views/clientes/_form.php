@@ -13,6 +13,8 @@ use yii\bootstrap\ActiveForm;
 
     <?php $form = ActiveForm::begin(['layout'=>'horizontal', 'id'=>'cliForm', 'validateOnType' => true, 'options'=>['onsubmit'=>'submitForm']]); ?>
 
+    <input type="text" name="url" id="url" hidden>
+
     <?= $form->field($model, 'nombre')->textInput(['maxlength' => 100])->label('Cliente *') ?>
 
     <!-- <?= $form->field($model, 'activo')->textInput() ?> -->

@@ -17,6 +17,8 @@ use kartik\depdrop\DepDrop;
 
     <?php $form = ActiveForm::begin(['layout'=>'horizontal', 'id'=>'tsForm', 'validateOnType' => true, 'options'=>['onsubmit'=>'submitForm']]); ?>
 
+    <input type="text" name="url" id="url" hidden>
+
     <?= $form->field($client_model, 'id')->dropDownList($list_client, ['prompt'=>'Seleccione una opción', 'id'=>'client_id'])->label('Cliente');?>
 
     <?= $form->field($model, 'idips')->widget(DepDrop::classname(), [

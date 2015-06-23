@@ -35,7 +35,12 @@ class FacturasController extends Controller
                     ],
                     [
                         'allow' => true,
-                        'roles' => ['super_admin'],
+                        'roles' => ['admin'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['index','facturacion','facturar','imprimir-facturados','subeps'],
+                        'roles' => ['facturacion'],
                     ],
                    
                 ],

@@ -31,6 +31,8 @@ $this->title = 'EPS';
         <?php  if(isset($dataProvider)) echo Html::a('<span class="busqueda glyphicon glyphicon-search"></span> Busqueda <i class="fa fa-caret-down fa-lg"></i>','#',['class'=>'search-boton']);   ?>
     </div>
 
+    <?= Yii::$app->session->getFlash('error'); ?>
+
     <?= GridView::widget([
         'id'=>'eps',
         'dataProvider' => $dataProvider,
@@ -73,19 +75,22 @@ $this->title = 'EPS';
 
             [
                 'class' => 'kartik\grid\ActionColumn',
-                'template'=>'{tarifas} {update} {delete}',
+                'template'=>'{view} {update}  {tarifas}',
                 'buttons' => [
+                    'view'=> function ($url, $model, $key) {
+                        return '<a href="" id="ver" class="vi" title="Ver"></a>';
+                    },
                     'tarifas'=>function ($url, $model, $key) {
                         return Html::a('', ['tarifas/index', 'ideps' => $model->id], ['class' => 'ta', 'title'=>'Estudios']);
                     },
                     'update'=> function ($url, $model, $key) {
                         return '<a href="" id="actualizar" class="up" title="actualizar"></a>';
                     },
-                    'delete'=> function ($url, $model, $key) {
-                        return Html::a('', ['delete', 'id' => $model->id], ['class' => 'del',
-                            'data' => ['confirm' => '¿Está seguro que desea borrar este elemento?','method' => 'post',],
-                        ]);
-                    },
+                    // 'delete'=> function ($url, $model, $key) {
+                    //     return Html::a('', ['delete', 'id' => $model->id], ['class' => 'del',
+                    //         'data' => ['confirm' => '¿Está seguro que desea borrar este elemento?','method' => 'post',],
+                    //     ]);
+                    // },
                 ],
                 'width'=>'120px',
             ],

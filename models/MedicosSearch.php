@@ -21,7 +21,7 @@ class MedicosSearch extends Medicos
     public function rules()
     {
         return [
-            [['ips_idips', 'idespecialidades', 'id', 'idclientes'], 'integer'],
+            [['ips_idips', 'idespecialidades', 'id', 'idclientes','activo'], 'integer'],
             [['codigo', 'nombre', 'ruta_firma','ips','especialidad'], 'safe'],
         ];
     }
@@ -44,7 +44,7 @@ class MedicosSearch extends Medicos
      */
     public function search($params)
     {
-        $query = Medicos::find();
+        $query = Medicos::find()->where(['medicos.idclientes'=>Usuarios::findOne(Yii::$app->user->id)->idclientes]);
 
         $query->joinWith(['idespecialidades0', 'ipsIdips']);
 
@@ -75,6 +75,7 @@ class MedicosSearch extends Medicos
             'idespecialidades' => $this->idespecialidades,
             'id' => $this->id,
             'idclientes' => $this->idclientes,
+            'medicos.activo' => $this->activo,
         ]);
 
         $query->andFilterWhere(['like', 'codigo', $this->codigo])

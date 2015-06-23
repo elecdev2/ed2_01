@@ -30,6 +30,7 @@ use yii\filters\AccessControl;
 use yii\db\Query;
 use kartik\mpdf\Pdf;
 use yii\data\ActiveDataProvider;
+use yii\web\JsExpression;
 
 /**
  * ProcedimientosController implements the CRUD actions for Procedimientos model.
@@ -52,12 +53,17 @@ class ProcedimientosController extends Controller
                     ],
                     [
                         'allow' => true,
-                        'actions' => ['index','create','view','update'],
-                        'roles' => ['auxiliar'],
+                        'actions' => ['index','create','view','update','guardar-medico','add-medico','get-paciente','calcular-edad','calcular-fecha','pacientes-create','precio'],
+                        'roles' => ['procedimientos'],
                     ],
                     [
                         'allow' => true,
-                        'actions' => ['index','view', 'update'],
+                        'actions' => ['genrar-recibo'],
+                        'roles' => ['imprimir'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['index','view', 'update','get-descripcion','nueva-plantilla','editar-plantilla'],
                         'roles' => ['medico'],
                     ],
                    
@@ -218,6 +224,7 @@ class ProcedimientosController extends Controller
                     }
                 }
                 $this->generarRecibo($model->id);
+                \Yii::$app->getSession()->setFlash('success', 'Estudio creado con exito!');
                 return $this->redirect(['index']);
             }
         }
@@ -383,6 +390,7 @@ class ProcedimientosController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+
         $paciente = new Pacientes();
         $medicoRem = new MedicosRemitentes();
 
@@ -405,7 +413,7 @@ class ProcedimientosController extends Controller
             if(isset($_POST['checkEstado'])){
                 if($_POST['checkEstado'] == 'on'){
 
-        //Procesamiento del formulario-----------------------------------------------------------------
+//Procesamiento del formulario-----------------------------------------------------------------
                     if(isset($_POST['check_list'])){
                         // return print_r($_POST['check_list']);
                         foreach ($_POST['check_list'] as $value) {
@@ -445,32 +453,48 @@ class ProcedimientosController extends Controller
 
                     if($model->estado == 'FRM')
                     {
-
                         $usuario = Usuarios::findOne(Yii::$app->user->id);
                         $model->idmedico = $usuario->idmedicos;
-                        $model->fecha_salida = date('Y-m-d');
-
-                        if($pac->email != null)
-                        {
-                            $id_ips = (new Query())->select('ips.nombre, ips.id')->distinct()->from('procedimientos p')
-                            ->join('INNER JOIN', 'eps', 'eps.id = p.eps_ideps')
-                            ->join('INNER JOIN', 'ips', 'ips.id = eps.idips')
-                            ->where(['eps.id'=>$model->eps_ideps])->one();
-                            // $this->enviarEmail($pac->email,'Resultados de su estudio',$id_ips);
-                            // $model->estado = 'EML';
-                        }
 
                     }else{
                         $model->usuario_transcribe = Yii::$app->user->id;
+                        $model->fecha_informe = date('Y-m-d');
                     }
-        //---------------------------------------------------------------------------------------------
+
+                    if($model->idmedico != null) //Envio de email si el procedimiento fue firmado
+                    {
+                         if($pac->email != null)
+                        {
+                             $id_ips = (new Query())->select('ips.id AS id')->distinct()->from('procedimientos p')
+                                ->join('INNER JOIN', 'eps', 'eps.id = p.eps_ideps')
+                                ->join('INNER JOIN', 'ips', 'ips.id = eps.idips')
+                                ->where(['eps.id'=>$model->eps_ideps])->one();
+                            $ips = Ips::find()->where(['id'=>$id_ips['id']])->one();
+
+                            $asunto = 'Resultados de su estudio';
+
+                            $text = $this->armarTexto($model,$pac,$model->medico0->nombre,$model->idmedico0->nombre,$ips,$ips->url, $ips->mensaje_email);
+
+                            $this->enviarEmail($pac->email,$asunto,$text);
+                            $model->estado = 'EML';
+
+                            if($model->medico != null){
+                                $url = $ips->url.'?i='.$pac->identificacion.'&e='.$model->numero_muestra;
+                                $text = $this->armarTexto($model,$pac,$model->medico0->nombre,$model->idmedico0->nombre,$ips,$url, $ips->mensaje_med);
+                                $medicoRem = MedicosRemitentes::find()->select(['email'])->where(['id'=>$model->medico])->scalar();
+                                $this->enviarEmail($medicoRem, $asunto, $text);
+                            }
+                        }
+                    }
+//---------------------------------------------------------------------------------------------
                 }
 
             }
             if($model->save()){
                 $model->refresh();
                 Yii::$app->response->format = 'json';
-                return $this->redirect(['index']);
+                \Yii::$app->getSession()->setFlash('success', 'Estudio actualizado con exito!');
+                return $this->redirect($_POST['url']);
             }
         }
         $id_ips = (new Query())->select('idips')->from('usuarios_ips')->where(['idusuario'=>Yii::$app->user->id]);
@@ -488,7 +512,12 @@ class ProcedimientosController extends Controller
         $lista_med = ArrayHelper::map($this->getMedRemIps($id_ips),'id','nombre', 'especialidad');
         $lista_medRemGen = ArrayHelper::map($this->getMedRemGen(),'id','nombre', 'especialidad');
         $campos = $this->getCampos($model->idtipo_servicio);
+        if($model->fecha_salida ==  null){ $model->fecha_salida = date('Y-m-d');}
         // return print_r($plantilla_titulos);
+        $js = <<<SCRIPT
+        $("#url").val(getUrlVars());
+SCRIPT;
+        $this->getView()->registerJs($js.' '.'$("#ips_id").val('.$model->epsIdeps->idips0->id.')', yii\web\View::POS_READY,null);
         return $this->renderAjax('update', [
                     'model' => $model,
                     'paciente_model'=>$paciente,
@@ -514,20 +543,58 @@ class ProcedimientosController extends Controller
         $model->scenario = 'paciente';
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            \Yii::$app->getSession()->setFlash('success', 'Paciente creado con exito!');
             return $this->redirect(['create']);
         } 
         
     }
 
-    public function enviarEmail($email,$asunto,$id_ips)
+    public function enviarEmail($email,$asunto,$text)
     {
-        $ips = (new Query())->select('mensaje_email,nombre')->from('ips')->where(['id'=>$id_ips])->one();
-        Yii::$app->mailer->compose('estudio_firmado',['mensaje'=>$ips['mensaje_email'], 'ips'=>$ips])
-            ->setFrom('correo@dominio.com')
+        Yii::$app->mailer->compose()
+            ->setFrom('clapp@elecsis.webfactional.com')
             ->setTo($email)
             ->setSubject($asunto)
-            // ->setTextBody('Este es el contenido del mensaje')
+            ->setTextBody($text)
             ->send();
+    }
+
+    public function actionEnviarEmail($model_id,$email,$asunto)
+    {
+        
+        $model = Procedimientos::findOne($model_id);
+        $ips = Ips::findOne($model->epsIdeps->idips0->id);
+        $pac = Pacientes::findOne($model->idpacientes0->id);
+
+        $text = $this->armarTexto($model,$pac,$model->medico0->nombre,$model->idmedico0->nombre,$ips,$ips->url, $ips->mensaje_email);
+
+        Yii::$app->mailer->compose()
+            ->setFrom('clapp@elecsis.webfactional.com')
+            ->setTo($email)
+            ->setSubject($asunto)
+            ->setTextBody($text)
+            ->send();
+
+
+        \Yii::$app->getSession()->setFlash('success', 'Su mensaje fue enviado!');
+        return $this->redirect(['index']);
+    }
+
+    public function armarTexto($proc,$paciente,$medicoRem,$medicoTr,$ips,$url,$texto)
+    {
+        $texto = str_replace('<url>', $url, $texto);
+        $texto = str_replace('<nombre1Pac>', $paciente->nombre1, $texto);
+        $texto = str_replace('<nombre2Pac>', $paciente->nombre2, $texto);
+        $texto = str_replace('<apellido1Pac>', $paciente->apellido1, $texto);
+        $texto = str_replace('<apellido2Pac>', $paciente->apellido2, $texto);
+        $texto = str_replace('<identificacion>', $paciente->identificacion, $texto);
+        $texto = str_replace('<ips>', $ips->nombre, $texto);
+        $texto = str_replace('<codEst>', $proc->numero_muestra, $texto);
+        $texto = str_replace('<nombreMedRe>', $medicoRem, $texto);
+        $texto = str_replace('<nombreMedTr>', $medicoTr, $texto);
+        $texto = str_replace('<nombreEst>', $proc->codCups->descripcion, $texto);
+
+        return $texto;
     }
 
 
@@ -537,6 +604,7 @@ class ProcedimientosController extends Controller
         $model = $this->findModel($id);
         $campos = $this->getCampos($model->idtipo_servicio);
         $model->estado = $model->estado == 'FCT' ? 'IMP' : 'FRM'; //cambia el estado a impreso
+        if($model->estado == 'IMP'){ $model->fecha_entrega = date('Y-m-d'); }
         $model->save();
 
         $content = $this->renderPartial('pdf_resultados', [

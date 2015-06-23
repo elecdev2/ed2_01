@@ -42,7 +42,12 @@ class UsuariosSearch extends Usuarios
      */
     public function search($params)
     {
-        $query = Usuarios::find()->where(['<>','perfil','super_admin']);
+        if(Yii::$app->user->can('admin')){
+
+            $query = Usuarios::find()->where(['<>','perfil','super_admin'])->andWhere(['idclientes'=>Usuarios::findOne(Yii::$app->user->id)->idclientes]);
+        }else{
+            $query = Usuarios::find()->where(['<>','perfil','super_admin'])->andWhere(['<>','perfil','admin'])->andWhere(['idclientes'=>Usuarios::findOne(Yii::$app->user->id)->idclientes]);
+        }
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

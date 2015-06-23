@@ -82,7 +82,7 @@ function openModalViewBarra(idcontenedor,id){
 }
 
 function openModalTarifas(idcontenedor,id){
-    $.post('create', {ideps: ideps}).done(function(data) {
+    $.post('create', {ideps: id}).done(function(data) {
         $('#'+idcontenedor).html(data);
         $('#tarModal').modal({backdrop:'static'});
     });
@@ -143,3 +143,30 @@ function getUrlVars() {
             return false;
         });
    });
+
+    $(document).on('click', '#convencion', function(event) {
+        event.preventDefault();
+       $('#convModal').modal('show');
+    });
+
+    function cerrarModal (modal) {
+        $(modal).modal('hide');
+    }
+
+    $(document).on('click', '#cambiarFoto', function(event) {
+        event.preventDefault();
+        document.getElementById("input-1").click();
+    });
+
+    $(document).on('change', '#input-1', function(event) {
+        event.preventDefault();
+        document.getElementById("cargar").click();
+    });
+
+     function getPaciente () {
+        var doc = $('#documento_cita').val();
+        $.post('paciente', {data: doc}).done(function(data) {
+            $('#pacienteName').html(data['nombre1']+' '+data['nombre2']+' '+data['apellido1']+' '+data['apellido2']);
+            $('#citasmedicas-pacientes_id').val(data['id']);
+        });
+    }

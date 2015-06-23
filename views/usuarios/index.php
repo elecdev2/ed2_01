@@ -12,6 +12,8 @@ use yii\bootstrap\Modal;
 $this->title = 'Usuarios';
 // $this->params['breadcrumbs'][] = $this->title;
 ?>
+
+
 <div class="usuarios-index">
 
     <div class="panel panel-default">
@@ -30,6 +32,7 @@ $this->title = 'Usuarios';
         </div>
         <?php  if(isset($dataProvider)) echo Html::a('<span class="busqueda glyphicon glyphicon-search"></span>Busqueda <i class="fa fa-caret-down fa-lg"></i>','#',['class'=>'search-boton']);   ?>
     </div>
+
 
     <?= GridView::widget([
         'id'=>'usuarios',
@@ -89,11 +92,3 @@ $this->title = 'Usuarios';
 </div>
 
 <?=$this->render('//site/modals'); ?>
-
-<script type="text/javascript">
-    $(document).on('click', '#usuarios tr td:not(#usuarios tr td.skip-export)',function(event) {
-        event.preventDefault();
-        openModalView('vista',$(this).parent());
-    });
-
-</script>

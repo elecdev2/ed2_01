@@ -13,17 +13,19 @@ use kartik\select2\Select2;
 
 <div class="medicos-remitentes-form">
 
-    <?php $form = ActiveForm::begin(['layout'=>'horizontal', 'id'=>'medRemForm', 'enableAjaxValidation' => true, 'validateOnType' => true]); ?>
-
+    <?php $form = ActiveForm::begin(['layout'=>'horizontal', 'id'=>'medRemForm', 'validateOnType' => true, 'options'=>['onsubmit'=>'submitForm']]); ?>
+    
+    <input type="text" name="url" id="url" hidden>  
+    <div class="help-block help-block-error "></div>
     <?= $form->field($ips_model, 'id')->dropDownList(ArrayHelper::map($ips_list,'id','nombre'), ['name'=>'ips', 'prompt'=>'Seleccione una opción', 'id'=>'ips_id'])->label('IPS');?>
 
-    <?= $form->field($model, 'codigo')->textInput(['name'=>'codigo', 'maxlength' => 15]) ?>
+    <?= $form->field($model, 'codigo')->textInput(['maxlength' => 15]) ?>
 
-    <?= $form->field($model, 'nombre')->textInput(['name'=>'nombre', 'maxlength' => 150]) ?>
+    <?= $form->field($model, 'nombre')->textInput(['maxlength' => 150]) ?>
 
-    <?= $form->field($model, 'telefono')->textInput(['name'=>'telefono', 'maxlength' => 45]) ?>
+    <?= $form->field($model, 'telefono')->textInput(['maxlength' => 45]) ?>
 
-    <?= $form->field($model, 'email')->textInput(['name'=>'email', 'maxlength' => 45]) ?>
+    <?= $form->field($model, 'email')->textInput(['maxlength' => 45]) ?>
 
     <?= $form->field($model, 'especialidades_id')->widget(Select2::classname(), [
                 'data'=>$lista_especialidades,
@@ -38,7 +40,7 @@ use kartik\select2\Select2;
         ?>
 
     <div class="form-group text-center">
-        <?= Html::submitButton($model->isNewRecord ? '<i class="add icon-guardar"></i>Crear' : '<i class="add icon-actualizar"></i>Actualizar', ['data-dismiss'=>'modal', 'id'=>'guardarMedico', 'class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::submitButton($model->isNewRecord ? '<i class="add icon-guardar"></i>Crear' : '<i class="add icon-actualizar"></i>Actualizar', ['class' =>'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

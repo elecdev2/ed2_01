@@ -14,6 +14,7 @@ use app\models\Usuarios;
 
     <?php $form = ActiveForm::begin(['layout'=>'horizontal', 'id'=>'plantForm', 'validateOnType' => true, 'options'=>['enctype' => 'multipart/form-data', 'onsubmit'=>'submitForm']]); ?>
 
+	<input type="text" name="url" id="url" hidden>
     <?= $form->field($model, 'titulo')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'descripcion')->textArea(['style'=>'width:100%', 'rows'=>'7', 'cols'=>'50', 'maxlength' => true]) ?>

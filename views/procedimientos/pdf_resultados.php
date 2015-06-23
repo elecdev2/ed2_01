@@ -41,9 +41,9 @@ use yii\bootstrap\ActiveForm;
 
 		            <tr>
 		                <td><b><?= Html::encode(mb_strtoupper($model->getAttributeLabel('fecha_atencion'),'utf-8')); ?>:</b></td>
-		                <td><?= Html::encode(strtoupper($model->fecha_atencion)); ?></td>
+		                <td><?= Html::encode(strtoupper(Yii::$app->formatter->asDate($model->fecha_atencion, 'long'))); ?></td>
 		                <td><b><?= Html::encode(strtoupper($model->getAttributeLabel('fecha_salida'))); ?>:</b></td>
-		                <td><?= Html::encode(strtoupper($model->fecha_informe)); ?></td>
+		                <td><?= Html::encode(strtoupper(Yii::$app->formatter->asDate($model->fecha_informe, 'long'))); ?></td>
 		            </tr>
 		            <tr>
 		                <td><b><?= Html::encode(strtoupper($model->getAttributeLabel('eps_ideps'))); ?>:</b></td>

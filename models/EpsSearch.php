@@ -46,6 +46,8 @@ class EpsSearch extends Eps
 
         $query->joinWith(['idips0']);
 
+        $query->where(['idips'=>UsuariosIps::find()->select('idips')->where(['idusuario'=>Yii::$app->user->id])]);
+
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);

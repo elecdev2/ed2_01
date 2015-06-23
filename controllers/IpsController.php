@@ -81,9 +81,10 @@ class IpsController extends Controller
         $model = new Ips();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            \Yii::$app->getSession()->setFlash('success', 'IPS creada con exito!');
             return $this->redirect(['index']);
         } else {
-            $tipo_id = ListasSistema::find()->where('tipo="tipo_identificacion"')->all();
+            $tipo_id = ListasSistema::find()->where('tipo="tipo_identificacion_ips"')->all();
             $clientes = Clientes::find()->all();
             return $this->render('create', [
                 'model' => $model, 
@@ -106,10 +107,12 @@ class IpsController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             $model->refresh();
             Yii::$app->response->format = 'json';
-            return $this->redirect(['index']);
+            \Yii::$app->getSession()->setFlash('success', 'IPS actualizada con exito!');
+                return $this->redirect($_POST['url']);
         } else {
-            $tipo_id = ArrayHelper::map(ListasSistema::find()->where(['tipo'=>'tipo_identificacion'])->all(), 'codigo', 'descripcion');
+            $tipo_id = ArrayHelper::map(ListasSistema::find()->where(['tipo'=>'tipo_identificacion_ips'])->all(), 'codigo', 'descripcion');
             $list_clientes = ArrayHelper::map(Clientes::find()->all(),'id','nombre');
+            $this->getView()->registerJs('$("#url").val(getUrlVars());', yii\web\View::POS_READY,null);
             return $this->renderAjax('update', [
                 'model' => $model,
                 'list_clientes'=>$list_clientes,

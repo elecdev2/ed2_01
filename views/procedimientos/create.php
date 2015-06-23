@@ -24,7 +24,8 @@ $this->title = 'Nuevo procedimiento';
             </div>
         </div>
     </div>
-
+    
+    <?= Yii::$app->session->getFlash('error'); ?>
    <!--  <div class="panel panel-default">
         <div class="panel-body"> -->
 

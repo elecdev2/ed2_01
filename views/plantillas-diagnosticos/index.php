@@ -27,6 +27,8 @@ $this->title = 'Plantillas diagnosticos';
         </div>
     </div>
 
+    <?= Yii::$app->session->getFlash('error'); ?>
+
     <?= GridView::widget([
         'id'=>'plantillaTab',
         'dataProvider' => $dataProvider,

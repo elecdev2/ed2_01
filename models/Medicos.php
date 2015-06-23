@@ -12,11 +12,14 @@ use Yii;
  * @property string $codigo
  * @property string $nombre
  * @property integer $id
+ * @property integer $activo
  * @property integer $idclientes
  * @property string $ruta_firma
  *
+ * @property CitasMedicas[] $citasMedicas 
  * @property Especialidades $idespecialidades0
  * @property Ips $ipsIdips
+ * @property PlantillasDiagnosticos[] $plantillasDiagnosticos 
  * @property Procedimientos[] $procedimientos
  * @property Usuarios[] $usuarios
  */
@@ -36,10 +39,11 @@ class Medicos extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['ips_idips', 'idespecialidades', 'codigo', 'nombre', 'idclientes'], 'required', 'on'=>'medico'],
-            [['ips_idips', 'idespecialidades', 'idclientes'], 'integer'],
-            [['codigo'], 'string', 'max' => 15],
-            [['nombre', 'ruta_firma'], 'string', 'max' => 150]
+                    [['ips_idips', 'idespecialidades', 'codigo', 'nombre', 'idclientes'], 'required'],
+                    [['ips_idips', 'idespecialidades', 'idclientes','activo'], 'integer'],
+                    [['codigo'], 'string', 'max' => 15],
+                    [['nombre', 'ruta_firma'], 'string', 'max' => 150]
+            
         ];
     }
 
@@ -56,15 +60,33 @@ class Medicos extends \yii\db\ActiveRecord
             'id' => 'ID',
             'idclientes' => 'Idclientes',
             'ruta_firma' => 'Ruta Firma',
+            'activo'=>'Activo',
         ];
     }
 
-    public function scenarios()
-    {
-        $scenarios = parent::scenarios();
-        $scenarios['medico'] = ['ips_idips', 'idespecialidades', 'codigo', 'nombre', 'idclientes'];
-        return $scenarios;
-    }
+    // public function scenarios()
+    // {
+    //     $scenarios = parent::scenarios();
+    //     $scenarios['medico'] = [];
+                               
+    //     return $scenarios;
+    // }
+
+    /**
+    * @return \yii\db\ActiveQuery
+    */
+   public function getCitasMedicas()
+   {
+      return $this->hasMany(CitasMedicas::className(), ['medicos_id' => 'id']);
+   }
+
+    /**
+    * @return \yii\db\ActiveQuery
+    */
+   public function getPlantillasDiagnosticos() 
+   { 
+       return $this->hasMany(PlantillasDiagnosticos::className(), ['id_medico' => 'id']); 
+   } 
 
     /**
      * @return \yii\db\ActiveQuery

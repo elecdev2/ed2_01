@@ -78,6 +78,7 @@ class ItemsController extends Controller
                     $child = $auth->getRole($value);
                     $auth->addChild($role,$child);
                 }
+                \Yii::$app->getSession()->setFlash('success', 'Perfil creado con exito!');
                 return $this->redirect(['index']);
             }
 
@@ -117,9 +118,11 @@ class ItemsController extends Controller
             {
                 $model->refresh();
                 Yii::$app->response->format = 'json';
-                return $this->redirect(['index']);
+                \Yii::$app->getSession()->setFlash('success', 'Perfil actualizado con exito!');
+                return $this->redirect($_POST['url']);
             }
         } 
+        $this->getView()->registerJs('$("#url").val(getUrlVars());', yii\web\View::POS_READY,null);
         return $this->renderAjax('update', [
             'model' => $model,
             'lista_perfiles'=>$lista_perfiles,

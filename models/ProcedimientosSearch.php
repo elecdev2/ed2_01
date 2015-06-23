@@ -50,6 +50,8 @@ class ProcedimientosSearch extends Procedimientos
 
         $query->joinWith(['idpacientes0', 'epsIdeps','idmedico0','idtipoServicio']);
 
+        $query->where(['eps.idips'=>UsuariosIps::find()->select('idips')->where(['idusuario'=>Yii::$app->user->id])]);
+
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);

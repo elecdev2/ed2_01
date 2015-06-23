@@ -78,6 +78,7 @@ class ClientesController extends Controller
         $model = new Clientes();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            \Yii::$app->getSession()->setFlash('success', 'Cliente creado con exito!');
             return $this->redirect(['index']);
         } else {
             return $this->render('create', [
@@ -99,8 +100,10 @@ class ClientesController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             $model->refresh();
             Yii::$app->response->format = 'json';
-            return $this->redirect(['index']);
+            \Yii::$app->getSession()->setFlash('success', 'Cliente actualizado con exito!');
+            return $this->redirect($_POST['url']);
         } else {
+            $this->getView()->registerJs('$("#url").val(getUrlVars());', yii\web\View::POS_READY,null);
             return $this->renderAjax('update', [
                 'model' => $model,
             ]);

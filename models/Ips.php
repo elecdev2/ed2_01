@@ -21,6 +21,8 @@ use Yii;
  * @property integer $consecutivo_recibo
  * @property string $descripcion
  * @property string $mensaje_email
+ * @property string $mensaje_med 
+ * @property string $url 
  *
  * @property Eps[] $eps
  * @property Clientes $idclientes0
@@ -52,7 +54,8 @@ class Ips extends \yii\db\ActiveRecord
             [['direccion', 'representante_legal', 'descripcion'], 'string', 'max' => 100],
             [['tipo_identificacion'], 'string', 'max' => 3],
             [['telefono'], 'string', 'max' => 30],
-            [['mensaje_email'], 'string', 'max' => 1000]
+            [['mensaje_email', 'mensaje_med'], 'string', 'max' => 1000],
+            [['url'], 'string', 'max' => 200]
         ];
     }
 

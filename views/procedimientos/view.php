@@ -14,7 +14,7 @@ $this->title = $model->numero_muestra;
 // $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="procedimientos-view">
-    <?php if($model->estado == 'FRM' || $model->estado == 'FCT'|| $model->estado == 'IMP'){ ?>
+    <?php if($model->estado == 'FRM' || $model->estado == 'FCT'|| $model->estado == 'IMP'|| $model->estado == 'EML'){ ?>
         <div class="panel panel-default">
             <div class="panel-body">
                 <!-- <div class="col-md-6 tituloMd6">
@@ -22,9 +22,22 @@ $this->title = $model->numero_muestra;
                 </div> -->
                     
                 <div class="col-md-12 tituloMd6">
+                    <?php if($model->idpacientes0->email != null){ ?>
+                         <?= Html::a('<i class="add icon-email"></i>Enviar', ['enviar-email', 'model_id'=>$model->id, 'email' => $model->idpacientes0->email,'asunto'=>'Envío de resultados'], [
+                            'class' => 'imprimir btn btn-primary',
+                            // 'target'=>'_blank',
+                        ]); ?>
+                    <?php }else{ ?>
+                         <?= Html::a('<i class="add icon-email"></i>Enviar', ['enviar-email', 'model_id'=>$model->id, 'email' => $model->idpacientes0->email,'asunto'=>'Envío de resultados'], [
+                            'class' => 'imprimir btn btn-primary',
+                            'disabled'=>'',
+                            // 'target'=>'_blank',
+                        ]); ?>
+                    <?php } ?>
 
                         <?= Html::a('<i class="add icon-imprimir"></i>Imprimir', ['print', 'id' => $model->id], [
                             'class' => 'imprimir btn btn-primary',
+                            'style'=>'margin-right:10px;',
                             'target'=>'_blank',
                             // 'data' => [
                             //     'confirm' => '¿Seguro que desea visualizar el resultado?',
@@ -117,10 +130,6 @@ $this->title = $model->numero_muestra;
                 'value'=>isset($model->fecha_informe) ? Yii::$app->formatter->asDate($model->fecha_informe, 'long') : '',
             ],
             'numero_factura',
-            [
-                'attribute'=>'fecha_salida',
-                'value'=>isset($model->fecha_salida) ? Yii::$app->formatter->asDate($model->fecha_salida, 'long') : '',
-            ],
             [
                 'attribute'=>'fecha_salida',
                 'value'=>isset($model->fecha_salida) ? Yii::$app->formatter->asDate($model->fecha_salida, 'long') : '',

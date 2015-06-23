@@ -14,9 +14,13 @@ use kartik\select2\Select2;
 
     <?php $form = ActiveForm::begin(['layout'=>'horizontal', 'id'=>'usuarioForm', 'validateOnType' => true, 'options'=>['onsubmit'=>'submitForm']]); ?>
 
+    <input type="text" name="url" id="url" hidden>
     <?= $form->field($model, 'idclientes')->hiddenInput(['value'=>$model->isNewRecord ? $id_cliente: $model->idclientes])->label('') ?>
 
+
     <?= $form->field($model, 'nombre')->textInput(['maxlength' => 150]) ?>
+
+    <?= $form->field($model, 'sexo')->dropDownList(['M' => 'Hombre', 'F' => 'Mujer'],['prompt'=>'Seleccione una opción'])->label('Sexo') ?>
 
     <?= $form->field($model, 'username')->textInput(['maxlength' => 64]) ?>
 
@@ -24,31 +28,50 @@ use kartik\select2\Select2;
 
     <?= $form->field($model, 'perfil')->widget(Select2::classname(), [
             'data'=>$lista_perf,
+            'id'=>'perfiles',
             'language' => 'es',
             'options' => ['placeholder' => 'Seleccione un perfil'],
             'pluginOptions' => [
                 'allowClear' => true
             ],
+            'pluginEvents' => [
+                "change" => $model->isNewRecord ? "function() { 
+                                                    if($(this).val() == 'medico'){
+                                                            $('#panelMedico').show();
+                                                            $('#campoIPSs').hide();
+                                                        }else{
+                                                            $('#panelMedico').hide();
+                                                            $('#campoIPSs').show();
+                                                        } 
+                                                    }" :
+                                                    "function() { 
+                                                            $('#campoIPSs').hide();
+                                                            $('#panelMedico').hide();
+                                                    }",
+                                                   
+            ],
         ])->label('Perfil');
     ?>
 
-    <?= $form->field($model, 'activo')->dropDownList(['1' => 'Si', '2' => 'No'])->label('Activo') ?>
-
-<?php if($model->isNewRecord){ ?>    
-    <div class="form-group field-medico-check">
-        <div class="col-sm-6 text-center">
-            <input type="checkbox" id="showHidePanel">
-            <label for="showHidePanel">Médico?</label>
-        </div>
+    
+    <div id="campoIPSs">
+        <?= $form->field($ipsModel, 'id')->widget(Select2::classname(), [
+                    'data'=>$lista_ips,
+                    'language' => 'es',
+                    'id'=>'medField',
+                    'options' => ['placeholder' => '','multiple'=>true,],
+                    'pluginOptions' => [
+                        'tags' => true,
+                        'allowClear' => true,
+                    ],
+                ])->label('IPSs');
+            ?>
     </div>
-<?php } ?>
 
-<div class="panel panel-default">
-    <div id="panelMedico"  class="panel-body">
-        <?= $form->field($modelMedico, 'ips_idips')->widget(Select2::classname(), [
+    <div id="panelMedico"  class="">
+        <?= $form->field($model, 'ips_medico')->widget(Select2::classname(), [
                 'data'=>$lista_ips,
                 'language' => 'es',
-                'class'=>'medField',
                 'options' => ['placeholder' => 'Seleccione una IPS'],
                 'pluginOptions' => [
                     'allowClear' => true
@@ -57,23 +80,21 @@ use kartik\select2\Select2;
         ?>
 
 
-        <?= $form->field($modelMedico, 'idespecialidades')->widget(Select2::classname(), [
+        <?= $form->field($model, 'especialidad')->widget(Select2::classname(), [
                 'data'=>$lista_especialidades,
                 'language' => 'es',
-                'class'=>'medField',
                 // 'disabled'=>true,
                 'options' => ['placeholder' => 'Seleccione una especialidad'],
                 'pluginOptions' => [
                     'allowClear' => true
                 ],
-            ])->label('Especialidades');
+            ])->label('Especialidad');
         ?>
 
-        <?= $form->field($modelMedico, 'codigo')->textInput(['class'=>'medField'])->label('Código') ?>
+        <?= $form->field($model, 'codigo_medico')->textInput()->label('Código') ?>
 
-        <?= $form->field($modelMedico, 'idclientes')->hiddenInput(['class'=>'medField','value'=>$model->isNewRecord ? $id_cliente: $model->idclientes])->label('') ?>
     </div>
-</div>
+    <?= $form->field($model, 'activo')->dropDownList(['1' => 'Si', '2' => 'No'])->label('Activo') ?>
 
     <div class="form-group text-center">
         <?= Html::submitButton($model->isNewRecord ? '<i class="add icon-guardar"></i>Crear' : '<i class="add icon-actualizar"></i>Actualizar', ['class' =>'btn btn-success']) ?>
@@ -85,13 +106,5 @@ use kartik\select2\Select2;
 <script type="text/javascript">
     $(document).ready(function() {
         $('#panelMedico').hide();
-        $('#showHidePanel').on('change', function(event) {
-            event.preventDefault();
-            $('#panelMedico').hide();
-            if($('#showHidePanel').is(':checked')){
-                $('#panelMedico').show();
-            }
-        }); 
-        
     });
 </script>

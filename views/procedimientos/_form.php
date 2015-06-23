@@ -20,9 +20,6 @@ use yii\bootstrap\Modal;
 
     <?php $form = ActiveForm::begin(['layout'=>'horizontal', 'id'=>'procForm', 'validateOnType' => true, 'options'=>['onsubmit'=>'submitForm']]); ?>
         
-    
-        
-        
                 <div class="panelFormulario-contenido">
                     <div class="panelFormulario-header">
                         <h3 class="titulo-tarifa">Datos del paciente</h3>
@@ -42,9 +39,7 @@ use yii\bootstrap\Modal;
                         <?php } ?>
 
 
-                        <div class="row text-center">
-                            <h5 id="pacienteName"></h5>
-                        </div>
+                        
                             
                             <?= $form->field($paciente_model, 'tipo_identificacion')->dropDownList($lista_tipoid, ['prompt'=>'', 'id'=>'tipoID'])->label('Tipo de ID');?>
 
@@ -79,7 +74,7 @@ use yii\bootstrap\Modal;
         
                         <div class="form-group">
                             <div class="col-sm-6">
-                                <input type="text" name="url" id="url" hidden>  
+                                <input type="text" name="url" id="url" hidden>
                                 <div class="help-block help-block-error "></div>
                             </div>
                         </div>
@@ -163,7 +158,7 @@ use yii\bootstrap\Modal;
                     
 
                         <?= $form->field($model, 'forma_pago')->widget(Select2::classname(), [
-                                'data'=>array_merge(["" => ""], $lista_pago),
+                                'data'=>$lista_pago,
                                 'language' => 'es',
                                 'options' => ['placeholder' => 'Seleccione una forma de pago'],
                                 'pluginOptions' => [
@@ -171,6 +166,10 @@ use yii\bootstrap\Modal;
                                 ],
                             ])->label('Forma de pago');
                         ?>
+
+                        <?php if(!$model->isNewRecord && $model->estado !== 'PND'){  ?>
+                               <?= $form->field($model, 'fecha_salida')->widget(yii\jui\DatePicker::classname(), ["dateFormat" => "yyyy-MM-dd", 'options' => ['class' => 'fecha form-control', "placeholder" => "aaaa-mm-dd"], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']) ?>                                                                                                                                                                                                                         
+                        <?php } ?>
 
                     </div>
                 </div>
@@ -253,58 +252,59 @@ use yii\bootstrap\Modal;
     </div>
 </div>
 
+<div id="medRemNuevo" class="modal fade bs-example-modal-md" data-backdrop="false" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" title="Cerrar" class="close" onclick="cerrarModal(medRemNuevo)"><img src="<?=Yii::$app->request->baseUrl;?>/images/iconos/IconoBarraCerrar.png" alt="Cerrar"></button>
+                <h3 class="titulo-tarifa">Nuevo médico remitente</h3>
+            </div>
+            <div class="modal-body">
+                <div class="form-group required">
+                    <label class="control-label" for="">Médicos remitentes</label><br>
+                        <div class="col-sm-10">
+                            <?= Select2::widget([
+                                    'name' => 'remitentes',
+                                    'id'=>'medrem',
+                                    'data'=>$lista_medRemGen,
+                                    'language' => 'es',
+                                    'options' => ['placeholder' => 'Seleccione una opción'],
+                                    'pluginOptions' => [
+                                        'allowClear' => true,
+                                    ],
+                                ]);
+                            ?>
+                        </div>   
+                        <div class="col-sm-2"><a href="" id="agregar" data-dismiss="modal" class="btn btn-default">Añadir</a></div>
+                </div><br>
 
-<?php Modal::begin([
-    'id'=>'medRemNuevo',
-    'header'=>'<h4>Nuevo médico remitente</h4>',
-    'closeButton'=>false,
-    // 'size'=>Modal::SIZE_SMALL,
-    'options'=>[],
-]); ?>
+                 <div class="form-group field-medico-check">
+                    <div class="col-sm-6">
+                        <?= Html::input('checkBox','nombre','',['id'=>'showHidePanel', 'class'=>'']);?>
+                        <label for="showHidePanel">Agregar un médico nuevo</label>
+                    </div>
+                </div><br>
 
-    <div class="form-group required">
-        <label class="control-label" for="">Médicos remitentes</label><br>
-            <div class="col-sm-10">
-                <?= Select2::widget([
-                        'name' => 'remitentes',
-                        'id'=>'medrem',
-                        'data'=>$lista_medRemGen,
-                        'language' => 'es',
-                        'options' => ['placeholder' => 'Seleccione una opción'],
-                        'pluginOptions' => [
-                            'allowClear' => true,
-                        ],
-                    ]);
-                ?>
-            </div>   
-            <div class="col-sm-2"><a href="" id="agregar" data-dismiss="modal" class="btn btn-default">Añadir</a></div>
-    </div><br>
-
-     <div class="form-group field-medico-check">
-        <div class="col-sm-6">
-            <?= Html::input('checkBox','nombre','',['id'=>'showHidePanel', 'class'=>'']);?>
-            <label for="showHidePanel">Agregar un médico nuevo</label>
-        </div>
-    </div><br>
-
-    <div class="panel panel-default">
-        <div id="panelMedico"  class="panel-body">
-            <?=$this->render('//medicos-remitentes/_form', [
-                'model'=>$medicoRemModel,
-                'lista_especialidades'=>$lista_especialidades,
-                'ips_model'=>$ips_model,
-                'ips_list'=>$ips_list,
-            ]);?>
+                <div class="panel panel-default">
+                    <div id="panelMedico"  class="panel-body">
+                        <?=$this->render('//medicos-remitentes/_form', [
+                            'model'=>$medicoRemModel,
+                            'lista_especialidades'=>$lista_especialidades,
+                            'ips_model'=>$ips_model,
+                            'ips_list'=>$ips_list,
+                        ]);?>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-<?php Modal::end();
-?>
+</div>
+
 
 <script type="text/javascript">
     $(document).ready(function() {
         $('#panelMedico').hide();
         $('.field-procedimientos-medico').append('<a href="#" id="medRem" class="btn btn-default">Nuevo médico</a>');
-        $('#url').val(getUrlVars());
         $('#procedimientos-cod_cups').on('change', function(event) {
             var cod_cup = $(this).val();
             var eps_id = $('#eps_id').val();

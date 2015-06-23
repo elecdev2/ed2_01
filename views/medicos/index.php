@@ -17,11 +17,8 @@ $this->title = 'Médicos';
     <div class="panel panel-default">
         <div class="panel-body">
             <div class="panelTituloBoton col-md-12">
-                <div class="col-sm-6">
+                <div class="col-sm-12">
                     <h2 class="titulo tituloIndex"><?= Html::encode($this->title) ?></h2>
-                </div>
-                <div class="col-sm-6">
-                    <?= Html::a('<i class="add icon-add"></i>Crear médico', ['create'], ['class' => 'btn btn-success crear']);?>
                 </div>
             </div>
             <div class="col-md-12 fomularioTitulo">
@@ -52,6 +49,14 @@ $this->title = 'Médicos';
                 // 'id',
                 // 'idclientes',
                 // 'ruta_firma',
+                [
+                    'attribute'=>'activo',
+                    'value'=>function($model){
+                        return $model->activo == 1 ? 'Si' : 'No';
+                    },
+                    'filter'=>['1'=>'Si','2'=>'No'],
+                    'filterInputOptions'=>['class'=>'filtro-opciones', 'placeholder'=>'Seleccione un estado'],
+                ],
 
                 [
                     'class' => 'kartik\grid\ActionColumn',

@@ -36,7 +36,12 @@ class ReportesController extends Controller
                     ],
                     [
                         'allow' => true,
-                        'roles' => ['super_admin'],
+                        'roles' => ['admin'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['index','rips','reporte-estudios','reporte-saldos','reporte-rips','subeps','subtipo'],
+                        'roles' => ['reportes'],
                     ],
                    
                 ],
@@ -312,11 +317,11 @@ class ReportesController extends Controller
                     // $this->download($proc->fecha_fin. date('Y-m-d'). '.txt', $text);
                     return \Yii::$app->response->sendContentAsFile($text, $proc->fecha_fin. date('Y-m-d'). '.txt');
                 }else{
-                    $m = 'No hay registros con las condiciones seleccionadas';
+                    \Yii::$app->getSession()->setFlash('error', 'No hay registros con las condiciones seleccionadas');
                 }
             }
         }
-        $this->actionRips();
+        return $this->redirect(['rips']);
     }
 
     public function download($titulo,$content)

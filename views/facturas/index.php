@@ -36,8 +36,8 @@ use kartik\grid\GridView;
 				                    'pluginOptions'=>[
 					                    'depends'=>['ips_id'],
 					                    'placeholder'=>'Seleccione una EPS',
-					                    'url'=>Url::to(['/facturas/subeps'])
-				                ]
+					                    'url'=>Url::to(['/facturas/subeps']),
+				                	]
 				            ]);  
 				        ?>
 					</div>

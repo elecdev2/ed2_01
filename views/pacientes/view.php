@@ -55,7 +55,11 @@ $this->title = $model->nombre1.' '.$model->nombre2.' '.$model->apellido1.' '.$mo
                 'label'=>'EPS',
                 'value'=>$model->ideps != null ? $model->ideps0->nombre : '',
             ],
-            'email:email',
+            [
+                'attribute'=>'email',
+                'label'=>'Email',
+                'value'=>$model->email,
+            ],
             [
                 'attribute'=>'envia_email',
                 'label'=>'Enviar email',

@@ -8,6 +8,14 @@ use app\models\MedicosRemitentesSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
+use yii\db\Query;
+use yii\filters\AccessControl;
+
+use app\models\Ips;
+use app\models\Especialidades;
+use app\models\Usuarios;
+use app\models\MedicosRemitentesIps;
 
 /**
  * MedicosRemitentesController implements the CRUD actions for MedicosRemitentes model.
@@ -17,6 +25,25 @@ class MedicosRemitentesController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'allow' => false,
+                        'roles' => ['?'],
+                    ],
+                    [
+                        'allow' => true,
+                        'roles' => ['admin'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['index','create','update','view','delete'],
+                        'roles' => ['medicos'],
+                    ],
+
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -48,7 +75,7 @@ class MedicosRemitentesController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
+        return $this->renderPartial('view', [
             'model' => $this->findModel($id),
         ]);
     }
@@ -63,10 +90,21 @@ class MedicosRemitentesController extends Controller
         $model = new MedicosRemitentes();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            $medIps = new MedicosRemitentesIps();
+            $medIps->medicos_remitentes_id = $model->id;
+            $ips_id->$_POST['ips'];
+            $medIps->save();
+            \Yii::$app->getSession()->setFlash('success', 'Médico creado con exito!');
+            return $this->redirect(['index']);
         } else {
+            $ips_model = new Ips();
+            $ips_list = Ips::find()->where(['idclientes'=>Usuarios::findOne(Yii::$app->user->id)->idclientes])->all();
+            $lista_especialidades = ArrayHelper::map(Especialidades::find()->all(), 'id', 'nombre');
             return $this->render('create', [
                 'model' => $model,
+                'ips_list'=>$ips_list,
+                'ips_model'=>$ips_model,
+                'lista_especialidades'=>$lista_especialidades,
             ]);
         }
     }
@@ -82,12 +120,23 @@ class MedicosRemitentesController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
+            $model->refresh();
+            Yii::$app->response->format = 'json';
+            \Yii::$app->getSession()->setFlash('success', 'Médico actualizado con exito!');
+            return $this->redirect($_POST['url']);
         }
+
+        $ips_model = new Ips();
+        $ips_list = Ips::find()->where(['idclientes'=>Usuarios::findOne(Yii::$app->user->id)->idclientes])->all();
+        $lista_especialidades = ArrayHelper::map(Especialidades::find()->all(), 'id', 'nombre');
+        $this->getView()->registerJs('$("#url").val(getUrlVars());', yii\web\View::POS_READY,null);
+        return $this->renderAjax('update', [
+            'model' => $model,
+            'ips_list'=>$ips_list,
+            'ips_model'=>$ips_model,
+            'lista_especialidades'=>$lista_especialidades,
+        ]);
+        
     }
 
     /**

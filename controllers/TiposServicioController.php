@@ -85,6 +85,7 @@ class TiposServicioController extends Controller
         $model = new TiposServicio();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            \Yii::$app->getSession()->setFlash('success', 'Tipo de servicio creado con exito!');
             return $this->redirect(['index']);
         } else {
             $client_model = new Clientes();
@@ -108,10 +109,12 @@ class TiposServicioController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             $model->refresh();
             Yii::$app->response->format = 'json';
-            return $this->redirect(['index']);
+            \Yii::$app->getSession()->setFlash('success', 'Tipo de serivicio actualizado con exito!');
+            return $this->redirect($_POST['url']);
         } else {
             $client_model = new Clientes();
             $clientes = ArrayHelper::map(Clientes::find()->all(), 'id', 'nombre');
+            $this->getView()->registerJs('$("#url").val(getUrlVars());', yii\web\View::POS_READY,null);
             return $this->renderAjax('update', [
                 'model' => $model,
                 'client_model'=>$client_model,

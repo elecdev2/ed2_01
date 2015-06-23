@@ -78,6 +78,7 @@ class InformesController extends Controller
         $model = new Informes();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            \Yii::$app->getSession()->setFlash('success', 'Informe creado con exito!');
             return $this->redirect(['index']);
         } else {
             return $this->render('create', [
@@ -99,8 +100,10 @@ class InformesController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             $model->refresh();
             Yii::$app->response->format = 'json';
-            return $this->redirect(['index']);
+            \Yii::$app->getSession()->setFlash('success', 'Informe actualizado con exito!');
+            return $this->redirect($_POST['url']);
         } else {
+             $this->getView()->registerJs('$("#url").val(getUrlVars());', yii\web\View::POS_READY,null);
             return $this->renderAjax('update', [
                 'model' => $model,
             ]);

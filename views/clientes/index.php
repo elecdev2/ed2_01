@@ -30,6 +30,7 @@ $this->title = 'Clientes';
          <?php  if(isset($dataProvider)) echo Html::a('<span class="busqueda glyphicon glyphicon-search"></span> Busqueda <i class="fa fa-caret-down fa-lg"></i>','#',['class'=>'search-boton']);   ?>
     </div>
 
+    <?= Yii::$app->session->getFlash('error'); ?>
     <?= GridView::widget([
         'id'=>'clientesTab',
         'dataProvider' => $dataProvider,

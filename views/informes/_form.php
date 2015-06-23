@@ -13,6 +13,8 @@ use yii\bootstrap\ActiveForm;
 
     <?php $form = ActiveForm::begin(['layout'=>'horizontal', 'id'=>'infForm', 'validateOnType' => true, 'options'=>['onsubmit'=>'submitForm']]); ?>
 
+	<input type="text" name="url" id="url" hidden>
+
     <?= $form->field($model, 'nombre')->textInput(['maxlength' => 150]) ?>
 
     <div class="form-group text-center">

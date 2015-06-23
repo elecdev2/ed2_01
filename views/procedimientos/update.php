@@ -44,12 +44,12 @@ $this->title = $model->numero_muestra;
 </div>
 
 
-<div id="plantillaModal" class="modal fade bs-example-modal-md plant" data-backdrop="true" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+<div id="plantillaModal" class="modal fade bs-example-modal-md" data-backdrop="true"  role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-md">
         <div class="modal-content">
             <div class="modal-header">
-                <!-- <button type="button" class="close" data-dismiss="plant"><span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span></button> -->
-                <h4 class="titulo-tarifa">Plantillas</h4>
+                <button type="button" class="close" onclick="cerrarModal(plantillaModal)" ><img src="<?=Yii::$app->request->baseUrl;?>/images/iconos/IconoBarraCerrar.png" alt="Cerrar"></button>
+                <h3 class="titulo-tarifa">Plantillas</h3>
             </div>
             <div class="modal-body">
 
@@ -77,12 +77,12 @@ $this->title = $model->numero_muestra;
     </div>
 </div>
 
-<div id="plantillaNuevaModal" class="modal fade bs-example-modal-md plant" data-backdrop="true" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+<div id="plantillaNuevaModal" class="modal fade bs-example-modal-md" data-backdrop="true"  role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-md">
         <div class="modal-content">
            <div class="modal-header">
-                <!-- <button type="button" class="close" data-dismiss="plant"><span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span></button> -->
-                <h4 class="titulo-tarifa">Crear plantilla</h4>
+                <button type="button" class="close" onclick="cerrarModal(plantillaNuevaModal)"><img src="<?=Yii::$app->request->baseUrl;?>/images/iconos/IconoBarraCerrar.png" alt="Cerrar"></button>
+                <h3 class="titulo-tarifa">Crear plantilla</h3>
             </div>
             <div class="modal-body">
 

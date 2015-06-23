@@ -7,6 +7,8 @@ use app\models\Medicos;
 use app\models\Ips;
 use app\models\Especialidades;
 use app\models\MedicosSearch;
+use app\models\Usuarios;
+
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -34,6 +36,16 @@ class MedicosController extends Controller
                     [
                         'allow' => true,
                         'roles' => ['admin'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['index','update','view'],
+                        'roles' => ['medicos'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['create'],
+                        'roles' => ['usuarios'],
                     ],
                    
                 ],
@@ -94,6 +106,7 @@ class MedicosController extends Controller
         $model->scenario = 'medico';
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            \Yii::$app->getSession()->setFlash('success', 'Médico creado con exito!');
             return $this->redirect(['index']);
         } else {
             // $id_cliente = $this->cliente(Yii::$app->user->id);
@@ -118,33 +131,92 @@ class MedicosController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $imagen = new UploadFormImages();
+        $nombre = $model->nombre;
 
         if ($model->load(Yii::$app->request->post())) {
 
-                $imagen->file = UploadedFile::getInstance($imagen, 'file');
-            if (isset($imagen->file)){
-                $model->ruta_firma !== null ? unlink('images/firmas/'.$model->ruta_firma) : '';
-                $img = md5(time()).'.'. $imagen->file->extension;
-                $imagen->file->saveAs('images/firmas/'.$img);
-                $model->ruta_firma = $img;
+            if($model->nombre !== $nombre){
+                $usuario = new Usuarios();
+                $usuario->nombre = $nombre;
+                $model->nombre = $nombre;
+                $usuario->save();
             }
 
             if($model->save()){
                 $model->refresh();
                 Yii::$app->response->format = 'json';
-                return $this->redirect(['index']);
+                \Yii::$app->getSession()->setFlash('success', 'Médico actualizado con exito!');
+                return $this->redirect($_POST['url']);
             }
         } 
-        
-        $lista_especialidades = ArrayHelper::map(Especialidades::find('SELECT id, (nombre) AS name')->all(),'id','nombre');
+        $imagen = new UploadFormImages();
+        $lista_especialidades = ArrayHelper::map(Especialidades::find()->all(),'id','nombre');
         $lista_ips = ArrayHelper::map(Ips::find()->all(),'id','nombre');
+
+        $this->getView()->registerJs('$("#url").val(getUrlVars());', yii\web\View::POS_READY,null);
         return $this->renderAjax('update', [
             'model' => $model,
             'lista_especialidades'=>$lista_especialidades,
             'lista_ips'=>$lista_ips,
+            'imagen'=>$imagen,
         ]);
         
+    }
+
+    /**
+     * Carga una imagen al servidor.
+     * Si la imagen carga con exito, será redirigido al index.php.
+     * @return mixed
+     */
+    public function actionUpload()
+    {
+        $imagen = new UploadFormImages();
+
+        if(Yii::$app->request->post())
+        {
+            $imagen->file = UploadedFile::getInstance($imagen, 'file');
+            $model = $this->findModel($_POST['medico']);
+            if (isset($imagen->file))
+            {
+                if($model->ruta_firma !== null)
+                {
+                    unlink('images/firmas/'.$model->ruta_firma);
+                }
+                $img = md5(time()).'.'. $imagen->file->extension;
+
+                if($imagen->file->extension == 'jpg' || $imagen->file->extension == 'png' || $imagen->file->extension == 'gif')
+                {
+                    $imagen->file->saveAs('images/firmas/'.$img);
+                    $model->ruta_firma = $img;
+                    $model->save();
+                    \Yii::$app->getSession()->setFlash('success', 'Firma cambiada!');
+                }else{
+                    \Yii::$app->getSession()->setFlash('error', 'Error: No se pudo cargar su firma, intentelo de nuevo');
+                }
+                $this->redirect(['index']);
+            }
+        }
+    }
+
+    /**
+     * Borra una imagen del servidor.
+     * Si la imagen se borra con exito, será redirigido al index.php.
+     * @return mixed
+     */
+    public function actionBorrarFoto($id)
+    {
+        $model = $this->findModel($id);
+        unlink('images/firmas/'.$model->ruta_firma);
+        $model->ruta_firma = null;
+       
+        if($model->save())
+        {
+            \Yii::$app->getSession()->setFlash('success', 'Firma borrada!');
+        }else{
+            \Yii::$app->getSession()->setFlash('error', 'Error: No se pudo borrar su firma, intentelo de nuevo');
+        }
+        $this->redirect(['index']);
+
     }
 
     /**
@@ -153,12 +225,12 @@ class MedicosController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionDelete($id)
-    {
-        $this->findModel($id)->delete();
+    // public function actionDelete($id)
+    // {
+    //     $this->findModel($id)->delete();
 
-        return $this->redirect(['index']);
-    }
+    //     return $this->redirect(['index']);
+    // }
 
     /**
      * Finds the Medicos model based on its primary key value.

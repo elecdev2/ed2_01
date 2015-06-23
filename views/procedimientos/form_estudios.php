@@ -35,8 +35,7 @@ use app\models\Campos;
 
 				<div class="col-sm-12">
 					<?php if($model->estado !== 'PND' && !empty($val_campos)){ ?>
-						<?= Html::input('checkBox','check_list[]',$campo->id,['checked'=>true]);?>
-						<?= Html::label($model->estado == 'PRC' || $model->estado == 'FRM' ? ' ' : 'x','',['class'=>'']);?>
+						<?= Html::input('checkBox','check_list[]',$campo->id,['checked'=>'checked']);?>
 						<?= Html::label(utf8_encode(strtolower($campo->nombre_campo)),'',['class'=>'']);?>
 					<?php }else{ ?>
 						<?= Html::input('checkBox','check_list[]',$campo->id,['class'=>'']);?>

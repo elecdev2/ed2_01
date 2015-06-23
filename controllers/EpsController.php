@@ -39,7 +39,11 @@ class EpsController extends Controller
                         'allow' => true,
                         'roles' => ['admin'],
                     ],
-                 
+                    [
+                        'allow' => true,
+                        'actions' => ['index','create','update','view','subtipos'],
+                        'roles' => ['eps'],
+                    ],
                 ],
             ],
             'verbs' => [
@@ -106,7 +110,7 @@ class EpsController extends Controller
                     $eps_tipos->save();
                 }
             }
-
+            \Yii::$app->getSession()->setFlash('success', 'EPS creada con exito!');
             return $this->redirect(['index']);
         } 
         $id_cliente = Usuarios::findOne(Yii::$app->user->id)->idclientes;;
@@ -176,7 +180,8 @@ class EpsController extends Controller
             }
             $model->refresh();
             Yii::$app->response->format = 'json';
-            return $this->redirect(['index']);
+            \Yii::$app->getSession()->setFlash('success', 'EPS actualizada con exito!');
+            return $this->redirect($_POST['url']);
         }
 
         $id_cliente = Usuarios::findOne(Yii::$app->user->id)->idclientes;

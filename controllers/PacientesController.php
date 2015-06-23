@@ -37,8 +37,13 @@ class PacientesController extends Controller
                     ],
                     [
                         'allow' => true,
-                        'actions' => ['index','create','update'],
-                        'roles' => ['auxiliar'],
+                        'actions' => ['index','create','update','view'],
+                        'roles' => ['pacientes'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['update'],
+                        'roles' => ['medico'],
                     ],
                    
                 ],
@@ -95,9 +100,10 @@ class PacientesController extends Controller
     public function actionCreate()
     {
         $model = new Pacientes();
-        $model->scenario = 'paciente';
+        // $model->scenario = 'paciente';
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            \Yii::$app->getSession()->setFlash('success', 'Paciente nuevo creado con exito!');
             return $this->redirect(['index']);
         } 
         $id_cliente = Usuarios::findOne(Yii::$app->user->id)->idclientes;
@@ -130,11 +136,13 @@ class PacientesController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        // $model->scenario = 'paciente';
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             $model->refresh();
             Yii::$app->response->format = 'json';
-            return $this->redirect(['index']);
+            \Yii::$app->getSession()->setFlash('success', 'Paciente actualizado con exito!');
+            return $this->redirect($_POST['url']);
         }
         $id_cliente = Usuarios::findOne(Yii::$app->user->id)->idclientes;
         // $id_cliente = 1; 
@@ -144,6 +152,8 @@ class PacientesController extends Controller
         $lista_resid = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_residencia"')->all(),'codigo','descripcion');
         $lista_ciudades = ArrayHelper::map(Ciudades::find()->all(),'id','nombre');
         $lista_eps = ArrayHelper::map(Eps::find()->all(),'id','nombre');
+
+        $this->getView()->registerJs('$("#url").val(getUrlVars());', yii\web\View::POS_READY,null);
         return $this->renderAjax('update', [
             'model' => $model,
             'lista_tipos'=>$lista_tipos,

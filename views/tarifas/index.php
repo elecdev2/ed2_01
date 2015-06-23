@@ -29,6 +29,8 @@ $this->title = 'Tarifas'.' - '.$eps;
             </div>
         </div>
     </div>
+    
+    <?= Yii::$app->session->getFlash('error'); ?>
 
     <?= GridView::widget([
         'id'=>'tarifasTab',

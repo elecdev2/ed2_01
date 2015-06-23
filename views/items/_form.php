@@ -12,7 +12,10 @@ use kartik\select2\Select2;
 
 <div class="items-form">
 
+    
     <?php $form = ActiveForm::begin(['layout'=>'horizontal', 'id'=>'pacForm', 'validateOnType' => true, 'options'=>['onsubmit'=>'submitForm']]); ?>
+
+    <input type="text" name="url" id="url" hidden>
 
     <?= $form->field($model, 'description')->textInput(['maxlength' => true])->label('Nombre del perfil') ?>
 

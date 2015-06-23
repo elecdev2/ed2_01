@@ -1,5 +1,6 @@
 <?php
 use app\models\usuarios;
+use app\models\Items;
 
 use \app\assets\AppAsset;
 use yii\helpers\Html;
@@ -27,7 +28,7 @@ AppAsset::register($this);
 if (Yii::$app->user->isGuest) {
     ?>
     <li class="footer">
-        <?= Html::a('Login', ['/site/login']) ?>
+        
     </li>
 <?php
 } else {
@@ -35,16 +36,16 @@ if (Yii::$app->user->isGuest) {
     <li class="dropdown user user-menu">
         <?php $usuario = Usuarios::findOne(Yii::$app->user->id) ?>
         <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding: 4px 15px;">
-            <i class="glyphicon" style="width: 40px;"><img src="<?= Yii::$app->request->baseUrl; ?>/images/iconos/UsuarioAvatar.png" class="" alt="User Image"/></i>
+            <i class="glyphicon" style="width: 40px;"><img src="<?= Yii::$app->request->baseUrl; ?>/images/fotos_perfiles/<?=$usuario->foto?>" class="" alt="Imagen de usuario"/></i>
             <span style="font-size:17px; vertical-align: sub;"><?= $usuario->nombre ?> <i class="fa fa-caret-down"></i></span>
         </a>
         <ul class="dropdown-menu menu-avatar" style="width: 350px;">
-            <!-- User image -->
+            <!-- Imagen de usuario -->
             <li class="user-header bg-light-blue">
-                <img src="<?= Yii::$app->request->baseUrl; ?>/images/iconos/UsuarioAvatar.png" class="" alt="User Image" style="width: 140px;height: 140px; border:none;"/>
+                <img src="<?= Yii::$app->request->baseUrl; ?>/images/fotos_perfiles/<?=$usuario->foto?>" class="" alt="Imagen de usuario" style="width: 140px;height: 140px; border:none;"/>
                 <div class="texto-avatar">
                     <p><?= $usuario->nombre ?></p>
-                    <p><?= $usuario->username ?> - Perfil</p>
+                    <p><?= $usuario->username ?> - <?=Items::find()->select(['description'])->where(['name'=>$usuario->perfil])->scalar();  ?></p>
                 </div>
             </li>
             <!-- Menu Body -->

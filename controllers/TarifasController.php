@@ -33,7 +33,16 @@ class TarifasController extends Controller
                         'allow' => true,
                         'roles' => ['admin'],
                     ],
-                 
+                    [
+                        'allow' => true,
+                        'actions' => ['index','create','update','view','delete'],
+                        'roles' => ['tarifas'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['index','view'],
+                        'roles' => ['eps'],
+                    ],
                 ],
             ],
             'verbs' => [
@@ -87,10 +96,13 @@ class TarifasController extends Controller
         $model = new Tarifas();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index', 'ideps'=>$ideps]);
+            \Yii::$app->getSession()->setFlash('success', 'Tarifa creada con exito!');
+            return $this->redirect($_POST['url']);
+            // return $this->redirect(['index', 'ideps'=>$ideps]);
         } else {
             
             $lista_estudios = ArrayHelper::map($this->getEstudios($ideps,'crear',$model), 'id', 'name');
+            $this->getView()->registerJs('$("#url").val(getUrlVars());', yii\web\View::POS_READY,null);
             return $this->renderAjax('create', [
                 'model' => $model,
                 'ideps'=>$ideps,
@@ -132,9 +144,12 @@ class TarifasController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             $model->refresh();
             Yii::$app->response->format = 'json';
-            return $this->redirect(['index', 'ideps'=>$id]);
+            \Yii::$app->getSession()->setFlash('success', 'Tarifa actualizada con exito!');
+            return $this->redirect($_POST['url']);
+            // return $this->redirect(['index', 'ideps'=>$model->eps_id]);
         }
         $lista_estudios = ArrayHelper::map($this->getEstudios($model->eps_id,'act',$model), 'id', 'name');
+        $this->getView()->registerJs('$("#url").val(getUrlVars());', yii\web\View::POS_READY,null);
         return $this->renderAjax('update', [
             'model' => $model,
             'lista_estudios'=>$lista_estudios,

@@ -28,6 +28,7 @@ use Yii;
  * @property integer $envia_email
  * @property string $codeps
  *
+ * @property CitasMedicas[] $citasMedicas
  * @property Clientes $idclientes0
  * @property Eps $ideps0
  * @property Procedimientos[] $procedimientos
@@ -88,12 +89,20 @@ class Pacientes extends \yii\db\ActiveRecord
         ];
     }
 
-    public function scenarios()
-    {
-        $scenarios = parent::scenarios();
-        $scenarios['paciente'] = ['tipo_identificacion', 'identificacion', 'apellido1', 'nombre1', 'direccion', 'sexo', 'fecha_nacimiento', 'idclientes'];
-        return $scenarios;
-    }
+    // public function scenarios()
+    // {
+    //     $scenarios = parent::scenarios();
+    //     $scenarios['paciente'] = ['tipo_identificacion', 'identificacion', 'apellido1', 'nombre1', 'direccion', 'sexo', 'fecha_nacimiento', 'idclientes','email'];
+    //     return $scenarios;
+    // }
+
+    /**
+    * @return \yii\db\ActiveQuery
+    */
+   public function getCitasMedicas()
+   {
+       return $this->hasMany(CitasMedicas::className(), ['pacientes_id' => 'id']);
+   }
 
     /**
      * @return \yii\db\ActiveQuery

@@ -7,6 +7,7 @@ body {
     padding-right: 0 !important;
 }
 
+
 #main-nav {
     padding-right: 0 !important;
 }
@@ -77,7 +78,7 @@ table > thead > tr > th > a{
     color: white;
 }
 
-.panel-body{
+div.panel-body{
     padding: 0;
 }
 
@@ -127,6 +128,10 @@ table > thead > tr > th > a{
     vertical-align: middle;
 }
 
+.icon-email{
+    content: url(../images/iconos/BotonEnviarEmail.png);
+    vertical-align: middle;
+}
 
 /*Action column*/
 .up, .del, .ta, .vi{
@@ -231,7 +236,7 @@ body > .header .navbar{
 /*------tabla--------*/
 
 table > thead > tr > th{
-    text-align: center;
+    text-align: center !important;
 }
 
 .kv-panel-before, .kv-panel-after{
@@ -539,11 +544,8 @@ button.update:hover{
     line-height: 1.42857143;
 }
 
-#medRemNuevo > div > div > div.modal-header, #plantillaNuevaModal > div > div > div.modal-header, #plantillaModal > div > div > div.modal-header{
-    padding: 3px 15px;
-}
 
-#medRemNuevo > div > div > div.modal-header > h4, #plantillaNuevaModal > div > div > div.modal-header > h4, #plantillaModal > div > div > div.modal-header > h4{
+#medRemNuevo > div > div > div.modal-header > h3, #plantillaNuevaModal > div > div > div.modal-header > h3, #plantillaModal > div > div > div.modal-header > h3{
     text-align: center;
     color: white;
 }
@@ -770,6 +772,16 @@ li.user-footer > div > a > i{
 
 body > .header .logo{
     width: 200px;
+}
+
+#result-form div.result{
+    margin-bottom: 15px;
+}
+
+.blockError{
+  color: white;
+  background-color: #C75959;
+  padding: 10px;
 }
 
 /*---------------------------*/

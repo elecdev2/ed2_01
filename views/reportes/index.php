@@ -35,10 +35,10 @@ use kartik\grid\GridView;
 				                    'type' => 2,
 				                    'options'=>['id'=>'eps_id'],
 				                    'pluginOptions'=>[
-				                    'depends'=>['ips_id'],
-				                    'placeholder'=>'Seleccione EPS',
-				                    'url'=>Url::to(['/reportes/subeps'])
-				                ]
+					                    'depends'=>['ips_id'],
+					                    'placeholder'=>'Seleccione EPS',
+					                    'url'=>Url::to(['/reportes/subeps'])
+					                ]
 				            ])->label('');
 				        ?>
 					</div>

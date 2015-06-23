@@ -14,6 +14,8 @@ use app\models\ListasSistema;
 
     <?php $form = ActiveForm::begin(['layout'=>'horizontal', 'id'=>'tsForm', 'validateOnType' => true, 'options'=>['onsubmit'=>'submitForm']]); ?>
 
+	<input type="text" name="url" id="url" hidden>
+
 	<?= $form->field($model, 'tipo')->dropDownList([ListasSistema::rips => ListasSistema::rips, ListasSistema::tipo_identificacion => ListasSistema::tipo_identificacion, ListasSistema::tipo_usuario => ListasSistema::tipo_usuario, ListasSistema::tipo_residencia => ListasSistema::tipo_residencia, ListasSistema::estado_prc => ListasSistema::estado_prc, ListasSistema::concepto_fact => ListasSistema::concepto_fact, ListasSistema::tipo_campo => ListasSistema::tipo_campo]); ?>
 
     <?= $form->field($model, 'codigo')->textInput(['maxlength' => 45])->label('Código *') ?>

@@ -14,6 +14,8 @@ use Yii;
  * @property integer $idclientes
  * @property string $username
  * @property string $perfil 
+ * @property string $sexo 
+ * @property string $foto 
  * @property double $activo
  *
  * @property Procedimientos[] $procedimientos
@@ -26,6 +28,9 @@ class Usuarios extends \yii\db\ActiveRecord implements \yii\web\IdentityInterfac
 {
     public $authKey;
     public $accessToken;
+    public $ips_medico;
+    public $especialidad;
+    public $codigo_medico;
     /**
      * @inheritdoc
      */
@@ -40,11 +45,14 @@ class Usuarios extends \yii\db\ActiveRecord implements \yii\web\IdentityInterfac
     public function rules()
     {
         return [
-            [['idmedicos', 'idclientes'], 'integer'],
+            [['idmedicos', 'idclientes', 'ips_medico', 'especialidad'], 'integer'],
             [['password', 'nombre', 'idclientes', 'username', 'activo','perfil'], 'required'],
             [['activo'], 'number'],
+            [['codigo_medico'], 'string', 'max' => 15],
             [['password'], 'string', 'max' => 255],
             [['nombre'], 'string', 'max' => 150],
+            [['sexo'], 'string', 'max' => 1],
+            [['foto'], 'string', 'max' => 120],
             [['username'], 'string', 'max' => 64],
             [['perfil'], 'string', 'max' => 45], 
             [['username'], 'unique']
@@ -65,6 +73,8 @@ class Usuarios extends \yii\db\ActiveRecord implements \yii\web\IdentityInterfac
             'username' => 'Username',
             'perfil' => 'Perfil', 
             'activo' => 'Activo',
+            'sexo'=>'Sexo',
+            'foto'=>'Foto',
         ];
     }
 
@@ -75,6 +85,7 @@ class Usuarios extends \yii\db\ActiveRecord implements \yii\web\IdentityInterfac
     {
         return $this->hasMany(Procedimientos::className(), ['usuario_transcribe' => 'id']);
     }
+
 
     /**
      * @return \yii\db\ActiveQuery

@@ -34,6 +34,8 @@ use kartik\select2\Select2;
 
     <input type="text" hidden name="ideps" value="<?=$ideps?>">
 
+    <input type="text" name="url" id="url" hidden>
+
     <div class="form-group text-center">
         <?= Html::submitButton($model->isNewRecord ? '<i class="add icon-guardar"></i>Crear' : '<i class="add icon-actualizar"></i>Actualizar', ['class' =>'btn btn-success']) ?>
     </div>

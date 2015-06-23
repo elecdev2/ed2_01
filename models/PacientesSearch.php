@@ -41,7 +41,7 @@ class PacientesSearch extends Pacientes
      */
     public function search($params)
     {
-        $query = Pacientes::find();
+        $query = Pacientes::find()->where(['idclientes'=>Usuarios::findOne(Yii::$app->user->id)->idclientes]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

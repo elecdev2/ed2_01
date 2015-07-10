@@ -14,36 +14,29 @@ $this->title = 'Editar cita médica';
 <div class="citas-medicas-update">
 <input type="text" hidden name="id_help" data-titulo="<?=Html::encode($this->title)?>" id="helperHid">
 
-<div class="panelFormulario-contenido">
-    <div class="panelFormulario-header">
-        <h3 class="titulo-tarifa">Datos del paciente</h3>
-    </div>
-    <div class="modal-body">
-	    <?= DetailView::widget([
-	        'model' => $paciente,
-	        'attributes' => [
-	            [
-	            	'attribute'=>'nombre',
-	            	'value'=>$paciente->nombre1.' '.$paciente->nombre2.' '.$paciente->apellido1.' '.$paciente->apellido2,
-	            ],
-	            [
-	            	'attribute'=>'identificacion',
-	            	'value'=>$paciente->tipo_identificacion.' '.$paciente->identificacion,
-	            ],
-	            'telefono',
-	            'email:email',
-	        ],
-	    ]) ?>
-	</div>
-</div>
-
 	<div class="panel panel-default">
         <div class="panel-body">
 		    <?= $this->render('_form', [
 		        'model' => $model,
+		        'paciente'=>$paciente,
+		        'rango_fecha'=>$rango_fecha,
+		        'id_cliente'=>$id_cliente,
 		        'lista_med'=>$lista_med,
+		        'lista_tipoid'=>$lista_tipoid,
+		        'lista_tipos'=>$lista_tipos,
+		        'lista_resid'=>$lista_resid,
+		        'lista_ciudades'=>$lista_ciudades,
+		        'lista_eps'=>$lista_eps,
 		    ]) ?>
 		</div>
 	</div>
+
+	<div class="panel panel-default">
+        <div class="panel-body">
+			<div class="col-sm-6">
+				<button class="btn btn-danger" id="cancelar_cita" onclick="cancelarCita(<?=$model->id_citas?>)" ><i class=""></i>Cancelar cita</button>
+			</div>
+        </div>
+    </div>
 
 </div>

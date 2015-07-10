@@ -607,48 +607,58 @@ SCRIPT;
         if($model->estado == 'IMP'){ $model->fecha_entrega = date('Y-m-d'); }
         $model->save();
 
-        $content = $this->renderPartial('pdf_resultados', [
+        // $content = $this->renderPartial('pdf_resultados', [
+        //         'model' => $model,
+        //         'campos'=>$campos,
+        //     ], true);
+
+        // $formato = Pdf::FORMAT_A4;
+        // $css = '@vendor/kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css';
+        // $titulo = 'Resultados';
+        // $this->pdf($formato, $content, $css, $titulo);
+
+        $this->layout = 'resultados_layout';
+        $pdf = new Pdf();
+        $mpdf = $pdf->api;
+        $mpdf->WriteHtml($this->renderPartial('pdf_resultados', [
                 'model' => $model,
                 'campos'=>$campos,
-            ], true);
-
-        $formato = Pdf::FORMAT_A4;
-        $css = '@vendor/kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css';
-        $titulo = 'Resultados';
-        $this->pdf($formato, $content, $css, $titulo);
-
+            ], true));
+        $mpdf->SetJS('this.print()');
+        $mpdf->output();
        
     }
 
-    public function pdf($formato, $contenido, $css, $titulo)
-    {
-         $pdf = new Pdf([
-            // set to use core fonts only
-            'mode' => Pdf::MODE_UTF8, 
-            // A4 paper format
-            'format' => $formato,
-            // portrait orientation
-            'orientation' => Pdf::ORIENT_PORTRAIT, 
-            // stream to browser inline
-            'destination' => Pdf::DEST_BROWSER, 
-            // your html content input
-            'content' => $contenido,  
-            // format content from your own css file if needed or use the
-            // enhanced bootstrap css built by Krajee for mPDF formatting 
-            'cssFile' => $css,
-            // any css to be embedded if required
-            'cssInline' => '.kv-heading-1{font-size:16px}', 
-             // set mPDF properties on the fly
-            'options' => ['title' => 'Resultados'],
-             // call mPDF methods on the fly
-            'methods' => [ 
-                'SetHeader'=>[$titulo], 
-                'SetFooter'=>['{PAGENO}'],
-            ]
-        ]);
+    // public function pdf($formato, $contenido, $css, $titulo)
+    // {
+    //      $pdf = new Pdf([
+    //         // set to use core fonts only
+    //         'mode' => Pdf::MODE_UTF8, 
+    //         // A4 paper format
+    //         'format' => $formato,
+    //         // portrait orientation
+    //         'orientation' => Pdf::ORIENT_PORTRAIT, 
+    //         // stream to browser inline
+    //         'destination' => Pdf::DEST_BROWSER, 
+    //         // your html content input
+    //         'content' => $contenido,  
+    //         // format content from your own css file if needed or use the
+    //         // enhanced bootstrap css built by Krajee for mPDF formatting 
+    //         'cssFile' => $css,
+    //         // any css to be embedded if required
+    //         'cssInline' => '.kv-heading-1{font-size:16px}', 
+    //          // set mPDF properties on the fly
+    //         'options' => ['title' => 'Resultados'],
+    //          // call mPDF methods on the fly
+    //         'methods' => [ 
+    //             'SetHeader'=>[$titulo], 
+    //             'SetFooter'=>['{PAGENO}'],
+    //         ]
+    //     ]);
 
-        return $pdf->render(); 
-    }
+    //      // $this->getView()->registerJs('this.print()', yii\web\View::POS_READY,null);
+    //     return $pdf->render(); 
+    // }
 
     public function actionGetDescripcion()
     {

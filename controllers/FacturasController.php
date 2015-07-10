@@ -263,6 +263,7 @@ class FacturasController extends Controller
             'fact'=>true,
             'procedimientos'=>$proc,
          ]));
+        $mpdf->SetJS('this.print()');
         $mpdf->output();
 
     }

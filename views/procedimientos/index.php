@@ -23,7 +23,6 @@ $this->title = 'Procedimientos';
 // $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="procedimientos-index">
-    <!-- <div class="text-center"><?php //echo Html::tag('h3', (isset($_GET['message'])) ? $_GET['message'] : '' ,['class'=> 'help-block']);?></div> -->
     <div class="panel panel-default">
         <div class="panel-body">
             <div class="panelTituloBoton col-md-12">
@@ -41,12 +40,12 @@ $this->title = 'Procedimientos';
         <?php  if(isset($dataProvider)) echo Html::a('<span class="busqueda glyphicon glyphicon-search"></span> Busqueda <i class="fa fa-caret-down fa-lg"></i>','#',['class'=>'search-boton']);   ?>
     </div>
 
-    <?= Yii::$app->session->getFlash('error'); ?>
     
     <div class="promotores-view">
             <?= GridView::widget([
                 'id'=>'procedimientos',
                 'dataProvider' => $dataProvider,
+                // 'pjax'=>true,
                 'headerRowOptions'=>['class'=>'cabecera'],
                 'filterModel' => $searchModel,
                 // 'pjax'=>true,

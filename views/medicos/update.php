@@ -59,6 +59,7 @@ $this->title = $model->nombre;
                 'model' => $model,
                 'lista_especialidades'=>$lista_especialidades,
                 'lista_ips'=>$lista_ips,
+                'lista_colores'=>$lista_colores,
             ]) ?>
         </div>
     </div>

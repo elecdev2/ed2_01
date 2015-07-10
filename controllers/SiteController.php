@@ -135,12 +135,14 @@ class SiteController extends Controller
         $contrasena = $model->password;
         if($model->idmedicos !== null){
             $modelMedico = $this->findModelMedico($model->idmedicos); 
+        }else{
+            $modelMedico = new Medicos();
         }
 
         if ($model->load(Yii::$app->request->post())) {
 
-            if($model->contrasena !== $contrasena){
-                $model->contrasena = sha1($model->contrasena);
+            if($model->password !== $contrasena){
+                $model->password = sha1($model->password);
             }
 
             if($model->idmedicos != null){
@@ -168,7 +170,10 @@ class SiteController extends Controller
         }
         $lista_ips = ArrayHelper::map(Ips::find()->all(),'id','nombre');
         $lista_especialidades = ArrayHelper::map(Especialidades::find()->all(),'id','nombre');
-        return $this->render('//usuarios/update', [
+
+        $ips->id = $model->perfil != 'medico' ? $this->ipsSeleccionadas($model) : '';
+        
+        return $this->render('update', [
             'model' => $model,
             'id_cliente'=>$id_cliente,
             'lista_perf'=>$lista_perf,
@@ -256,6 +261,69 @@ class SiteController extends Controller
         }
         $this->redirect(['update', 'id'=>$model->id]);
 
+    }
+
+    public function actionUploadFirma()
+    {
+        $imagen = new UploadFormImages();
+
+        if(Yii::$app->request->post())
+        {
+            $imagen->file = UploadedFile::getInstance($imagen, 'file');
+            $model = $this->findModelMedico($_POST['usuario']);
+            if (isset($imagen->file))
+            {
+                if($model->ruta_firma !== null)
+                {
+                    unlink('images/firmas/'.$model->ruta_firma);
+                }
+                $img = md5(time()).'.'. $imagen->file->extension;
+
+                if($imagen->file->extension == 'jpg' || $imagen->file->extension == 'png' || $imagen->file->extension == 'gif')
+                {
+                    $imagen->file->saveAs('images/firmas/'.$img);
+                    $model->ruta_firma = $img;
+                    $model->save();
+                    \Yii::$app->getSession()->setFlash('success', 'Firma cambiada!');
+                }else{
+                    \Yii::$app->getSession()->setFlash('error', 'Error: No se pudo cargar su firma, intentelo de nuevo');
+                }
+                $this->redirect(['update', 'id'=>\Yii::$app->user->id]);
+            }
+        }
+    }
+
+    /**
+     * Borra una imagen del servidor.
+     * Si la imagen se borra con exito, será redirigido al index.php.
+     * @return mixed
+     */
+    public function actionBorrarFirma($id)
+    {
+        $model = $this->findModelMedico($id);
+        unlink('images/firmas/'.$model->ruta_firma);
+        $model->ruta_firma = null;
+       
+        if($model->save())
+        {
+            \Yii::$app->getSession()->setFlash('success', 'Firma borrada!');
+        }else{
+            \Yii::$app->getSession()->setFlash('error', 'Error: No se pudo borrar su firma, intentelo de nuevo');
+        }
+        $this->redirect(['index']);
+
+    }
+
+    public function ipsSeleccionadas($model)
+    {
+        $ips_select = (new Query)->select('idips')->from('usuarios_ips')->where(['idusuario'=>$model->id])->all();
+        $i = 0;
+        foreach ($ips_select as $key => $value) {
+            $temp[$i] = $ips_select[$i]['idips'];
+            $i++;
+        }
+
+        return $temp;
     }
 
     public function actionResultados()

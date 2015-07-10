@@ -7,6 +7,13 @@ body {
     padding-right: 0 !important;
 }
 
+#colorBox{
+    height: 34px;
+    width: 10%; 
+    border: 1px solid #E3E3E3;
+    margin: auto;
+    background-color: #f9f9f9;
+}
 
 #main-nav {
     padding-right: 0 !important;
@@ -133,8 +140,18 @@ div.panel-body{
     vertical-align: middle;
 }
 
+.icon-refresh{
+    content: url(../images/iconos/IconoBotonRefres.png);
+    vertical-align: middle;
+}
+
+.icon-cancel{
+    content: url(../images/iconos/BotonCancelar.png);
+    vertical-align: middle;
+}
+
 /*Action column*/
-.up, .del, .ta, .vi{
+.up, .del, .ta, .vi, .hr{
     background-repeat: no-repeat;
     background-size: 100%;
     border-radius: 50%;
@@ -144,17 +161,21 @@ div.panel-body{
 
 .del{
     background-color: #E02828;    
-    background-image: url(../images/iconos-clapp/icons-23.png);    
+    background-image: url(../images/iconos/IconoTablaEliminar.png);    
 }
 
 .up{
     background-color: #FCB602;    
-    background-image: url(../images/iconos-clapp/icons-22.png);    
+    background-image: url(../images/iconos/IconoTablaActualizar.png);    
+}
+
+.hr{
+    background-image: url(../images/iconos/IconoTablaHora.png);    
 }
 
 .ta{
     background-color: #00A65A;    
-    background-image: url(../images/iconos/iconos-711.png);
+    background-image: url(../images/iconos/BotonRecibo.png);
 }
 
 .vi{
@@ -784,6 +805,8 @@ body > .header .logo{
   padding: 10px;
 }
 
+
+
 /*---------------------------*/
 
 @media (max-width: 768px){
@@ -796,6 +819,17 @@ body > .header .logo{
 
     .left-side{
         top:0;
+    }
+}
+
+@media (min-width: 1200px){
+    div.citas-medicas-search div.col-sm-5 {
+        width: 43.99%;
+    }
+
+    
+    div.citas-medicas-search div.col-sm-3 {
+        width: 29.5%;
     }
 }
 

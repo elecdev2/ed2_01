@@ -27,6 +27,7 @@ use Yii;
  */
 class Eps extends \yii\db\ActiveRecord
 {
+    public $tipos_est;
     /**
      * @inheritdoc
      */
@@ -41,8 +42,8 @@ class Eps extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['idips', 'codigo', 'nombre', 'direccion', 'telefono', 'nit', 'generar_rip', 'idinformes', 'activo'], 'required'],
-            [['idips', 'generar_rip', 'idinformes'], 'integer'],
+            [['idips', 'codigo', 'nombre', 'direccion', 'telefono', 'nit', 'generar_rip', 'idinformes', 'activo','tipos_est'], 'required'],
+            [['idips', 'generar_rip', 'idinformes','tipos_est'], 'integer'],
             [['codigo', 'telefono'], 'string', 'max' => 15],
             [['nombre'], 'string', 'max' => 150],
             [['direccion'], 'string', 'max' => 100],

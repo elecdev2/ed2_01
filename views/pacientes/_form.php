@@ -43,7 +43,15 @@ use kartik\select2\Select2;
 
     <?= $form->field($model, 'telefono')->textInput(['maxlength' => 15]) ?>
 
-    <?= $form->field($model, 'sexo')->dropDownList(['prompt'=>'Seleccione una opción', 'M' => 'Masculino', 'F' => 'Femenino']) ?>
+    <?= $form->field($model, 'sexo')->widget(Select2::classname(), [
+            'data'=>['M'=>'Masculino', 'F'=>'Femenino'],
+            'language' => 'es',
+            'options' => ['placeholder' => 'Seleccione una opción'],
+            'pluginOptions' => [
+                'allowClear' => true
+            ],
+        ])->label('Sexo');
+    ?>
 
     <?= $form->field($model, 'fecha_nacimiento')->widget(yii\jui\DatePicker::classname(), ["dateFormat" => "yyyy-MM-dd", 'options' => ['value'=>$model->fecha_nacimiento, 'class' => 'fecha form-control', "placeholder" => "aaaa-mm-dd"], 'clientOptions'=>['yearRange'=>$rango_fecha,'changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']) ?>
 
@@ -66,19 +74,10 @@ use kartik\select2\Select2;
             ],
         ])->label('Tipo de residencia');
     ?>
-
+    
 
     <?= $form->field($model, 'activo')->dropDownList(['1' => 'Si', '2' => 'No'])->label('Activo') ?>
 
-    <?= $form->field($model, 'idciudad')->widget(Select2::classname(), [
-            'data'=>$lista_ciudades,
-            'language' => 'es',
-            'options' => ['placeholder' => 'Seleccione una ciudad'],
-            'pluginOptions' => [
-                'allowClear' => true
-            ],
-        ])->label('Ciudad');
-    ?>
     
     <?= $form->field($model, 'ideps')->widget(Select2::classname(), [
             'data'=>$lista_eps,

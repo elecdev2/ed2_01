@@ -101,16 +101,16 @@ class EpsController extends Controller
         if ($model->load(Yii::$app->request->post())) {
             $cod_eps = $model->codigo;
             $ips = $model->idips;
-            if($model->save() && isset($_POST['tipos_estudios'])){
+            if($model->save(false)){
                 $id_eps = $this->getEps($cod_eps,$ips);
-                foreach ($_POST['tipos_estudios'] as $key => $value) {
+                foreach ($_POST['Eps']['tipos_est'] as $key => $value) {
                     $eps_tipos = new EpsTipos();
                     $eps_tipos->eps_id = $id_eps;
                     $eps_tipos->tipos_servicio_id = $value;
                     $eps_tipos->save();
                 }
+                \Yii::$app->getSession()->setFlash('success', 'EPS creada con exito!');
             }
-            \Yii::$app->getSession()->setFlash('success', 'EPS creada con exito!');
             return $this->redirect(['index']);
         } 
         $id_cliente = Usuarios::findOne(Yii::$app->user->id)->idclientes;;
@@ -187,6 +187,7 @@ class EpsController extends Controller
         $id_cliente = Usuarios::findOne(Yii::$app->user->id)->idclientes;
         $lista_ips = ArrayHelper::map(Ips::find()->all(), 'id', 'nombre');
         $lista_informes = ArrayHelper::map(Informes::find()->all(), 'id', 'nombre');
+
         return $this->renderAjax('update', [
             'model' => $model,
             'lista_ips'=>$lista_ips,
@@ -224,5 +225,6 @@ class EpsController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+
 
 }

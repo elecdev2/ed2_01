@@ -60,13 +60,17 @@ $this->title = 'Médicos';
 
                 [
                     'class' => 'kartik\grid\ActionColumn',
-                    'template'=>'{view}{update}',
+                    'template'=>'{view}{update}{delete}',
                     'buttons' => [
                         'view'=> function ($url, $model, $key) {
                             return '<a href="" id="ver" class="vi" title="Ver"></a>';
                         },
                         'update'=> function ($url, $model, $key) {
                             return '<a href="" id="actualizar" class="up" title="actualizar"></a>';
+                        },
+                        'delete'=> function ($url, $model, $key) {
+                            return  Html::a('',['horario', 'id'=>$model->id],['id'=>'horario', 'class'=>'hr', 'title'=>'horario']);
+                            // return '<a href="horario" id="horario" class="up" title="horario"></a>';
                         },
                        
                     ],

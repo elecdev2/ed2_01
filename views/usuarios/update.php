@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use app\models\Medicos;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Usuarios */
@@ -32,6 +33,7 @@ $this->title = $model->nombre;
             </div>
         </div>
     </div>
+
 
     <!-- Formulario oculto: revisar library.js y buscar los id de los input y el boton -->
     <div style="display:none">

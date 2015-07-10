@@ -26,47 +26,52 @@ use kartik\select2\Select2;
 
     <?= $form->field($model, 'password')->passwordInput(['maxlength' => 128]) ?>
 
-    <?= $form->field($model, 'perfil')->widget(Select2::classname(), [
-            'data'=>$lista_perf,
-            'id'=>'perfiles',
-            'language' => 'es',
-            'options' => ['placeholder' => 'Seleccione un perfil'],
-            'pluginOptions' => [
-                'allowClear' => true
-            ],
-            'pluginEvents' => [
-                "change" => $model->isNewRecord ? "function() { 
-                                                    if($(this).val() == 'medico'){
-                                                            $('#panelMedico').show();
-                                                            $('#campoIPSs').hide();
-                                                        }else{
-                                                            $('#panelMedico').hide();
-                                                            $('#campoIPSs').show();
-                                                        } 
-                                                    }" :
-                                                    "function() { 
-                                                            $('#campoIPSs').hide();
-                                                            $('#panelMedico').hide();
-                                                    }",
-                                                   
-            ],
-        ])->label('Perfil');
-    ?>
-
+    <?= $form->field($model, 'email')->textInput(['maxlength' => 100]) ?>
     
-    <div id="campoIPSs">
-        <?= $form->field($ipsModel, 'id')->widget(Select2::classname(), [
-                    'data'=>$lista_ips,
-                    'language' => 'es',
-                    'id'=>'medField',
-                    'options' => ['placeholder' => '','multiple'=>true,],
-                    'pluginOptions' => [
-                        'tags' => true,
-                        'allowClear' => true,
-                    ],
-                ])->label('IPSs');
-            ?>
-    </div>
+    <?php if(\Yii::$app->user->can('admin')){ ?>
+
+        <?= $form->field($model, 'perfil')->widget(Select2::classname(), [
+                'data'=>$lista_perf,
+                'id'=>'perfiles',
+                'language' => 'es',
+                'options' => ['placeholder' => 'Seleccione un perfil'],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+                'pluginEvents' => [
+                    "change" => $model->isNewRecord ? "function() { 
+                                                        if($(this).val() == 'medico'){
+                                                                $('#panelMedico').show();
+                                                                $('#campoIPSs').hide();
+                                                            }else{
+                                                                $('#panelMedico').hide();
+                                                                $('#campoIPSs').show();
+                                                            } 
+                                                        }" :
+                                                        "function() { 
+                                                                $('#campoIPSs').hide();
+                                                                $('#panelMedico').hide();
+                                                        }",
+                                                       
+                ],
+            ])->label('Perfil');
+        ?>
+
+        <div id="campoIPSs">
+            <?= $form->field($ipsModel, 'id')->widget(Select2::classname(), [
+                        'data'=>$lista_ips,
+                        'language' => 'es',
+                        'id'=>'medField',
+                        'options' => ['placeholder' => '','multiple'=>true,],
+                        'pluginOptions' => [
+                            'tags' => true,
+                            'allowClear' => true,
+                        ],
+                    ])->label('IPSs');
+                ?>
+        </div>
+
+    <?php } ?>
 
     <div id="panelMedico"  class="">
         <?= $form->field($model, 'ips_medico')->widget(Select2::classname(), [
@@ -94,7 +99,10 @@ use kartik\select2\Select2;
         <?= $form->field($model, 'codigo_medico')->textInput()->label('Código') ?>
 
     </div>
-    <?= $form->field($model, 'activo')->dropDownList(['1' => 'Si', '2' => 'No'])->label('Activo') ?>
+
+    <?php if(\Yii::$app->user->can('admin')){ ?>
+        <?= $form->field($model, 'activo')->dropDownList(['1' => 'Si', '2' => 'No'])->label('Activo') ?>
+    <?php } ?>
 
     <div class="form-group text-center">
         <?= Html::submitButton($model->isNewRecord ? '<i class="add icon-guardar"></i>Crear' : '<i class="add icon-actualizar"></i>Actualizar', ['class' =>'btn btn-success']) ?>

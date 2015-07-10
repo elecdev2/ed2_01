@@ -15,6 +15,7 @@ use Yii;
  * @property integer $activo
  * @property integer $idclientes
  * @property string $ruta_firma
+ * @property integer $color
  *
  * @property CitasMedicas[] $citasMedicas 
  * @property Especialidades $idespecialidades0
@@ -40,7 +41,7 @@ class Medicos extends \yii\db\ActiveRecord
     {
         return [
                     [['ips_idips', 'idespecialidades', 'codigo', 'nombre', 'idclientes'], 'required'],
-                    [['ips_idips', 'idespecialidades', 'idclientes','activo'], 'integer'],
+                    [['ips_idips', 'idespecialidades', 'idclientes','activo', 'color'], 'integer'],
                     [['codigo'], 'string', 'max' => 15],
                     [['nombre', 'ruta_firma'], 'string', 'max' => 150]
             
@@ -61,6 +62,7 @@ class Medicos extends \yii\db\ActiveRecord
             'idclientes' => 'Idclientes',
             'ruta_firma' => 'Ruta Firma',
             'activo'=>'Activo',
+            'color'=>'Color',
         ];
     }
 

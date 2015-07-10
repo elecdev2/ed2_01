@@ -116,7 +116,7 @@ SCRIPT;
                 $modelMedico->codigo = $model->codigo_medico;
                 $modelMedico->ips_idips = $model->ips_medico;
                 $modelMedico->idespecialidades = $model->especialidad;
-                $modelMedico->nombre = $model->nombre;
+                $modelMedico->nombre = $model->sexo == 'F' ? 'Dra. '.$model->nombre : 'Dr. '.$model->nombre;
                 $modelMedico->activo = $model->activo;
                 $modelMedico->idclientes = $model->idclientes;
                 

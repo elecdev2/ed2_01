@@ -46,25 +46,23 @@ use kartik\depdrop\DepDrop;
 
     <?= $form->field($model, 'activo')->dropDownList(['1' => 'Si', '2' => 'No'])->label('Activo') ?>
 
-    <div class="form-group field-tipod_estudios required">
-        <label class="control-label col-sm-3" for="tipos_estudios">Tipos de estudios</label>
-        <div class="col-sm-6">
-            <?= DepDrop::widget([
-                    'type' => DepDrop::TYPE_SELECT2,
-                    'language' => 'es',
-                    'id'=>'listaEst',
-                    'name'=>'tipos_estudios',
-                    'options'=> ['multiple' => true], 
-                    'pluginOptions' => [
-                        'depends'=>['ips_id'],
-                        'allowClear' => true,
-                        // 'placeholder'=>'',
-                        'url'=>Url::to(['/eps/subtipos'])
-                    ],
-                ]);
-            ?>
-        </div>
-    </div>
+    
+    <?= $form->field($model, 'tipos_est')->widget(DepDrop::classname(), [
+            'type' => DepDrop::TYPE_SELECT2,
+            'language' => 'es',
+            // 'id'=>'listaEst',
+            // 'name'=>'tipos_estudios',
+            'options'=> ['multiple' => true], 
+            'pluginOptions' => [
+                'depends'=>['ips_id'],
+                'allowClear' => true,
+                'tags'=>true,
+                'placeholder'=>'Seleccione las opciones',
+                'url'=>Url::to(['/eps/subtipos'])
+            ],
+        ])->label('Tipos de estudios');
+    ?>
+        
 
     <div class="form-group text-center">
         <?= Html::submitButton($model->isNewRecord ? '<i class="add icon-guardar"></i>Crear' : '<i class="add icon-actualizar"></i>Actualizar', ['class' =>'btn btn-success']) ?>
@@ -77,8 +75,8 @@ use kartik\depdrop\DepDrop;
     $(document).ready(function() {
         $('#url').val(getUrlVars());
 
-        $('#listaEst').on('change', function(e){
-            var val = $('#listaEst option:selected');
+        $('#eps-tipos_est').on('change', function(e){
+            var val = $('#eps-tipos_est option:selected');
             if(val.attr('value') === '')
                 val.remove();
         });

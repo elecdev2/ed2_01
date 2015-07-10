@@ -16,6 +16,7 @@ use Yii;
  * @property string $perfil 
  * @property string $sexo 
  * @property string $foto 
+ * @property string $email 
  * @property double $activo
  *
  * @property Procedimientos[] $procedimientos
@@ -54,7 +55,9 @@ class Usuarios extends \yii\db\ActiveRecord implements \yii\web\IdentityInterfac
             [['sexo'], 'string', 'max' => 1],
             [['foto'], 'string', 'max' => 120],
             [['username'], 'string', 'max' => 64],
-            [['perfil'], 'string', 'max' => 45], 
+            [['perfil'], 'string', 'max' => 45],
+            [['email'], 'string', 'max' => 100],
+            [['email'], 'email'],
             [['username'], 'unique']
         ];
     }
@@ -75,6 +78,7 @@ class Usuarios extends \yii\db\ActiveRecord implements \yii\web\IdentityInterfac
             'activo' => 'Activo',
             'sexo'=>'Sexo',
             'foto'=>'Foto',
+            'email' => 'Email',
         ];
     }
 

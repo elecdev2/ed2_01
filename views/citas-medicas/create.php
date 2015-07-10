@@ -16,7 +16,15 @@ $this->title = 'Nueva cita médica';
         <div class="panel-body">
 		    <?= $this->render('_form', [
 		        'model' => $model,
+		        'paciente'=>$paciente,
+		        'rango_fecha'=>$rango_fecha,
+		        'id_cliente'=>$id_cliente,
 		        'lista_med'=>$lista_med,
+		        'lista_tipoid'=>$lista_tipoid,
+		        'lista_tipos'=>$lista_tipos,
+		        'lista_resid'=>$lista_resid,
+		        'lista_ciudades'=>$lista_ciudades,
+		        'lista_eps'=>$lista_eps,
 		    ]) ?>
 		</div>
 	</div>

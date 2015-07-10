@@ -23,7 +23,7 @@ use kartik\select2\Select2;
 
 <div class="col-sm-6 col-lg-4">
     <?= $form->field($model, 'idespecialidades', ['template'=>"{input}{error}"])->widget(Select2::classname(), [
-            'data'=>array_merge(["" => ""], $lista_especialidades),
+            'data'=>$lista_especialidades,
             'language' => 'es',
             'options' => ['placeholder' => 'Seleccione una especialidad'],
             'pluginOptions' => [

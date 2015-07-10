@@ -5,6 +5,7 @@ use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use kartik\select2\Select2;
 
+
 /* @var $this yii\web\View */
 /* @var $model app\models\CitasMedicas */
 /* @var $form yii\widgets\ActiveForm */
@@ -12,19 +13,18 @@ use kartik\select2\Select2;
 
 <div class="citas-medicas-form">
 
-    <?php $form = ActiveForm::begin(['layout'=>'horizontal', 'id'=>'procForm', 'validateOnType' => true, 'options'=>['onsubmit'=>'submitForm']]); ?>
+<?php $form = ActiveForm::begin(['layout'=>'horizontal', 'id'=>'citasForm', 'validateOnType' => true, 'options'=>['onsubmit'=>'submitForm']]); ?>
 
 <div class="panelFormulario-contenido">
     <div class="panelFormulario-header">
-        <h3 class="titulo-tarifa">Datos de la cita</h3>
+        <h3 class="titulo-tarifa">Datos del paciente</h3>
     </div>
     <div class="modal-body">
-        <?= $form->field($model, 'pacientes_id')->hiddenInput()->label('') ?>
 
         <div class="form-group">
             <label class="control-label col-sm-3">N° de ID del paciente *</label>
-            <div class="col-sm-6">                
-                <input id="documento_cita" type="number" required oninput="getPaciente()" class="form-control" value="<?= $model->isNewRecord ? '' : $model->pacientes->identificacion?>">
+            <div class="col-sm-6">
+                <input id="documento_cita" name="documento_cita" type="number" required oninput="getPaciente()" class="form-control" value="<?= $model->isNewRecord ? '' : $model->pacientes->identificacion?>">
             </div>
         </div>
 
@@ -32,10 +32,95 @@ use kartik\select2\Select2;
             <h5 id="pacienteName"></h5>
         </div>
 
+    
+        <?= $form->field($paciente, 'tipo_identificacion')->widget(Select2::classname(), [
+                'data'=>$lista_tipoid,
+                'language' => 'es',
+                'options' => ['placeholder' => 'Seleccione un tipo de ID'],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ])->label('Tipo de ID');
+        ?>
 
-        <?= $form->field($model, 'medicos_id')->widget(Select2::classname(), [
+        <?= $form->field($paciente, 'nombre1')->textInput(['maxlength' => 30]) ?>
+
+        <?= $form->field($paciente, 'nombre2')->textInput(['maxlength' => 30]) ?>
+
+        <?= $form->field($paciente, 'apellido1')->textInput(['maxlength' => 30]) ?>
+        
+        <?= $form->field($paciente, 'apellido2')->textInput(['maxlength' => 30]) ?>
+
+        <?= $form->field($paciente, 'direccion')->textInput(['maxlength' => 100]) ?>
+
+        <?= $form->field($paciente, 'telefono')->textInput(['maxlength' => 15]) ?>
+
+        <?= $form->field($paciente, 'sexo')->dropDownList(['prompt'=>'Seleccione una opción', 'M' => 'Masculino', 'F' => 'Femenino']) ?>
+
+        <?= $form->field($paciente, 'fecha_nacimiento')->widget(yii\jui\DatePicker::classname(), ["dateFormat" => "yyyy-MM-dd", 'options' => ['value'=>$paciente->fecha_nacimiento, 'class' => 'fecha form-control', "placeholder" => "aaaa-mm-dd"], 'clientOptions'=>['yearRange'=>$rango_fecha,'changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']) ?>
+
+        <?= $form->field($paciente, 'tipo_usuario')->widget(Select2::classname(), [
+                'data'=>$lista_tipos,
+                'language' => 'es',
+                'options' => ['placeholder' => 'Seleccione un tipo de usuario'],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ])->label('Tipo de usuario');
+        ?>
+
+        <?= $form->field($paciente, 'tipo_residencia')->widget(Select2::classname(), [
+                'data'=>$lista_resid,
+                'language' => 'es',
+                'options' => ['placeholder' => 'Seleccione un tipo de residencia'],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ])->label('Tipo de residencia');
+        ?>
+
+
+        <?= $form->field($paciente, 'activo')->dropDownList(['1' => 'Si', '2' => 'No'])->label('Activo') ?>
+
+        <?= $form->field($paciente, 'idciudad')->widget(Select2::classname(), [
+                'data'=>$lista_ciudades,
+                'language' => 'es',
+                'options' => ['placeholder' => 'Seleccione una ciudad'],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ])->label('Ciudad');
+        ?>
+        
+        <?= $form->field($paciente, 'ideps')->widget(Select2::classname(), [
+                'data'=>$lista_eps,
+                'language' => 'es',
+                'options' => ['placeholder' => 'Seleccione una EPS'],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ])->label('Eps');
+        ?>
+
+        <?= $form->field($paciente, 'email')->textInput(['maxlength' => 100]) ?>
+
+        <?= $form->field($paciente, 'envia_email')->dropDownList(['prompt'=>'Seleccione una opción', '1' => 'Si', '2' => 'No'])->label('Enviar email') ?>
+        
+    </div>
+</div>
+
+
+<div class="panelFormulario-contenido">
+    <div class="panelFormulario-header">
+        <h3 class="titulo-tarifa">Datos de la cita</h3>
+    </div>
+    <div class="modal-body">
+        <?= $form->field($paciente, 'idclientes')->hiddenInput(['value'=>$paciente->isNewRecord ? $id_cliente : $paciente->idclientes])->label('') ?>
+
+       <?= $form->field($model, 'medicos_id')->widget(Select2::classname(), [
                 'data'=>$lista_med,
                 'language' => 'es',
+                'readonly'=>true, 
                 'options' => ['placeholder' => 'Seleccione una opción'],
                 'pluginOptions' => [
                     'allowClear' => true
@@ -43,12 +128,24 @@ use kartik\select2\Select2;
             ])->label('Médico');
         ?>
 
+    <?php if($model->isNewRecord){ ?>
+
         <?= $form->field($model, 'fecha')->widget(yii\jui\DatePicker::classname(), ["dateFormat" => "yyyy-MM-dd", 'options' => ['class' => 'fecha form-control', "placeholder" => "aaaa-mm-dd"], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']) ?>
 
-        <?= $form->field($model, 'hora')->textInput() ?>
+        <?= $form->field($model, 'hora')->textInput(['type'=>'time']) ?>
+
+    <?php } ?>
+
+        <?= $form->field($model, 'motivo')->textArea(['cols'=>50,'rows'=>4, 'maxlength' => true]) ?>
 
         <?= $form->field($model, 'observaciones')->textArea(['cols'=>50,'rows'=>4, 'maxlength' => true]) ?>
 
+        <input type="text" hidden name="url" value="<?=$model->isNewRecord ? 0 : $model->medicos_id?>">
+        
+        <?php if(!$model->isNewRecord){ ?>
+            <?= $form->field($model, 'hora_llegada')->textInput(['type'=>'time']) ?>
+        <?php } ?>
+        
         <div class="text-center">
             <?= Html::submitButton($model->isNewRecord ? '<i class="add icon-guardar"></i>Crear' : '<i class="add icon-actualizar"></i>Actualizar', ['class' =>'btn btn-success']) ?>
         </div>

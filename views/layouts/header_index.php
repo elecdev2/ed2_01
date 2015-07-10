@@ -1,6 +1,6 @@
 <?php
 use app\models\usuarios;
-use app\models\Items;
+use app\models\Medicos;
 
 use \app\assets\AppAsset;
 use yii\helpers\Html;
@@ -45,7 +45,9 @@ if (Yii::$app->user->isGuest) {
                 <img src="<?= Yii::$app->request->baseUrl; ?>/images/fotos_perfiles/<?=$usuario->foto?>" class="" alt="Imagen de usuario" style="width: 140px;height: 140px; border:none;"/>
                 <div class="texto-avatar">
                     <p><?= $usuario->nombre ?></p>
-                    <p><?= $usuario->username ?> - <?=Items::find()->select(['description'])->where(['name'=>$usuario->perfil])->scalar();  ?></p>
+                    <?php if(\Yii::$app->user->can('medico')){ ?>
+                        <p><?=Medicos::findOne($usuario->idmedicos)->idespecialidades0->nombre ?></p>
+                    <?php } ?>
                 </div>
             </li>
             <!-- Menu Body -->

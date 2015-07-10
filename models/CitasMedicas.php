@@ -13,12 +13,17 @@ use Yii;
  * @property string $fecha
  * @property string $hora
  * @property string $observaciones
+ * @property string $hora_llegada 
+ * @property string $motivo 
+ * @property string $estado 
  *
  * @property Medicos $medicos
  * @property Pacientes $pacientes
  */
 class CitasMedicas extends \yii\db\ActiveRecord
 {
+    public $idespecialidades;
+    public $ips;
     /**
      * @inheritdoc
      */
@@ -34,11 +39,13 @@ class CitasMedicas extends \yii\db\ActiveRecord
     {
         return [
             [['pacientes_id', 'medicos_id', 'fecha', 'hora'], 'required'],
-            [['pacientes_id', 'medicos_id'], 'integer'],
-            [['fecha', 'hora'], 'safe'],
-            [['observaciones'], 'string', 'max' => 200]
+            [['pacientes_id', 'medicos_id','idespecialidades','ips'], 'integer'],
+            [['fecha', 'hora', 'hora_llegada'], 'safe'],
+            [['observaciones', 'motivo'], 'string', 'max' => 200],
+            [['estado'], 'string', 'max' => 7]
         ];
     }
+
 
     /**
      * @inheritdoc

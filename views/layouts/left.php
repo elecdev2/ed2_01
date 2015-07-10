@@ -73,7 +73,21 @@ use yii\helpers\Html;
             <?php } ?>
 
              <?php if(Yii::$app->user->can('auxiliar')){ ?>
-                    <li><a href="<?=Yii::$app->request->baseUrl;?>/citas-medicas/index"><img class="sidebar-icon" src="<?=Yii::$app->request->baseUrl;?>/images/iconos/IconCitas.png" alt="" >Citas medicas</a></li>
+                <li class="treeview">
+                   <a href=""><img class="sidebar-icon" src="<?=Yii::$app->request->baseUrl;?>/images/iconos/IconCitas.png" alt="" >Citas médicas
+                        <i class="fa fa-angle-right pull-right"></i>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li class="" role="presentation"><?=Html::a('<img class="subsidebar-icon" src="'.Yii::$app->request->baseUrl.'/images/iconos/IconAgendaCitas.png" alt="" > Agenda de citas', ['citas-medicas/index'], ['class' => '']) ?></li>
+                        <?php if(Yii::$app->user->can('medico')){ ?>
+                            <li class="" role="presentation"><?=Html::a('<img class="subsidebar-icon" src="'.Yii::$app->request->baseUrl.'/images/iconos/IconMiCita.png" alt="" > Mi agenda', ['citas-medicas/medico'], ['class' => '']) ?></li>
+                        <?php } ?>
+                         <?php if(Yii::$app->user->can('admin')){ ?>
+                            <li class="" role="presentation"><?=Html::a('<img class="subsidebar-icon" src="'.Yii::$app->request->baseUrl.'/images/iconos/IconConfigCitas.png" alt="" > Configuración', ['citas-medicas/config'], ['class' => '']) ?></li>
+                            <li class="" role="presentation"><?=Html::a('<img class="subsidebar-icon" src="'.Yii::$app->request->baseUrl.'/images/iconos/IconConfigCitas.png" alt="" > Reporte de citas', ['citas-medicas/reporte'], ['class' => '']) ?></li>
+                        <?php } ?>
+                    </ul>
+                </li>
             <?php } ?>
 
                 

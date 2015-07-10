@@ -43,6 +43,25 @@ use kartik\select2\Select2;
 
     <?= $form->field($model, 'nombre')->textInput(['maxlength' => 150]) ?>
 
+    <?= $form->field($model, 'color')->widget(Select2::classname(), [
+            'data'=>$lista_colores,
+            'language' => 'es',
+            'options' => ['placeholder' => 'Seleccione un color'],
+            'pluginOptions' => [
+                'allowClear' => true
+            ],
+            'pluginEvents'=>[
+                "change" => "function() {
+                    $.post('consultar-color', {id: $('#medicos-color').val()}).done(function(data) {
+                        $('#colorBox').css('background-color', data);
+                    });
+                }",
+
+            ]
+        ])->label('Color');
+    ?>
+
+
 
     <div class="form-group text-center">
         <?= Html::submitButton($model->isNewRecord ? '<i class="add icon-guardar"></i>Crear' : '<i class="add icon-actualizar"></i>Actualizar', ['class' =>'btn btn-success']) ?>

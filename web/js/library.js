@@ -163,10 +163,79 @@ function getUrlVars() {
         document.getElementById("cargar").click();
     });
 
+    $(document).on('click', '#cambiarFirma', function(event) {
+        event.preventDefault();
+        document.getElementById("input-2").click();
+    });
+
+    $(document).on('change', '#input-2', function(event) {
+        event.preventDefault();
+        document.getElementById("cargarFirma").click();
+    });
+
      function getPaciente () {
         var doc = $('#documento_cita').val();
         $.post('paciente', {data: doc}).done(function(data) {
-            $('#pacienteName').html(data['nombre1']+' '+data['nombre2']+' '+data['apellido1']+' '+data['apellido2']);
-            $('#citasmedicas-pacientes_id').val(data['id']);
+            
+            if(data['id'] == null){
+                console.log('El paciente no existe');
+                $('#pacienteName').html('El paciente no existe');
+            }else{
+                console.log(data);
+                $('#citasmedicas-pacientes_id').val(data['id']);
+                $('#pacientes-tipo_identificacion').select2('val', data['tipo_identificacion']);
+                $('#pacientes-nombre1').val(data['nombre1']);
+                $('#pacientes-nombre2').val(data['nombre2']);
+                $('#pacientes-apellido1').val(data['apellido1']);
+                $('#pacientes-apellido2').val(data['apellido2']);
+                $('#pacientes-direccion').val(data['direccion']);
+                $('#pacientes-telefono').val(data['telefono']);
+                $('#pacientes-sexo').val(data['sexo']);
+                $('#pacientes-fecha_nacimiento').val(data['fecha_nacimiento']);
+                $('#pacientes-tipo_usuario').select2('val', data['tipo_usuario']);
+                $('#pacientes-tipo_residencia').select2('val', data['tipo_residencia']);
+                $('#pacientes-activo').val(data['activo']);
+                $('#pacientes-idciudad').select2('val', data['idciudad']);
+                $('#pacientes-ideps').select2('val', data['ideps']);
+                $('#pacientes-email').val(data['email']);
+                $('#pacientes-envia_email').val(data['envia_email']);
+
+            }
         });
     }
+
+     function refreshCalendar()
+    {
+        var source = 'consultar-citas?id='+$('#renderEvents').attr('data-value');
+        $('.fullcalendar').fullCalendar(  'removeEvents' );
+        $('.fullcalendar').fullCalendar('removeEventSource', source);
+        $('.fullcalendar').fullCalendar('addEventSource', source);
+    }
+
+    function cancelarCita(id)
+    {
+        bootbox.confirm('¿Está seguro que desea cancelar esta cita?', function(result) {
+            if(result){
+                $.post('cancel', {id: id}).done( function(data) {
+                    $('.modal').modal('hide');
+                    bootbox.alert(data);
+                    $('.fullcalendar').fullCalendar( 'removeEvents', id );
+                });
+            }
+        });
+    }
+
+        // $(document)
+        // .ajaxStart(function() {
+        //     $(".modal").hide().show();
+        // })
+        // .ajaxStop(function() {
+        //     $(".modal").hide().hide();
+        // });
+        
+        // $(document)
+        // .ajaxStart(function() {
+        //     $(".loader").hide().show();
+        // }).ajaxStop(function() {
+        //     $(".loader").hide().hide();
+        // });

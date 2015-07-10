@@ -22,7 +22,10 @@ use Yii;
  * @property string $descripcion
  * @property string $mensaje_email
  * @property string $mensaje_med 
- * @property string $url 
+ * @property string $url
+ * @property string $tiempo_citas
+ * @property string $hora_inicio
+ * @property string $hora_fin
  *
  * @property Eps[] $eps
  * @property Clientes $idclientes0
@@ -47,8 +50,8 @@ class Ips extends \yii\db\ActiveRecord
     {
         return [
             [['codigo', 'nombre', 'direccion', 'tipo_identificacion', 'nit', 'telefono', 'idclientes', 'activo', 'consecutivo_fact', 'representante_legal', 'consecutivo_recibo', 'mensaje_email'], 'required'],
-            [['idclientes','consecutivo_fact', 'consecutivo_recibo'], 'integer'],
-            [['activo'], 'integer', 'message' => 'Por favor seleccione una opción'],
+            [['idclientes', 'activo', 'consecutivo_fact', 'consecutivo_recibo'], 'integer'],
+            [['tiempo_citas', 'hora_inicio', 'hora_fin'], 'safe'],
             [['codigo', 'nit'], 'string', 'max' => 15],
             [['nombre'], 'string', 'max' => 150],
             [['direccion', 'representante_legal', 'descripcion'], 'string', 'max' => 100],
@@ -79,6 +82,9 @@ class Ips extends \yii\db\ActiveRecord
             'consecutivo_recibo' => 'Consecutivo Recibo',
             'descripcion' => 'Descripcion',
             'mensaje_email' => 'Mensaje Email',
+            'tiempo_citas' => 'Tiempo Citas', 
+            'hora_inicio' => 'Hora Inicio', 
+            'hora_fin' => 'Hora Fin', 
         ];
     }
 

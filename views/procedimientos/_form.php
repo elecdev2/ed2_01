@@ -41,7 +41,16 @@ use yii\bootstrap\Modal;
 
                         
                             
-                            <?= $form->field($paciente_model, 'tipo_identificacion')->dropDownList($lista_tipoid, ['prompt'=>'', 'id'=>'tipoID'])->label('Tipo de ID');?>
+
+                             <?= $form->field($paciente_model, 'tipo_identificacion')->widget(Select2::classname(), [
+                                    'data'=>$lista_tipoid,
+                                    'language' => 'es',
+                                    'options' => ['id'=>'tipoID','placeholder' => 'Seleccione un tipo de ID'],
+                                    'pluginOptions' => [
+                                        'allowClear' => true
+                                    ],
+                                ])->label('Tipo de ID');
+                            ?>
 
                             <?= $form->field($paciente_model, 'nombre1')->textInput(['value'=>$model->isNewRecord ? '' : $model->idpacientes0->nombre1, 'maxlength' => 30]) ?>
 
@@ -80,9 +89,13 @@ use yii\bootstrap\Modal;
                         </div>
                         <?= $form->field($model, 'fecha_atencion')->widget(yii\jui\DatePicker::classname(), ["dateFormat" => "yyyy-MM-dd", 'options' => ['value'=>$model->isNewRecord ? date('Y-m-d') : $model->fecha_atencion, 'class' => 'fecha form-control', "placeholder" => "aaaa-mm-dd"], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']) ?>
                     
+                        <?= $form->field($ips_model, 'id')->widget(Select2::classname(), [
+                                'data'=>ArrayHelper::map($ips_list,'id','nombre'),
+                                'language' => 'es',
+                                'options' => ['id'=>'ips_id','placeholder' => 'Seleccione una IPS'],
+                            ])->label('IPS');
+                        ?>
                             
-                        <?= $form->field($ips_model, 'id')->dropDownList(ArrayHelper::map($ips_list,'id','nombre'), ['prompt'=>'Seleccione una opción', 'id'=>'ips_id'])->label('IPS');?>
-
                     
                         <?= $form->field($model, 'eps_ideps')->widget(DepDrop::classname(), [
                                 'type' => 2,

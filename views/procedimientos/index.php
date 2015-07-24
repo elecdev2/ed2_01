@@ -45,31 +45,34 @@ $this->title = 'Procedimientos';
             <?= GridView::widget([
                 'id'=>'procedimientos',
                 'dataProvider' => $dataProvider,
-                // 'pjax'=>true,
                 'headerRowOptions'=>['class'=>'cabecera'],
                 'filterModel' => $searchModel,
-                // 'pjax'=>true,
+                'pjax'=>true,
                 'columns' => [
-                    // ['class' => 'yii\grid\SerialColumn'],
-
-                    // 'id',
-                    
                     [
                         'attribute'=>'fecha_atencion',
                         'value'=>function($model){
-                            // Yii::$app->formatter->locale = 'es-ES';
                             return Yii::$app->formatter->asDate($model->fecha_atencion, 'd-MMM-yyyy');
                         },
                         'hAlign'=>GridView::ALIGN_RIGHT,
-                        'filter' => yii\jui\DatePicker::widget(['name' => 'ProcedimientosSearch[fecha_atencion]', 'dateFormat' => 'yyyy-MM-dd', 'options' => ['class' => 'form-control'], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']),
+                        'filterType'=>'\yii\jui\DatePicker',
+                        'filterWidgetOptions'=>['id'=>'f_atencion', 'dateFormat' => 'yyyy-MM-dd', 'options' => ['class' => 'form-control'], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true']],
+                        // 'filter' => yii\jui\DatePicker::widget(['id'=>'procedimientossearch-fecha_atencion', 'name' => 'ProcedimientosSearch[fecha_atencion]', 'dateFormat' => 'yyyy-MM-dd', 'options' => ['class' => 'form-control'], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']),
                         'format' => 'html',
                     ],
-
+                    [
+                        'attribute'=>'tipo_servicio',
+                        'label'=>'Tipo de servicio',
+                        'value'=>'idtipoServicio.nombre',
+                    ],
+                    
                     [
                         'attribute'=>'numero_muestra',
                         'label'=>'N° muestra',
                         'hAlign'=>GridView::ALIGN_CENTER,                     
                     ],
+                    
+
                     // 'numero_muestra',
 
                     [
@@ -85,10 +88,10 @@ $this->title = 'Procedimientos';
                         'value'=> 'idpacientes0.identificacion',
                     ],
                     // 'idpacientes',
-                    [
-                        'attribute'=>'cod_cups',
-                        'hAlign'=>GridView::ALIGN_CENTER,
-                    ],
+                    // [
+                    //     'attribute'=>'cod_cups',
+                    //     'hAlign'=>GridView::ALIGN_CENTER,
+                    // ],
                     // 'cod_cups',
                     [ 
                         'attribute'=>'valor_procedimiento',
@@ -117,29 +120,23 @@ $this->title = 'Procedimientos';
                             return Yii::$app->formatter->asDate($model->fecha_salida, 'd-MMM-yyyy');
                         },
                         'hAlign'=>GridView::ALIGN_RIGHT,
-                        'filter' => yii\jui\DatePicker::widget(['name' => 'ProcedimientosSearch[fecha_salida]',"dateFormat" => 'yyyy-MM-dd', 'options' => ['class' => 'form-control'], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']),
+                        'filterType'=>'\yii\jui\DatePicker',
+                        'filterWidgetOptions'=>['dateFormat' => 'yyyy-MM-dd', 'options' => ['class' => 'form-control'], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true']],
+                        // 'filter' => yii\jui\DatePicker::widget(['name' => 'ProcedimientosSearch[fecha_salida]',"dateFormat" => 'yyyy-MM-dd', 'options' => ['class' => 'form-control'], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']),
                         'format' => 'html',
                     ],
                     [
                         'attribute' => 'estado',
-                        // 'vAlign'=>'middle',
-                        // 'width'=>'180px',
-                        // 'filterType'=>GridView::FILTER_SELECT2,
                         'filter'=>ArrayHelper::map(ListasSistema::find()->where('tipo="estado_prc"')->all(),'codigo','descripcion'),
-                        // 'filterWidgetOptions'=>[
-                        //     'pluginOptions'=>['allowClear'=>true],
-                        // ],
                         'value'=>function($model){
                             return ListasSistema::find()->select(['descripcion'])->where(['tipo'=>"estado_prc", 'codigo'=>$model->estado])->scalar();
                         },
                         'filterInputOptions'=>['class'=>'filtro-opciones', 'placeholder'=>'Seleccione un estado'],
-                        // 'format'=>'raw'
                         'hAlign'=>GridView::ALIGN_CENTER,  
                     ],
                     // 'fecha_salida',
                     // 'fecha_entrega',
                     // 'periodo_facturacion',
-                    // 'idtipo_servicio',
                     // 'idmedico',
                     // 'usuario_recibe',
                     // 'usuario_transcribe',
@@ -187,10 +184,11 @@ $this->title = 'Procedimientos';
 <script type="text/javascript">
 
 // abrir ventana ver haciendo click en la fila
-    $(document).on('click', '#procedimientos tr td:not(#procedimientos tr td.skip-export)',function(event) {
-        event.preventDefault();
-        openModalView('vista',$(this).parent());
-    }); 
+    // $(document).on('click', '#procedimientos tr td:not(#procedimientos .skip-export)',function(event) {
+    // $(document).on('click', 'tr:not(tr.skip-export) td:not(:last-child)',function(event) {
+    //     event.preventDefault();
+    //     openModalView('vista',$(this).parent());
+    // }); 
 
 // Modal del plantillas
     $(document).on('click','.plantillas', function(event) {

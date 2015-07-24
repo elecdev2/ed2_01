@@ -20,8 +20,8 @@ class CitasMedicasSearch extends CitasMedicas
     public function rules()
     {
         return [
-            [['id_citas', 'pacientes_id', 'medicos_id'], 'integer'],
-            [['fecha', 'hora', 'observaciones', 'hora_llegada', 'motivo', 'estado','medico','id_pac'], 'safe'],
+            [['id_citas', 'pacientes_id', 'medicos_id','tipo_servicio'], 'integer'],
+            [['fecha', 'hora', 'observaciones', 'hora_llegada', 'estado','medico','id_pac'], 'safe'],
         ];
     }
 
@@ -75,14 +75,15 @@ class CitasMedicasSearch extends CitasMedicas
             'pacientes_id' => $this->pacientes_id,
             'medicos_id' => $this->medicos_id,
             'fecha' => $this->fecha,
-            'hora' => $this->hora,
+            'tipo_servicio'=>$this->tipo_servicio,
+            // 'hora' => $this->hora,
             'hora_llegada' => $this->hora_llegada,
         ]);
 
         $query->andFilterWhere(['like', 'observaciones', $this->observaciones])
-            ->andFilterWhere(['like', 'motivo', $this->motivo])
             ->andFilterWhere(['like', 'medicos.nombre', $this->medico])
             ->andFilterWhere(['like', 'pacientes.identificacion', $this->id_pac])
+            ->andFilterWhere(['like', 'hora', $this->hora])
             ->andFilterWhere(['like', 'estado', $this->estado]);
 
         $query->limit(20);

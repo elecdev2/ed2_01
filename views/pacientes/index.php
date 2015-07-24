@@ -40,10 +40,13 @@ $this->title = 'Pacientes';
         'filterModel' => $searchModel,
         // 'rowOptions' => ['class' => 'text-center'],
         'pjax'=>true,
+        'pjaxSettings'=>[
+            'neverTimeout'=>true,
+            'options'=>[
+                'id'=>'pacientes_pjax',
+            ]
+        ],
         'columns' => [
-            // ['class' => 'yii\grid\SerialColumn'],
-
-            // 'id',
             'tipo_identificacion',
             'identificacion',
             'nombre1',
@@ -95,12 +98,3 @@ $this->title = 'Pacientes';
 
 
 <?=$this->render('//site/modals'); ?>
-
-<script type="text/javascript">
-    $(document).on('click', '#pacientes tr td:not(#pacientes tr td.skip-export)',function(event) {
-        event.preventDefault();
-        openModalView('vista',$(this).parent());
-    });
-
-
-</script>

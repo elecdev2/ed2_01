@@ -22,7 +22,7 @@ use kartik\select2\Select2;
     </div>
 
     <div class="col-sm-6 col-lg-4">
-        <?= $form->field($model, 'fecha_atencion', ['template'=>"{input}{error}"])->widget(yii\jui\DatePicker::classname(), ["dateFormat" => "yyyy-MM-dd", 'options' => ['class' => 'fecha form-control', "placeholder" => "Fecha de atención"], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']) ?>
+        <?= $form->field($model, 'fecha_atencion', ['template'=>"{input}{error}"])->widget(yii\jui\DatePicker::classname(), ["dateFormat" => "yyyy-MM-dd", 'options' => ['id'=>'f_atencion', 'class' => 'fecha form-control', "placeholder" => "Fecha de atención"], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']) ?>
     </div>
 
     <div class="col-sm-6 col-lg-4">

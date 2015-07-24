@@ -27,13 +27,17 @@ $this->title = 'Plantillas diagnosticos';
         </div>
     </div>
 
-    <?= Yii::$app->session->getFlash('error'); ?>
-
     <?= GridView::widget([
         'id'=>'plantillaTab',
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'pjax'=>true,
+        'pjaxSettings'=>[
+            'neverTimeout'=>true,
+            'options'=>[
+                'id'=>'plantillas_pjax',
+            ]
+        ],
         'columns' => [
             // 'id',
             'titulo',
@@ -76,11 +80,3 @@ $this->title = 'Plantillas diagnosticos';
 </div>
 
 <?=$this->render('//site/modals');  ?>
-
-<script type="text/javascript">
-    $(document).on('click', '#plantillaTab tr td:not(#plantillaTab tr td.skip-export)',function(event) {
-        event.preventDefault();
-        openModalView('vista',$(this).parent());
-    });
-
-</script>

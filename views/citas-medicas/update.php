@@ -27,16 +27,9 @@ $this->title = 'Editar cita médica';
 		        'lista_resid'=>$lista_resid,
 		        'lista_ciudades'=>$lista_ciudades,
 		        'lista_eps'=>$lista_eps,
+		        'motivo'=>$motivo,
 		    ]) ?>
 		</div>
 	</div>
-
-	<div class="panel panel-default">
-        <div class="panel-body">
-			<div class="col-sm-6">
-				<button class="btn btn-danger" id="cancelar_cita" onclick="cancelarCita(<?=$model->id_citas?>)" ><i class=""></i>Cancelar cita</button>
-			</div>
-        </div>
-    </div>
 
 </div>

@@ -92,29 +92,39 @@ $this->title = 'Citas médicas';
                 // 'height'=> 300,
 
                 'dayClick' => new \yii\web\JsExpression("function(date, jsEvent, view) {
+
                     var date = new Date(date);
                     var ips = $('#txtIdIps').val();
                     var num_ips = $('#num_ips').val();
                     var dia = moment(date).format('d');
                     var med = $('#nombre_med').attr('data-value') == '' ? null : $('#nombre_med').attr('data-value');
-                    
-                    $.get('create', {date: date.toISOString(), ips:ips, num_ips:num_ips, dia:dia, med:med}).done(function(data) {
-                        if(data == 0){
-                            bootbox.alert('No disponilbe!');
 
-                        }else{
-
-                            $('#citas').html(data);
-                            var titulo = $('#helperHid').attr('data-titulo');
-                            $('.modal-title').text('');
-                            $('.modal-title').text(titulo);
-                            if(med != null){
-                                $('#citasmedicas-medicos_id').select2('val', $('#nombre_med').attr('data-value'));
-                            }
-                            $('#citasModal').modal({backdrop:'static'});
+                    $.get('create', {date: date.toISOString(), ips:ips, dia:dia, med:med}).done(function(result) 
+                    {
+                        switch (result) {
+                            case '0': bootbox.alert('Error: La hora está por fuera del horario del médico');
+                                break;
+                            case '1': bootbox.alert('Error: La fecha es anterior al día de hoy');
+                                break;
+                            case '2': bootbox.alert('Error: La hora es anterior a la hora actual');
+                                break;
+                            case '3': bootbox.alert('Error: Ya existe una cita a esa hora');
+                                break;
+                            
+                            default:
+                                $('#citas').html(result);
+                                var titulo = $('#helperHid').attr('data-titulo');
+                                $('#helperHid').attr('data-new',0);
+                                $('.modal-title').text('');
+                                $('.modal-title').text(titulo);
+                                if(med != null){
+                                    $('#citasmedicas-medicos_id').select2('val', $('#nombre_med').attr('data-value'));
+                                }
+                                $('#citasModal').modal({backdrop:'static'});
+                                break;
                         }
                     });
-                   
+                    
                 }"),
 
                 'events'=> $events != '' ? new \yii\web\JsExpression($events) : $events,
@@ -123,19 +133,27 @@ $this->title = 'Citas médicas';
                     var id_cita = event.id;
                     var ips = $('#txtIdIps').val();
                     var num_ips = $('#num_ips').val();
-                    $.get('update', {id: id_cita, ips:ips, num_ips:num_ips}).done(function(data) {
-                        $('#citas').html(data);
-                        var titulo = $('#helperHid').attr('data-titulo');
-                        $('.modal-title').text('');
-                        $('.modal-title').text(titulo);
-                        $('#citasModal').modal({backdrop:'static'});
+                    var med = $('#nombre_med').attr('data-value') == '' ? null : $('#nombre_med').attr('data-value');
+                    var currDate = moment(new Date()).format('YYYY-MM-DD');
+                    var fecha = moment(event.start).format('YYYY-MM-DD');
+
+                    $.get('view-cita', {id: id_cita}).done(function(data) {
+                        $('#infoCitas').html(data);
+                        $('#helper').attr('data-cita', id_cita);
+                        $('#helper').attr('data-ips', ips);
+                        $('#helper').attr('data-num', num_ips);
+                        $('#helper').attr('data-med', med);
+                        $('#helper').attr('data-fecha', moment(fecha).isBefore(currDate));
+                        $('#infoCitasModal').modal({backdrop:'static'});
                     });
+                    
                 }"),
 
                 'eventStartEditable'=>true,
 
                 'eventDrop' => new \yii\web\JsExpression("function(event, delta, revertFunc) {
 
+                    
                     var dia = moment(event.start).format('d');
                     var med = $('#nombre_med').attr('data-value') == '' ? null : $('#nombre_med').attr('data-value');
 
@@ -149,12 +167,31 @@ $this->title = 'Citas médicas';
                                 revertFunc();
                             }else{
                                 $.post('cambiar-fecha', {date: event.start.format(), id:event.id, med:med}).done(function(data) {
-                                    if(data == 0){
-                                        revertFunc();
-                                        bootbox.alert('No se puede realizar ese cambio');
-                                    }else{
-                                       bootbox.alert(data);
+                                    console.log(data);
+                                    switch (data) {
+                                        case '0':
+                                            revertFunc();
+                                            bootbox.alert('Erro al guardar los cambios');
+                                            break;
+                                        case '1':
+                                            revertFunc();
+                                            bootbox.alert('Ya existe una cita a esa hora');
+                                            break;
+                                        case '2':
+                                            revertFunc();
+                                            bootbox.alert('La fecha es anterior al día de hoy');
+                                            break;
+                                        case '3':
+                                            revertFunc();
+                                            bootbox.alert('La hora es anterior a la hora actual');
+                                            break;
+                                        default:
+                                            event.id = data;
+                                            $('.fullcalendar').fullCalendar('updateEvent', event);
+                                            bootbox.alert('La cita fue reprogramada');
+                                            break;
                                     }
+                                   
                                 });
                             }
                         }); 
@@ -171,10 +208,28 @@ $this->title = 'Citas médicas';
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" title="Cerrar" class="close" data-dismiss="modal"><img src="<?=Yii::$app->request->baseUrl;?>/images/iconos/IconoBarraCerrar.png" alt="Cerrar"></button>
+                    <button type="button" title="Ver" id="view" data-dismiss="modal" onclick="viewCitas()" class="close"><i class="icon-view edit"></i></button>
                     <h3 class="modal-title"></h3>
                 </div>
                 <div class="modal-body">
                     <div id='citas'></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="infoCitasModal" class="modal fade bs-example-modal-lg" data-backdrop="false" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" title="Cerrar" class="close" data-dismiss="modal"><img src="<?=Yii::$app->request->baseUrl;?>/images/iconos/IconoBarraCerrar.png" alt="Cerrar"></button>
+                    <?php if(Yii::$app->user->can('auxiliar')){ ?>
+                        <button type="button" title="Editar" onclick="updateCitas()" data-dismiss="modal" class="close"><i class="icon-update edit"></i></button>
+                    <?php } ?>
+                    <h3 class="titulo-tarifa">Información de la cita</h3>
+                </div>
+                <div class="modal-body">
+                    <div id='infoCitas'></div>
                 </div>
             </div>
         </div>

@@ -39,6 +39,12 @@ $this->title = 'Usuarios';
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'pjax'=>true,
+        'pjaxSettings'=>[
+            'neverTimeout'=>true,
+            'options'=>[
+                'id'=>'usuarios_pjax',
+            ]
+        ],
         'columns' => [
             // 'id',
             'nombre',

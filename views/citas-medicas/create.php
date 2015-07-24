@@ -25,6 +25,7 @@ $this->title = 'Nueva cita médica';
 		        'lista_resid'=>$lista_resid,
 		        'lista_ciudades'=>$lista_ciudades,
 		        'lista_eps'=>$lista_eps,
+		        'motivo'=>$motivo,
 		    ]) ?>
 		</div>
 	</div>

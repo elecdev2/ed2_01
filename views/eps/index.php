@@ -31,13 +31,17 @@ $this->title = 'EPS';
         <?php  if(isset($dataProvider)) echo Html::a('<span class="busqueda glyphicon glyphicon-search"></span> Busqueda <i class="fa fa-caret-down fa-lg"></i>','#',['class'=>'search-boton']);   ?>
     </div>
 
-    <?= Yii::$app->session->getFlash('error'); ?>
-
     <?= GridView::widget([
         'id'=>'eps',
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'pjax'=>true,
+        'pjaxSettings'=>[
+            'neverTimeout'=>true,
+            'options'=>[
+                'id'=>'eps_pjax',
+            ]
+        ],
         'columns' => [
             // ['class' => 'yii\grid\SerialColumn'],
 
@@ -113,12 +117,3 @@ $this->title = 'EPS';
 </div>
 
 <?=$this->render('//site/modals'); ?>
-
-<script type="text/javascript">
-   
-    $(document).on('click', '#eps tr td:not(#eps tr td.skip-export)',function(event) {
-        event.preventDefault();
-        openModalView('vista',$(this).parent());
-    });
-
-</script>

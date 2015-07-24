@@ -12,7 +12,7 @@ use app\models\Usuarios;
 
 <div class="plantillas-diagnosticos-form">
 
-    <?php $form = ActiveForm::begin(['layout'=>'horizontal', 'id'=>'plantForm', 'validateOnType' => true, 'options'=>['enctype' => 'multipart/form-data', 'onsubmit'=>'submitForm']]); ?>
+    <?php $form = ActiveForm::begin(['layout'=>'horizontal', 'id'=>'plantForm', 'validateOnType' => true, 'options'=>['enctype' => 'multipart/form-data']]); ?>
 
 	<input type="text" name="url" id="url" hidden>
     <?= $form->field($model, 'titulo')->textInput(['maxlength' => true]) ?>
@@ -28,3 +28,34 @@ use app\models\Usuarios;
     <?php ActiveForm::end(); ?>
 
 </div>
+<?php 
+	$js = <<<SCRIPT
+
+$('form#plantForm').on('beforeSubmit', function(e)
+{
+	var \$form = $(this);
+
+	$.post(
+		\$form.attr("action"), 
+		\$form.serialize()
+	)
+	.done(function(result) {
+		if(result == 1)
+		{
+			$(document).find('#updateModal').modal('hide');
+			$.pjax.reload({container:'#plantillas_pjax'});
+			bootbox.alert('Se guardaron los cambios');
+		}else{
+			bootbox.alert('Error al guardar los cambios');
+		}
+	})
+	.fail(function(){
+		console.log("Server error");
+	});
+	return false;
+});
+
+SCRIPT;
+$this->registerJs($js);
+
+?>

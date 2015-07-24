@@ -20,10 +20,13 @@ class AppAsset extends AssetBundle
     public $css = [
         'css/site.css',
         'css/calendar.css',
+        'css/bootstrap.vertical-tabs.css',
+        'css/hc.css',
     ];
     public $js = [
         'js/library.js',
         'js/bootbox.js',
+        'js/hc.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',

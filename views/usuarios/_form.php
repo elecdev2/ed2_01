@@ -12,7 +12,7 @@ use kartik\select2\Select2;
 
 <div class="usuarios-form">
 
-    <?php $form = ActiveForm::begin(['layout'=>'horizontal', 'id'=>'usuarioForm', 'validateOnType' => true, 'options'=>['onsubmit'=>'submitForm']]); ?>
+    <?php $form = ActiveForm::begin(['layout'=>'horizontal', 'id'=>'usuarioForm', 'validateOnType' => true]); ?>
 
     <input type="text" name="url" id="url" hidden>
     <?= $form->field($model, 'idclientes')->hiddenInput(['value'=>$model->isNewRecord ? $id_cliente: $model->idclientes])->label('') ?>
@@ -111,8 +111,34 @@ use kartik\select2\Select2;
     <?php ActiveForm::end(); ?>
 
 </div>
-<script type="text/javascript">
-    $(document).ready(function() {
-        $('#panelMedico').hide();
+<?php 
+    $js = <<<SCRIPT
+
+$('form#usuarioForm').on('beforeSubmit', function(e)
+{
+    var \$form = $(this);
+
+    $.post(
+        \$form.attr("action"), 
+        \$form.serialize()
+    )
+    .done(function(result) {
+        if(result == 1)
+        {
+            $(document).find('#updateModal').modal('hide');
+            $.pjax.reload({container:'#usuarios_pjax', timeout: 5000});
+            bootbox.alert('Se guardaron los cambios');
+        }else{
+            bootbox.alert('Error al guardar los cambios');
+        }
+    })
+    .fail(function(){
+        console.log("Server error");
     });
-</script>
+    return false;
+});
+
+SCRIPT;
+$this->registerJs($js);
+
+?>

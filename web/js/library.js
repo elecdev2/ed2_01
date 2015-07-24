@@ -1,3 +1,4 @@
+
 function nombrePaciente(docInput,idInput,nombretag,nombre1,nombre2,apellido1,apellido2,direccion,telefono,fecha,edad,email,tipoId)
 {
     $(docInput).on('blur', function(event) {
@@ -114,7 +115,14 @@ function getUrlVars() {
     return window.location.href;
 }
 
+//Ventanta Ver click en tabla
+
+    $(document).on('click', 'table.kv-grid-table tr:not(tr.skip-export) td:not(:last-child)',function(event) {
+        event.preventDefault();
+        openModalView('vista',$(this).parent());
+    }); 
 // botones del actionColumn
+
     $(document).on('click', '#ver',function(event) {
         event.preventDefault();
         openModalView('vista',$($(this).parent()).parent());
@@ -173,21 +181,25 @@ function getUrlVars() {
         document.getElementById("cargarFirma").click();
     });
 
-     function getPaciente () {
-        var doc = $('#documento_cita').val();
+    $(document).on('blur', '#pacientes-identificacion', function(event) {
+        var doc = $(this).val();
         $.post('paciente', {data: doc}).done(function(data) {
-            
-            if(data['id'] == null){
-                console.log('El paciente no existe');
-                $('#pacienteName').html('El paciente no existe');
+            if(data == '0'){
+                if($('#pacientes-identificacion').val() != ''){
+                    $('.field-pacientes-identificacion').append('<div class="col-sm-2 alert-danger"><span>El paciente no existe</span><div>');
+                }
+                $('form').find("input[type=text], textarea, select").val("");
+                $('#pacientes-identificacion').val(doc);
             }else{
-                console.log(data);
+                $('.alert-danger').remove();
                 $('#citasmedicas-pacientes_id').val(data['id']);
+                $('#procedimientos-idpacientes').val(data['id']);
                 $('#pacientes-tipo_identificacion').select2('val', data['tipo_identificacion']);
                 $('#pacientes-nombre1').val(data['nombre1']);
                 $('#pacientes-nombre2').val(data['nombre2']);
                 $('#pacientes-apellido1').val(data['apellido1']);
                 $('#pacientes-apellido2').val(data['apellido2']);
+                $('#pacientes-sexo').select2('val', data['sexo']);
                 $('#pacientes-direccion').val(data['direccion']);
                 $('#pacientes-telefono').val(data['telefono']);
                 $('#pacientes-sexo').val(data['sexo']);
@@ -199,10 +211,10 @@ function getUrlVars() {
                 $('#pacientes-ideps').select2('val', data['ideps']);
                 $('#pacientes-email').val(data['email']);
                 $('#pacientes-envia_email').val(data['envia_email']);
-
             }
         });
-    }
+    });
+
 
      function refreshCalendar()
     {
@@ -224,6 +236,84 @@ function getUrlVars() {
             }
         });
     }
+
+    function mostrarPanel()
+    {
+        $('.panelDatos').show();
+        $('table.detail-view').hide();
+    }
+
+    function updateCitas()
+    {
+        var id_cita = $('#helper').attr('data-cita');
+        var ips = $('#helper').attr('data-ips');
+        var num_ips = $('#helper').attr('data-num');
+        var med = $('#helper').attr('data-med') == null ? null : $('#helper').attr('data-med');
+        var fecha = $('#helper').attr('data-fecha');
+        if(fecha == 'false')
+        {
+            $.get('update', {id: id_cita, ips:ips, num_ips:num_ips, med:med}).done(function(data) {
+                $('#citas').html(data);
+                var titulo = $('#helperHid').attr('data-titulo');
+                $('#helperHid').attr('data-cita', id_cita);
+                $('.modal-title').text('');
+                $('.modal-title').text(titulo);
+
+                $('#citasModal').modal({backdrop:'static'});
+            });
+        }else{
+            bootbox.alert('No se pueden modificar los datos de una cita pasada');
+        }
+    }
+
+    function viewCitas()
+    {
+       
+        var id_cita = $('#helper').attr('data-cita') == '' ? $('#nombre_pac').attr('data-cita') : $('#helper').attr('data-cita');
+        var ips = $('#txtIdIps').val();
+        var num_ips = $('#num_ips').val();
+        if($('#helperHid').attr('data-new') != 0)
+        {
+            $.get('view', {id: id_cita}).done(function(data) {
+                $('#infoCitas').html(data);
+                $('#helper').attr('data-cita', id_cita);
+                $('#helper').attr('data-ips', ips);
+                $('#helper').attr('data-num', num_ips);
+                $('#infoCitasModal').modal({backdrop:'static'});
+            });
+        }else{
+            bootbox.alert('No existe un registro para ver');
+        }
+    }
+
+// view de historia clinica boton ver mas en datos de paciente
+    $(document).on('hide.bs.collapse', '#vistaPaciente', function(event) {
+        event.preventDefault();
+        $("a.search-boton").html('<span style="vertical-align: middle" class="glyphicon glyphicon-eye-open"></span> ver más <i class="fa fa-caret-down fa-lg"></i>');
+    });
+
+    $(document).on('show.bs.collapse', '#vistaPaciente', function(event) {
+        event.preventDefault();
+        $("a.search-boton").html('<span style="vertical-align: middle" class="glyphicon glyphicon-eye-close"></span> ver menos <i class="fa fa-caret-up fa-lg"></i>');
+    });
+
+    $('#procedimientos-cod_cups').on('change', function(event) {
+        var cod_cup = $(this).val();
+        var eps_id = $('#eps_id').val();
+        if(cod_cup != ''){
+            $.post('precio', {cod: cod_cup, id: eps_id}, function(data) {
+                saldo = data['valor_procedimiento'];
+                $('#procedimientos-valor_procedimiento').val(data['valor_procedimiento']);
+                $('#procedimientos-valor_saldo').val(data['valor_procedimiento']);
+                $('#procedimientos-valor_copago').val(0);
+                $('#procedimientos-valor_abono').val(0);
+                $('#procedimientos-descuento').val(data['descuento']);
+                // console.log(data['valor_procedimiento']);
+            });
+        }
+    });
+
+    
 
         // $(document)
         // .ajaxStart(function() {

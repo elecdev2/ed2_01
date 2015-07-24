@@ -89,6 +89,12 @@ div.panel-body{
     padding: 0;
 }
 
+.content-hide{
+    display: block;
+    overflow: hidden;
+    height: 112px !important;
+}
+
 /*#act > div > div > div{
     padding: 15px;
 }*/
@@ -148,6 +154,16 @@ div.panel-body{
 .icon-cancel{
     content: url(../images/iconos/BotonCancelar.png);
     vertical-align: middle;
+}
+
+.icon-cerrar{
+    content: url(../images/iconos/IconoBarraCerrar.png);
+    vertical-align: middle;
+    width: 100%;
+}
+
+.bootbox-boton-cerrar{
+    width: 28px;
 }
 
 /*Action column*/
@@ -240,6 +256,7 @@ body > .header .navbar{
 .busqueda{
     width: 20px;
     padding: 3px;
+    vertical-align: middle;
 }
 
 .fomularioTitulo, .fomularioTituloFactura, .fomularioTituloReporte{
@@ -803,6 +820,10 @@ body > .header .logo{
   color: white;
   background-color: #C75959;
   padding: 10px;
+}
+
+.table{
+    margin-bottom: 0;
 }
 
 

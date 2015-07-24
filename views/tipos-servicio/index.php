@@ -87,11 +87,3 @@ $this->title = 'Tipos Servicios';
 
 </div>
 <?=$this->render('//site/modals'); ?>
-
-<script type="text/javascript">
-    $(document).on('click', '#tipoServicioTab tr td:not(#tipoServicioTab tr td.skip-export)',function(event) {
-        event.preventDefault();
-        openModalView('vista',$(this).parent());
-    });
-
-</script>

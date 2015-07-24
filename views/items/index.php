@@ -86,10 +86,3 @@ $this->title = 'Items';
 </div>
 <?=$this->render('//site/modals'); ?>
 
-<script type="text/javascript">
-    $(document).on('click', '#perfilesTab tr td:not(#perfilesTab tr td.skip-export)',function(event) {
-        event.preventDefault();
-        openModalView('vista',$(this).parent());
-    });
-
-</script>

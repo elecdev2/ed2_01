@@ -113,16 +113,26 @@ class EpsController extends Controller
             }
             return $this->redirect(['index']);
         } 
-        $id_cliente = Usuarios::findOne(Yii::$app->user->id)->idclientes;;
-        $lista_ips = ArrayHelper::map(Ips::find()->where(['idclientes'=>$id_cliente])->all(), 'id', 'nombre');
-        $lista_informes = ArrayHelper::map(Informes::find()->all(), 'id', 'nombre');
-        $lista_tipos = ArrayHelper::map(TiposServicio::find()->all(), 'id', 'nombre');
+
+        $js = <<<js
+
+        $('#url').val(getUrlVars());
+
+        $('#eps-tipos_est').on('change', function(e){
+            var val = $('#eps-tipos_est option:selected');
+            if(val.attr('value') === '')
+                val.remove();
+        });
+js;
+
+        $this->getView()->registerJs($js, yii\web\View::POS_READY, null);
+        $id_cliente = Usuarios::findOne(Yii::$app->user->id)->idclientes;
         return $this->render('create', [
             'model' => $model,
-            'lista_ips'=>$lista_ips,
+            'lista_ips'=>ArrayHelper::map(Ips::find()->where(['idclientes'=>$id_cliente])->all(), 'id', 'nombre'),
             'id_cliente'=>$id_cliente,
-            'lista_informes'=>$lista_informes,
-            'lista_tipos'=>$lista_tipos,
+            'lista_informes'=>ArrayHelper::map(Informes::find()->all(), 'id', 'nombre'),
+            'lista_tipos'=>ArrayHelper::map(TiposServicio::find()->all(), 'id', 'nombre'),
         ]);
         
     }
@@ -168,31 +178,46 @@ class EpsController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            if(isset($_POST['tipos_estudios'])){
-                EpsTipos::deleteAll(['eps_id'=>$id]);
-                foreach ($_POST['tipos_estudios'] as $key => $value) {
-                    $eps_tipos = new EpsTipos();
-                    $eps_tipos->eps_id = $id;
-                    $eps_tipos->tipos_servicio_id = $value;
-                    $eps_tipos->save();
+        if ($model->load(Yii::$app->request->post())) {
+
+            if($model->save())
+            {
+                if(isset($_POST['tipos_estudios'])){
+                    EpsTipos::deleteAll(['eps_id'=>$id]);
+                    foreach ($_POST['tipos_estudios'] as $key => $value) {
+                        $eps_tipos = new EpsTipos();
+                        $eps_tipos->eps_id = $id;
+                        $eps_tipos->tipos_servicio_id = $value;
+                        $eps_tipos->save();
+                    }
                 }
+                return 1;
+            }else{
+                return 0;
             }
-            $model->refresh();
-            Yii::$app->response->format = 'json';
-            \Yii::$app->getSession()->setFlash('success', 'EPS actualizada con exito!');
-            return $this->redirect($_POST['url']);
+            // $model->refresh();
+            // Yii::$app->response->format = 'json';
+            // \Yii::$app->getSession()->setFlash('success', 'EPS actualizada con exito!');
+            // return $this->redirect($_POST['url']);
         }
 
-        $id_cliente = Usuarios::findOne(Yii::$app->user->id)->idclientes;
-        $lista_ips = ArrayHelper::map(Ips::find()->all(), 'id', 'nombre');
-        $lista_informes = ArrayHelper::map(Informes::find()->all(), 'id', 'nombre');
+        $js = <<<js
 
+        $('#url').val(getUrlVars());
+
+        $('#eps-tipos_est').on('change', function(e){
+            var val = $('#eps-tipos_est option:selected');
+            if(val.attr('value') === '')
+                val.remove();
+        });
+js;
+
+        $this->getView()->registerJs($js, yii\web\View::POS_READY, null);
         return $this->renderAjax('update', [
             'model' => $model,
-            'lista_ips'=>$lista_ips,
-            'id_cliente'=>$id_cliente,
-            'lista_informes'=>$lista_informes,
+            'lista_ips'=>ArrayHelper::map(Ips::find()->all(), 'id', 'nombre'),
+            'id_cliente'=>Usuarios::findOne(Yii::$app->user->id)->idclientes,
+            'lista_informes'=>ArrayHelper::map(Informes::find()->all(), 'id', 'nombre'),
         ]);
         
     }

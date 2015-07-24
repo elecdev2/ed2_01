@@ -27,6 +27,12 @@ use yii\helpers\Html;
                 <li><a href="<?=Yii::$app->request->baseUrl;?>/pacientes/index"><img class="sidebar-icon" src="<?=Yii::$app->request->baseUrl;?>/images/iconos/IconPacientes.png" alt="" >Pacientes</a></li>
             <?php } ?>
 
+            <?php if(Yii::$app->user->can('hist_clinica')){ ?>
+                <li><a href="<?=Yii::$app->request->baseUrl;?>/historia-clinica/index"><img class="sidebar-icon" src="<?=Yii::$app->request->baseUrl;?>/images/iconos/IconHistorial.png" alt="" >Historia clinica</a></li>
+            <?php } ?>
+
+                <li><a href="<?=Yii::$app->request->baseUrl;?>/atencion/index"><img class="sidebar-icon" src="<?=Yii::$app->request->baseUrl;?>/images/iconos/IconHistorial.png" alt="" >Atn. a pacientes</a></li>
+
             <?php if(Yii::$app->user->can('medicos')){ ?>
                 <li class="treeview">
                    <a href=""><img class="sidebar-icon" src="<?=Yii::$app->request->baseUrl;?>/images/iconos/IconMedicos.png" alt="" >Médicos
@@ -84,7 +90,7 @@ use yii\helpers\Html;
                         <?php } ?>
                          <?php if(Yii::$app->user->can('admin')){ ?>
                             <li class="" role="presentation"><?=Html::a('<img class="subsidebar-icon" src="'.Yii::$app->request->baseUrl.'/images/iconos/IconConfigCitas.png" alt="" > Configuración', ['citas-medicas/config'], ['class' => '']) ?></li>
-                            <li class="" role="presentation"><?=Html::a('<img class="subsidebar-icon" src="'.Yii::$app->request->baseUrl.'/images/iconos/IconConfigCitas.png" alt="" > Reporte de citas', ['citas-medicas/reporte'], ['class' => '']) ?></li>
+                            <li class="" role="presentation"><?=Html::a('<img class="subsidebar-icon" src="'.Yii::$app->request->baseUrl.'/images/iconos/AdminIconInformes.png" alt="" > Reporte de citas', ['citas-medicas/reporte'], ['class' => '']) ?></li>
                         <?php } ?>
                     </ul>
                 </li>

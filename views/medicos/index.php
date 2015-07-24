@@ -32,6 +32,13 @@ $this->title = 'Médicos';
             'id'=>'medicos',
             'dataProvider' => $dataProvider,
             'filterModel' => $searchModel,
+            'pjax'=>true,
+            'pjaxSettings'=>[
+                'neverTimeout'=>true,
+                'options'=>[
+                    'id'=>'medicos_pjax',
+                ]
+            ],
             'columns' => [
 
                 [
@@ -94,11 +101,3 @@ $this->title = 'Médicos';
 </div>
 
 <?=$this->render('//site/modals'); ?>
-
-<script type="text/javascript">
-    $(document).on('click', '#medicos tr td:not(#medicos tr td.skip-export)',function(event) {
-        event.preventDefault();
-        openModalView('vista',$(this).parent());
-    });
-
-</script>

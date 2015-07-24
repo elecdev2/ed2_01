@@ -13,7 +13,7 @@ use kartik\select2\Select2;
 
 <div class="medicos-remitentes-form">
 
-    <?php $form = ActiveForm::begin(['layout'=>'horizontal', 'id'=>'medRemForm', 'validateOnType' => true, 'options'=>['onsubmit'=>'submitForm']]); ?>
+    <?php $form = ActiveForm::begin(['layout'=>'horizontal', 'id'=>'medRemForm', 'validateOnType' => true]); ?>
     
     <input type="text" name="url" id="url" hidden>  
     <div class="help-block help-block-error "></div>
@@ -32,7 +32,7 @@ use kartik\select2\Select2;
                 'language' => 'es',
                 'class'=>'medField',
                 // 'disabled'=>true,
-                'options' => ['name'=>'especialidad', 'placeholder' => 'Seleccione una especialidad'],
+                'options' => ['placeholder' => 'Seleccione una especialidad'],
                 'pluginOptions' => [
                     'allowClear' => true
                 ],
@@ -46,3 +46,34 @@ use kartik\select2\Select2;
     <?php ActiveForm::end(); ?>
 
 </div>
+<?php 
+    $js = <<<SCRIPT
+
+$('form#medRemForm').on('beforeSubmit', function(e)
+{
+    var \$form = $(this);
+
+    $.post(
+        \$form.attr("action"), 
+        \$form.serialize()
+    )
+    .done(function(result) {
+        if(result == 1)
+        {
+            $(document).find('#updateModal').modal('hide');
+            $.pjax.reload({container:'#medicosRem_pjax'});
+            bootbox.alert('Se guardaron los cambios');
+        }else{
+            bootbox.alert('Error al guardar los cambios');
+        }
+    })
+    .fail(function(){
+        console.log("Server error");
+    });
+    return false;
+});
+
+SCRIPT;
+$this->registerJs($js);
+
+?>, 

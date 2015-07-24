@@ -119,22 +119,24 @@ class MedicosRemitentesController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            $model->refresh();
-            Yii::$app->response->format = 'json';
-            \Yii::$app->getSession()->setFlash('success', 'Médico actualizado con exito!');
-            return $this->redirect($_POST['url']);
+        if ($model->load(Yii::$app->request->post()) ) {
+            if($model->save())
+            {
+                return 1;
+            }else{
+                return 0;
+            }
+            // $model->refresh();
+            // Yii::$app->response->format = 'json';
+            // \Yii::$app->getSession()->setFlash('success', 'Médico actualizado con exito!');
+            // return $this->redirect($_POST['url']);
         }
 
-        $ips_model = new Ips();
-        $ips_list = Ips::find()->where(['idclientes'=>Usuarios::findOne(Yii::$app->user->id)->idclientes])->all();
-        $lista_especialidades = ArrayHelper::map(Especialidades::find()->all(), 'id', 'nombre');
-        $this->getView()->registerJs('$("#url").val(getUrlVars());', yii\web\View::POS_READY,null);
         return $this->renderAjax('update', [
             'model' => $model,
-            'ips_list'=>$ips_list,
-            'ips_model'=>$ips_model,
-            'lista_especialidades'=>$lista_especialidades,
+            'ips_list'=>Ips::find()->where(['idclientes'=>Usuarios::findOne(Yii::$app->user->id)->idclientes])->all(),
+            'ips_model'=>new Ips(),
+            'lista_especialidades'=>ArrayHelper::map(Especialidades::find()->all(), 'id', 'nombre'),
         ]);
         
     }

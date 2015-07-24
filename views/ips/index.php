@@ -89,11 +89,3 @@ $this->title = 'Ips';
 
 </div>
 <?=$this->render('//site/modals'); ?>
-
-<script type="text/javascript">
-    $(document).on('click', '#ipsTab tr td:not(#ipsTab tr td.skip-export)',function(event) {
-        event.preventDefault();
-        openModalView('vista',$(this).parent());
-    });
-
-</script>

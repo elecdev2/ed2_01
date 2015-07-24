@@ -10,11 +10,11 @@ use Yii;
  * @property integer $id_citas
  * @property integer $pacientes_id
  * @property integer $medicos_id
+ * @property integer $tipo_servicio 
  * @property string $fecha
  * @property string $hora
  * @property string $observaciones
  * @property string $hora_llegada 
- * @property string $motivo 
  * @property string $estado 
  *
  * @property Medicos $medicos
@@ -38,10 +38,10 @@ class CitasMedicas extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['pacientes_id', 'medicos_id', 'fecha', 'hora'], 'required'],
-            [['pacientes_id', 'medicos_id','idespecialidades','ips'], 'integer'],
+            [['pacientes_id', 'medicos_id', 'fecha', 'hora','tipo_servicio'], 'required'],
+            [['pacientes_id', 'medicos_id','idespecialidades','ips', 'tipo_servicio'], 'integer'],
             [['fecha', 'hora', 'hora_llegada'], 'safe'],
-            [['observaciones', 'motivo'], 'string', 'max' => 200],
+            [['observaciones'], 'string', 'max' => 200],
             [['estado'], 'string', 'max' => 7]
         ];
     }
@@ -59,6 +59,7 @@ class CitasMedicas extends \yii\db\ActiveRecord
             'fecha' => 'Fecha',
             'hora' => 'Hora',
             'observaciones' => 'Observaciones',
+            'tipo_servicio' => 'Motivo',
         ];
     }
 
@@ -76,5 +77,13 @@ class CitasMedicas extends \yii\db\ActiveRecord
     public function getPacientes()
     {
         return $this->hasOne(Pacientes::className(), ['id' => 'pacientes_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTipoServicio()
+    {
+        return $this->hasOne(TiposServicio::className(), ['id' => 'tipo_servicio']);
     }
 }

@@ -42,7 +42,7 @@ $this->title = 'Horario '.$model->nombre;
                     // 'center'=>'title',
                     // 'right'=>'agendaWeek',
                 ],
-                'firstDay'=> new \yii\web\JsExpression("2015-07-12"),
+                'defaultDate'=>'2015-07-13',
                 'columnFormat'=> 'dddd',
                 'defaultView'=>'agendaWeek',
                 'lang'=>'es',

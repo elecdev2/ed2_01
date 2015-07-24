@@ -80,11 +80,3 @@ $this->title = 'Especialidades';
 
 </div>
 <?=$this->render('//site/modals'); ?>
-
-<script type="text/javascript">
-    $(document).on('click', '#especialidadesTab tr td:not(#especialidadesTab tr td.skip-export)',function(event) {
-        event.preventDefault();
-        openModalView('vista',$(this).parent());
-    });
-
-</script>

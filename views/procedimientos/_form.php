@@ -39,13 +39,13 @@ use yii\bootstrap\Modal;
                         <?php } ?>
 
 
-                        
+                            <h3 id="pacienteName"></h3>
                             
 
                              <?= $form->field($paciente_model, 'tipo_identificacion')->widget(Select2::classname(), [
                                     'data'=>$lista_tipoid,
                                     'language' => 'es',
-                                    'options' => ['id'=>'tipoID','placeholder' => 'Seleccione un tipo de ID'],
+                                    'options' => ['placeholder' => 'Seleccione un tipo de ID'],
                                     'pluginOptions' => [
                                         'allowClear' => true
                                     ],
@@ -273,39 +273,42 @@ use yii\bootstrap\Modal;
                 <h3 class="titulo-tarifa">Nuevo médico remitente</h3>
             </div>
             <div class="modal-body">
-                <div class="form-group required">
-                    <label class="control-label" for="">Médicos remitentes</label><br>
-                        <div class="col-sm-10">
-                            <?= Select2::widget([
-                                    'name' => 'remitentes',
-                                    'id'=>'medrem',
-                                    'data'=>$lista_medRemGen,
-                                    'language' => 'es',
-                                    'options' => ['placeholder' => 'Seleccione una opción'],
-                                    'pluginOptions' => [
-                                        'allowClear' => true,
-                                    ],
-                                ]);
-                            ?>
-                        </div>   
-                        <div class="col-sm-2"><a href="" id="agregar" data-dismiss="modal" class="btn btn-default">Añadir</a></div>
-                </div><br>
-
-                 <div class="form-group field-medico-check">
-                    <div class="col-sm-6">
+                
+                    <div id="panelAddMedico" class="col-sm-12">
+                            <div class="col-sm-12">
+                                <label class="control-label" for="medrem">Médicos remitentes</label>
+                            </div>
+                            <div class="col-sm-10">
+                                <?= Select2::widget([
+                                        'name' => 'remitentes',
+                                        'id'=>'medrem',
+                                        'data'=>$lista_medRemGen,
+                                        'language' => 'es',
+                                        'options' => ['placeholder' => 'Seleccione una opción'],
+                                        'pluginOptions' => [
+                                            'allowClear' => true,
+                                        ],
+                                    ]);
+                                ?>
+                            </div>   
+                            <div class="col-sm-2"><a href="" id="agregar" onclick="cerrarModal(medRemNuevo)" class="btn btn-default">Añadir</a></div>
+                    </div>
+                    <div class="col-sm-12" style="padding: 10px 30px;">
                         <?= Html::input('checkBox','nombre','',['id'=>'showHidePanel', 'class'=>'']);?>
                         <label for="showHidePanel">Agregar un médico nuevo</label>
                     </div>
-                </div><br>
+
 
                 <div class="panel panel-default">
-                    <div id="panelMedico"  class="panel-body">
-                        <?=$this->render('//medicos-remitentes/_form', [
-                            'model'=>$medicoRemModel,
-                            'lista_especialidades'=>$lista_especialidades,
-                            'ips_model'=>$ips_model,
-                            'ips_list'=>$ips_list,
-                        ]);?>
+                    <div class="panelFormulario-contenido">
+                        <div id="panelMedico"  class="panel-body">
+                            <?=$this->render('//medicos-remitentes/_form', [
+                                'model'=>$medicoRemModel,
+                                'lista_especialidades'=>$lista_especialidades,
+                                'ips_model'=>$ips_model,
+                                'ips_list'=>$ips_list,
+                            ]);?>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -353,8 +356,10 @@ use yii\bootstrap\Modal;
         $('#showHidePanel').on('change', function(event) {
             event.preventDefault();
             $('#panelMedico').hide();
+            $('#panelAddMedico').show();
             if($('#showHidePanel').is(':checked')){
                 $('#panelMedico').show();
+                $('#panelAddMedico').hide();
             }
         });
 

@@ -78,11 +78,3 @@ $this->title = 'Informes';
 
 </div>
 <?=$this->render('//site/modals'); ?>
-
-<script type="text/javascript">
-    $(document).on('click', '#informesTab tr td:not(#informesTab tr td.skip-export)',function(event) {
-        event.preventDefault();
-        openModalView('vista',$(this).parent());
-    });
-
-</script>

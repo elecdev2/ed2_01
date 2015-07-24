@@ -75,7 +75,7 @@ use kartik\depdrop\DepDrop;
 
     <?= $form->field($model, 'nombre_campo')->textInput(['maxlength' => 200])->label('Nombre de campo') ?>
 
-    <!-- <?= $form->field($model, 'orden')->textInput() ?> -->
+    <?= $form->field($model, 'orden')->textInput() ?>
 
     <div class="form-group text-center">
         <?= Html::submitButton($model->isNewRecord ? '<i class="add icon-guardar"></i>Crear' : '<i class="add icon-actualizar"></i>Actualizar', ['class' =>'btn btn-success']) ?>

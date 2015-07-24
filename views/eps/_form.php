@@ -15,7 +15,7 @@ use kartik\depdrop\DepDrop;
 
 <div class="eps-form">
 
-    <?php $form = ActiveForm::begin(['layout'=>'horizontal', 'id'=>'epsForm', 'validateOnType' => true, 'options'=>['onsubmit'=>'submitForm']]); ?>
+    <?php $form = ActiveForm::begin(['layout'=>'horizontal', 'id'=>'epsForm', 'validateOnType' => true]); ?>
     
      <input type="text" name="url" id="url" hidden>
      <div class="help-block help-block-error "></div>
@@ -71,14 +71,34 @@ use kartik\depdrop\DepDrop;
     <?php ActiveForm::end(); ?>
 
 </div>
-<script type="text/javascript">
-    $(document).ready(function() {
-        $('#url').val(getUrlVars());
+<?php 
+    $js = <<<SCRIPT
 
-        $('#eps-tipos_est').on('change', function(e){
-            var val = $('#eps-tipos_est option:selected');
-            if(val.attr('value') === '')
-                val.remove();
-        });
+$('form#epsForm').on('beforeSubmit', function(e)
+{
+    var \$form = $(this);
+
+    $.post(
+        \$form.attr("action"), 
+        \$form.serialize()
+    )
+    .done(function(result) {
+        if(result == 1)
+        {
+            $(document).find('#updateModal').modal('hide');
+            $.pjax.reload({container:'#eps_pjax'});
+            bootbox.alert('Se guardaron los cambios');
+        }else{
+            bootbox.alert('Error al guardar los cambios');
+        }
+    })
+    .fail(function(){
+        console.log("Server error");
     });
-</script>
+    return false;
+});
+
+SCRIPT;
+$this->registerJs($js);
+
+?>

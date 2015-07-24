@@ -138,31 +138,29 @@ class PacientesController extends Controller
         $model = $this->findModel($id);
         // $model->scenario = 'paciente';
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            $model->refresh();
-            Yii::$app->response->format = 'json';
-            \Yii::$app->getSession()->setFlash('success', 'Paciente actualizado con exito!');
-            return $this->redirect($_POST['url']);
-        }
-        $id_cliente = Usuarios::findOne(Yii::$app->user->id)->idclientes;
-        // $id_cliente = 1; 
-        $rango_fecha = $this->rangoFecha();
-        $lista_tipos = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_usuario"')->all(),'codigo','descripcion');
-        $lista_tipoid = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_identificacion"')->all(),'codigo','descripcion');
-        $lista_resid = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_residencia"')->all(),'codigo','descripcion');
-        $lista_ciudades = ArrayHelper::map(Ciudades::find()->all(),'id','nombre');
-        $lista_eps = ArrayHelper::map(Eps::find()->all(),'id','nombre');
+        if ($model->load(Yii::$app->request->post())) {
 
+            if($model->save())
+            {
+                return 1;
+            }else{
+                return 0;
+            }
+            // $model->refresh();
+            // Yii::$app->response->format = 'json';
+            // \Yii::$app->getSession()->setFlash('success', 'Paciente actualizado con exito!');
+            // return $this->redirect($_POST['url']);
+        }
         $this->getView()->registerJs('$("#url").val(getUrlVars());', yii\web\View::POS_READY,null);
         return $this->renderAjax('update', [
             'model' => $model,
-            'lista_tipos'=>$lista_tipos,
-            'lista_tipoid'=>$lista_tipoid,
-            'lista_resid'=>$lista_resid,
-            'lista_ciudades'=>$lista_ciudades,
-            'lista_eps'=>$lista_eps,
-            'id_cliente'=>$id_cliente,
-            'rango_fecha'=>$rango_fecha,
+            'lista_tipos'=>ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_usuario"')->all(),'codigo','descripcion'),
+            'lista_tipoid'=>ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_identificacion"')->all(),'codigo','descripcion'),
+            'lista_resid'=>ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_residencia"')->all(),'codigo','descripcion'),
+            'lista_ciudades'=>ArrayHelper::map(Ciudades::find()->all(),'id','nombre'),
+            'lista_eps'=>ArrayHelper::map(Eps::find()->all(),'id','nombre'),
+            'id_cliente'=> Usuarios::findOne(Yii::$app->user->id)->idclientes,
+            'rango_fecha'=>$this->rangoFecha(),
         ]);
         
     }

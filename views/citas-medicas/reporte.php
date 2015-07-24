@@ -6,6 +6,8 @@ use yii\helpers\ArrayHelper;
 use kartik\grid\GridView;
 
 use app\models\ListasSistema;
+use app\models\Medicos;
+use app\models\UsuariosIps;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\IpsSearch */
@@ -29,14 +31,23 @@ $this->title = 'Reporte de citas médicas';
      <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
-        'pjax'=>true,
+        // 'pjax'=>true,
         'columns' => [
             // 'id_citas',
             [
-                'attribute'=>'medico',
+                'attribute'=>'medicos_id',
                 'label'=>'Médico',
+                'filter'=>ArrayHelper::map(Medicos::find()->where(['ips_idips'=>(UsuariosIps::find()->select(['idips'])->where(['idusuario'=>Yii::$app->user->id]))])->all(),'id', 'nombre'),
                 'value'=> 'medicos.nombre',
+                'format'=>'raw',
             ],
+            // [
+            //     'attribute'=>'medico',
+            //     'filter'=>ArrayHelper::map(Medicos::find()->where(['ips_idips'=>(UsuariosIps::find()->select(['idips'])->where(['idusuario'=>Yii::$app->user->id]))])->all(),'id', 'nombre'),
+            //     'label'=>'Médico',
+            //     'value'=> 'medicos.nombre',
+            //     'format'=>'raw',
+            // ],
             [
                 'attribute'=>'id_pac',
                 'label'=>'Paciente',
@@ -49,7 +60,9 @@ $this->title = 'Reporte de citas médicas';
                     return Yii::$app->formatter->asDate($model->fecha, 'd-MMM-yyyy');
                 },
                 // 'hAlign'=>GridView::ALIGN_RIGHT,
-                'filter' => yii\jui\DatePicker::widget(['name' => 'CitasMedicas[fecha]', 'dateFormat' => 'yyyy-MM-dd', 'options' => ['class' => 'form-control'], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']),
+                'filterType'=>'\yii\jui\DatePicker',
+                'filterWidgetOptions'=>['dateFormat' => 'yyyy-MM-dd', 'options' => ['class' => 'form-control'], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true']],
+                // 'filter' => yii\jui\DatePicker::widget(['name' => 'CitasMedicasSearch[fecha]', 'dateFormat' => 'yyyy-MM-dd', 'options' => ['class' => 'form-control'], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']),
                 'format' => 'html'
             ],
             [
@@ -63,7 +76,7 @@ $this->title = 'Reporte de citas médicas';
             [
                 'attribute' => 'estado',
               
-                'filter'=>ArrayHelper::map(ListasSistema::find()->where('tipo="cita_estado"')->all(),'codigo','descripcion'),
+                'filter'=>ArrayHelper::map(ListasSistema::find()->select(['codigo', 'descripcion'=>'SUBSTRING(descripcion, 8)'])->where(['tipo'=>'cita_estado'])->all(),'codigo','descripcion'),
              
                 'value'=>function($model){
                     $cadena = ListasSistema::find()->select(['descripcion'])->where(['tipo'=>"cita_estado", 'codigo'=>$model->estado])->scalar();
@@ -93,5 +106,18 @@ $this->title = 'Reporte de citas médicas';
     
 
 </div>
-<?=$this->render('//site/modals'); ?>
+
+<div id="viewModal" class="modal fade bs-example-modal-lg" data-backdrop="false" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" title="Cerrar" class="close" data-dismiss="modal"><img src="<?=Yii::$app->request->baseUrl;?>/images/iconos/IconoBarraCerrar.png" alt="Cerrar"></button>
+                <h3 class="modal-title"></h3>
+            </div>
+            <div class="modal-body">
+                <div id='vista'></div>
+            </div>
+        </div>
+    </div>
+</div>
 

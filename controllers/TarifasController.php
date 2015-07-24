@@ -7,7 +7,9 @@ use yii\helpers\ArrayHelper;
 use app\models\Tarifas;
 use app\models\Estudios;
 use app\models\EpsTipos;
+use app\models\Eps;
 use app\models\TarifasSearch;
+
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -101,7 +103,8 @@ class TarifasController extends Controller
             // return $this->redirect(['index', 'ideps'=>$ideps]);
         } else {
             
-            $lista_estudios = ArrayHelper::map($this->getEstudios($ideps,'crear',$model), 'id', 'name');
+            $lista_estudios = ArrayHelper::map($this->getEstudios($ideps,$model), 'cod_cups', 'descripcion');
+
             $this->getView()->registerJs('$("#url").val(getUrlVars());', yii\web\View::POS_READY,null);
             return $this->renderAjax('create', [
                 'model' => $model,
@@ -111,22 +114,29 @@ class TarifasController extends Controller
         }
     }
 
-    public function getEstudios($ideps,$vista,$model) //Obtiene los estudios para las tarifas
+    public function getEstudios($ideps,$model) //Obtiene los estudios para las tarifas
     {
-        $query = new Query();
-        $ips_id = new Query();
-        $idips = $ips_id->select('idips')->from('eps')->where(['id'=>$ideps])->scalar();
+        // $query = new Query();
+        $eps = Eps::findOne($ideps);
+        // $ips_id = new Query();
+        // $idips = $ips_id->select('idips')->from('eps')->where(['id'=>$ideps])->scalar();
 
-        $estudios = (new Query())->select('idestudios')->from('tarifas')->where(['eps_id'=>$ideps]);
-        if($vista === 'act'){
-            $estudios->andwhere(['<>','idestudios',$model->idestudios]);
-        }
+        // $estudios = (new Query())->select('idestudios')->from('tarifas')->where(['eps_id'=>$ideps]);
+        $estudios = Tarifas::find()->select(['idestudios'])->where(['eps_id'=>$ideps]);
+        // if($vista === 'act'){
+        //     $estudios->andwhere(['<>','idestudios',$model->idestudios]);
+        // }
+        $query = Estudios::find()->select(['estudios.cod_cups', 'estudios.descripcion'])->join('INNER JOIN', 'estudios_ips', 'estudios.cod_cups = estudios_ips.cod_cups')
+                                ->join('INNER JOIN', 'tipos_servicio', 'estudios_ips.idtipo_servicio = tipos_servicio.id')
+                                ->join('INNER JOIN', 'eps_tipos', 'eps_tipos.tipos_servicio_id = tipos_servicio.id')
+                                ->join('INNER JOIN', 'eps', 'eps.id = eps_tipos.eps_id')
+                                ->where(['eps.idips'=>$eps->idips])->andwhere(['NOT IN', 'estudios.cod_cups', $estudios]);
 
-        $query->select('(es.cod_cups)AS id,(es.descripcion) AS name')->from('estudios_ips ei')
-                ->join('INNER JOIN', 'tipos_servicio s', 'ei.idtipo_servicio = s.id')
-                ->join('INNER JOIN', 'estudios es', 'es.cod_cups = ei.cod_cups')
-                ->where(['s.idips'=>$idips])
-                ->andwhere(['NOT IN', 'ei.cod_cups', $estudios]);
+        // $query->select('(es.cod_cups)AS id,(es.descripcion) AS name')->from('estudios_ips ei')
+        //         ->join('INNER JOIN', 'tipos_servicio s', 'ei.idtipo_servicio = s.id')
+        //         ->join('INNER JOIN', 'estudios es', 'es.cod_cups = ei.cod_cups')
+        //         ->where(['s.idips'=>$eps->idips])
+        //         ->andwhere(['NOT IN', 'ei.cod_cups', $estudios]);
 
         return $query->all();       
     }
@@ -141,18 +151,25 @@ class TarifasController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            $model->refresh();
-            Yii::$app->response->format = 'json';
-            \Yii::$app->getSession()->setFlash('success', 'Tarifa actualizada con exito!');
-            return $this->redirect($_POST['url']);
+        if ($model->load(Yii::$app->request->post()) ) {
+            if($model->save())
+            {
+                return 1;
+            }else{
+                return 0;
+            }
+            // $model->refresh();
+            // Yii::$app->response->format = 'json';
+            // \Yii::$app->getSession()->setFlash('success', 'Tarifa actualizada con exito!');
+            // return $this->redirect($_POST['url']);
             // return $this->redirect(['index', 'ideps'=>$model->eps_id]);
         }
-        $lista_estudios = ArrayHelper::map($this->getEstudios($model->eps_id,'act',$model), 'id', 'name');
+        // $lista_estudios = ArrayHelper::map($this->getEstudios($model->eps_id,'act',$model), 'id', 'name');
+
         $this->getView()->registerJs('$("#url").val(getUrlVars());', yii\web\View::POS_READY,null);
         return $this->renderAjax('update', [
             'model' => $model,
-            'lista_estudios'=>$lista_estudios,
+            // 'lista_estudios'=>$lista_estudios,
             'ideps'=>$id,
         ]);
         

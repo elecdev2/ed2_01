@@ -48,7 +48,7 @@ use kartik\select2\Select2;
     <?= $form->field($model, 'fecha_nacimiento')->widget(yii\jui\DatePicker::classname(), ["dateFormat" => "yyyy-MM-dd", 'options' => ['value'=>$model->fecha_nacimiento, 'class' => 'fecha form-control', "placeholder" => "aaaa-mm-dd"], 'clientOptions'=>['yearRange'=>$rango_fecha,'changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']) ?>
 
     <?= $form->field($model, 'tipo_usuario')->widget(Select2::classname(), [
-            'data'=>array_merge(["" => ""], $lista_tipos),
+            'data'=>$lista_tipos,
             'language' => 'es',
             'options' => ['placeholder' => 'Seleccione un tipo de usuario'],
             'pluginOptions' => [
@@ -58,7 +58,7 @@ use kartik\select2\Select2;
     ?>
 
     <?= $form->field($model, 'tipo_residencia')->widget(Select2::classname(), [
-            'data'=>array_merge(["" => ""], $lista_resid),
+            'data'=>$lista_resid,
             'language' => 'es',
             'options' => ['placeholder' => 'Seleccione un tipo de residencia'],
             'pluginOptions' => [
@@ -71,7 +71,7 @@ use kartik\select2\Select2;
     <?= $form->field($model, 'activo')->dropDownList(['1' => 'Si', '2' => 'No'])->label('Activo') ?>
 
     <?= $form->field($model, 'idciudad')->widget(Select2::classname(), [
-            'data'=>array_merge(["" => ""], $lista_ciudades),
+            'data'=>$lista_ciudades,
             'language' => 'es',
             'options' => ['placeholder' => 'Seleccione una ciudad'],
             'pluginOptions' => [

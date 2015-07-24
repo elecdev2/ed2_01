@@ -38,12 +38,12 @@
       "</div>",
     header:
       "<div class='modal-header'>" +
-        "<h4 class='modal-title'></h4>" +
+        "<h3 class='modal-title'></h3>" +
       "</div>",
     footer:
       "<div class='modal-footer'></div>",
     closeButton:
-      "<button type='button' class='bootbox-close-button close' data-dismiss='modal' aria-hidden='true'>&times;</button>",
+      "<button type='button' class='bootbox-close-button close bootbox-boton-cerrar' data-dismiss='modal' aria-hidden='true'><i class='icon-cerrar'></i></button>",
     form:
       "<form class='bootbox-form'></form>",
     inputs: {

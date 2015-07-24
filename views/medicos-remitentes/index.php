@@ -34,6 +34,12 @@ $this->title = 'Medicos Remitentes';
     <?= GridView::widget([
         'id'=>'medicosRem',
         'pjax'=>true,
+        'pjaxSettings'=>[
+            'neverTimeout'=>true,
+            'options'=>[
+                'id'=>'medicosRem_pjax',
+            ]
+        ],
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
@@ -75,11 +81,3 @@ $this->title = 'Medicos Remitentes';
 
 </div>
 <?=$this->render('//site/modals'); ?>
-
-<script type="text/javascript">
-    $(document).on('click', '#medicosRem tr td:not(#medicosRem tr td.skip-export)',function(event) {
-        event.preventDefault();
-        openModalView('vista',$(this).parent());
-    });
-
-</script>

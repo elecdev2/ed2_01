@@ -49,7 +49,7 @@ class Pacientes extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['tipo_identificacion', 'identificacion', 'apellido1', 'nombre1', 'direccion', 'sexo', 'fecha_nacimiento', 'idclientes'], 'required','on'=>'paciente'],
+            [['tipo_identificacion', 'identificacion', 'apellido1', 'nombre1', 'direccion', 'sexo', 'fecha_nacimiento', 'idclientes'], 'required'],
             [['fecha_nacimiento'], 'safe'],
             [['idclientes', 'idciudad', 'ideps'], 'integer'],
             [['tipo_identificacion'], 'string', 'max' => 3],

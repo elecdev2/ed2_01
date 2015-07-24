@@ -294,11 +294,12 @@ class MedicosController extends Controller
                     $color->codigo = $model->id;                
                     $color->save(false);
                 }
-                $model->refresh();
-                Yii::$app->response->format = 'json';
-                \Yii::$app->getSession()->setFlash('success', 'Médico actualizado con exito!');
-                return $this->redirect($_POST['url']);
-            }
+                return 1;
+                // $model->refresh();
+                // Yii::$app->response->format = 'json';
+                // \Yii::$app->getSession()->setFlash('success', 'Médico actualizado con exito!');
+                // return $this->redirect($_POST['url']);
+            }else{return 0;}
         } 
         $color = $model->color != null ? 'style=background-color:'.ListasSistema::find()->select(['descripcion'])->where(['id'=>$model->color])->scalar() : '';
         $js = <<<SCRIPT

@@ -81,7 +81,7 @@ class CamposController extends Controller
             $ips_model = new Ips();
             $client_model = new Clientes();
             $clientes = Clientes::find()->all();
-            $tipos_campos = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_campo"')->all(),'id','descripcion');
+            $tipos_campos = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_campo"')->all(),'codigo','descripcion');
             return $this->render('create', [
                 'model' => $model, 
                 'ips_model' => $ips_model, 
@@ -115,7 +115,7 @@ class CamposController extends Controller
             $ips_model = new Ips();
             $client_model = new Clientes();
             $clientes = ArrayHelper::map(Clientes::find()->all(), 'id', 'nombre');
-            $tipo_campos = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_campo"')->all(),'id','descripcion');
+            $tipo_campos = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_campo"')->all(),'codigo','descripcion');
             $this->getView()->registerJs('$("#url").val(getUrlVars());', yii\web\View::POS_READY,null);
             return $this->renderAjax('update', [
                 'model' => $model,

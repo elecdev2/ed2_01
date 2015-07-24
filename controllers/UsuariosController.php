@@ -66,14 +66,6 @@ class UsuariosController extends Controller
         $searchModel = new UsuariosSearch();
         // if(count(Yii::$app->request->queryParams) > 0){
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-            $js = <<< SCRIPT
-               $(document).on('click', '#usuarios tr td:not(#usuarios tr td.skip-export)',function(event) {
-                    event.preventDefault();
-                    openModalView('vista',$(this).parent());
-                });
-SCRIPT;
-
-            $this->getView()->registerJs($js, yii\web\View::POS_READY,null);
             return $this->render('index', [
                 'searchModel' => $searchModel,
                 'dataProvider' => $dataProvider,
@@ -205,8 +197,11 @@ SCRIPT;
                 Yii::$app->authManager->assign($role, $id);
             } 
             if($model->save()){
-                \Yii::$app->getSession()->setFlash('success', 'Usuario actualizado con exito!');
-                return $this->redirect($_POST['url']);
+                return 1;
+                // \Yii::$app->getSession()->setFlash('success', 'Usuario actualizado con exito!');
+                // return $this->redirect($_POST['url']);
+            }else{
+                return 0;
             }
         }
 
@@ -214,16 +209,16 @@ SCRIPT;
         $id_cliente = Usuarios::findOne(Yii::$app->user->id)->idclientes;
         $ips = new Ips();
         if(Yii::$app->user->can('admin')){
-            $lista_perf = ArrayHelper::map(Items::find()->where(['data'=>'0'])->all(),'name','description');
+            $lista_perf = ArrayHelper::map(Items::find()->where(['<>', 'data', '1'])->andWhere(['<>','name','super_admin'])->all(),'name','description');
         }else{
-             $lista_perf = ArrayHelper::map(Items::find()->where(['data'=>'0'])->andWhere(['<>','name','admin'])->all(),'name','description');
+             $lista_perf = ArrayHelper::map(Items::find()->where(['<>', 'data', '1'])->andWhere(['<>','name','admin'])->all(),'name','description');
         }
         $lista_ips = ArrayHelper::map(Ips::find()->all(),'id','nombre');
         $lista_especialidades = ArrayHelper::map(Especialidades::find()->all(),'id','nombre');
 
         $ips->id = $model->perfil != 'medico' ? $this->ipsSeleccionadas($model) : '';
 
-        $this->getView()->registerJs('$("#url").val(getUrlVars());', yii\web\View::POS_READY,null);
+        $this->getView()->registerJs('$("#url").val(getUrlVars());$("#panelMedico").hide();', yii\web\View::POS_READY,null);
         // return print_r($lista_ips_select);
         return $this->renderAjax('update', [
             'model' => $model,

@@ -19,6 +19,11 @@ body {
     padding-right: 0 !important;
 }
 
+.btn.disabled, .btn[disabled], fieldset[disabled]
+{
+    opacity: .35;
+}
+
 a{
     color: #3e5068;
 }
@@ -167,7 +172,7 @@ div.panel-body{
 }
 
 /*Action column*/
-.up, .del, .ta, .vi, .hr{
+.up, .del, .ta, .vi, .hr, .imp{
     background-repeat: no-repeat;
     background-size: 100%;
     border-radius: 50%;
@@ -196,6 +201,11 @@ div.panel-body{
 
 .vi{
     background-image: url(../images/iconos/IconoTablaVer.png);
+}
+
+.imp{
+    background-image: url(../images/iconos/BotonImprimir.png);
+    height: 26px;
 }
 
 /*--------------------------------*/
@@ -854,3 +864,16 @@ body > .header .logo{
     }
 }
 
+/*modal historia-clinica*/
+
+@media (min-width: 992px){
+    #historiaModal div.modal-lg {
+      width: 90%;
+    }
+
+}
+@media (min-width: 768px){
+    #historiaModal div.modal-lg {
+      width: 90%;
+    }
+}

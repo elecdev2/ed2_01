@@ -20,7 +20,7 @@ use kartik\select2\Select2;
     <?= $form->field($model, 'idclientes')->hiddenInput(['value'=>$model->isNewRecord ? $id_cliente : $model->idclientes])->label('') ?>
     
     <?= $form->field($model, 'tipo_identificacion')->widget(Select2::classname(), [
-            'data'=>array_merge(["" => ""], $lista_tipoid),
+            'data'=>$lista_tipoid,
             'language' => 'es',
             'options' => ['placeholder' => 'Seleccione un tipo de ID'],
             'pluginOptions' => [

@@ -32,13 +32,13 @@ $this->title = $model->numero_muestra;
         'lista_estados'=>$lista_estados,
         'lista_pago'=>$lista_pago,
         'lista_med'=>$lista_med,
-        'lista_medRemGen'=>$lista_medRemGen,
-        'medicoRemModel'=>$medicoRemModel,
         'lista_especialidades'=>$lista_especialidades,
         'lista_tipoid'=>$lista_tipoid,
         'campos'=>$campos,
         'rango_fecha'=>$rango_fecha,
-
+        'lista_tipos'=> $lista_tipos,
+        'lista_resid'=>$lista_resid,
+        'lista_ciudades'=>$lista_ciudades,
     ]) ?>
 
 </div>
@@ -108,71 +108,70 @@ $this->title = $model->numero_muestra;
 </div>
 
 <script type="text/javascript">
-	$(document).ready(function() {
-        $('#pacientes-fecha_nacimiento').val('<?=$model->idpacientes0->fecha_nacimiento?>');    
-		$('#tipoID').val('<?=$model->idpacientes0->tipo_identificacion?>');
+	// $(document).ready(function() {
 
-        $('#lista').on('change',  function(event) {
-            var id = $('#lista').val();
-            $('#descripcion').val('');
+        // $('#lista').on('change',  function(event) {
+        //     var id = $('#lista').val();
+        //     $('#descripcion').val('');
 
-            if(id != ''){
-                $.post('get-descripcion', {id: $('#lista').val()}).done(function(data) {
-                    $('#descripcion').val(data);
-                });
-            }
-        });
-        $('#addDesc').on('click',  function(event) {
-            event.preventDefault();
-            var id = $(this).attr('data-value');
-            $('#vlrscamposprocedimientos-'+id+'-valor').val($('#descripcion').val());
-            $('#lista').val('');
-            $('#descripcion').val('');
-            $('#plantillaModal').modal('hide');
-        });
+        //     if(id != ''){
+        //         $.post('get-descripcion', {id: $('#lista').val()}).done(function(data) {
+        //             $('#descripcion').val(data);
+        //         });
+        //     }
+        // });
 
-        $('#guardarPlantilla').on('click', function(event) {
-            event.preventDefault();
-            var titulo = $('input[name="tituloName"]').val();
-            var descripcion = $('#descripcionNuevo').val();
-            if(titulo != '' && descripcion != '')
-            {
-                $.post('nueva-plantilla', {titulo: titulo, desc: descripcion}).done(function(data) {
-                    alert(data);
-                    $('input[name="tituloName"]').val('');
-                    $('#descripcionNuevo').val('');
-                    $('#plantillaNuevaModal').modal('hide');
-                });
-            }else{
-                alert('Por favor verifique el titulo y la descripcion antes de guardar');
-            }
-        });
+        // $('#addDesc').on('click',  function(event) {
+        //     event.preventDefault();
+        //     var id = $(this).attr('data-value');
+        //     $('#vlrscamposprocedimientos-'+id+'-valor').val($('#descripcion').val());
+        //     $('#lista').val('');
+        //     $('#descripcion').val('');
+        //     $('#plantillaModal').modal('hide');
+        // });
 
-        $('#edicion').on('click',  function(event) {
-            event.preventDefault();
-            var id = $('#lista').val();
-            var descripcion = $('#descripcion').val();
+        // $('#guardarPlantilla').on('click', function(event) {
+        //     event.preventDefault();
+        //     var titulo = $('input[name="tituloName"]').val();
+        //     var descripcion = $('#descripcionNuevo').val();
+        //     if(titulo != '' && descripcion != '')
+        //     {
+        //         $.post('nueva-plantilla', {titulo: titulo, desc: descripcion}).done(function(data) {
+        //             alert(data);
+        //             $('input[name="tituloName"]').val('');
+        //             $('#descripcionNuevo').val('');
+        //             $('#plantillaNuevaModal').modal('hide');
+        //         });
+        //     }else{
+        //         alert('Por favor verifique el titulo y la descripcion antes de guardar');
+        //     }
+        // });
 
-            $.post('editar-plantilla', {id: id, desc:descripcion}).done(function(data) {
-                alert(data);
-            });
-        });
+        // $('#edicion').on('click',  function(event) {
+        //     event.preventDefault();
+        //     var id = $('#lista').val();
+        //     var descripcion = $('#descripcion').val();
 
-        $('#descripcion').on('keydown', function() {
-            $('#edicion').removeAttr('disabled');
-        });
+        //     $.post('editar-plantilla', {id: id, desc:descripcion}).done(function(data) {
+        //         alert(data);
+        //     });
+        // });
 
-        $('#plantillaModal').on('hidden.bs.modal', function() {
-            $('#lista').val('');
-            $('#descripcion').val('');
-            $('#edicion').attr('disabled', '');
-        });
-	});
+        // $('#descripcion').on('keydown', function() {
+        //     $('#edicion').removeAttr('disabled');
+        // });
 
-    function pasarTexto()
-    {
-        var id = $('#guardarPlantilla').attr('data-value');
-        $('#vlrscamposprocedimientos-'+id+'-valor').val($('#descripcionNuevo').val());
-    }
+        // $('#plantillaModal').on('hidden.bs.modal', function() {
+        //     $('#lista').val('');
+        //     $('#descripcion').val('');
+        //     $('#edicion').attr('disabled', '');
+        // });
+	// });
+
+    // function pasarTexto()
+    // {
+    //     var id = $('#guardarPlantilla').attr('data-value');
+    //     $('#vlrscamposprocedimientos-'+id+'-valor').val($('#descripcionNuevo').val());
+    // }
     
 </script>

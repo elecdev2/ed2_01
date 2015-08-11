@@ -20,7 +20,7 @@ use kartik\depdrop\DepDrop;
 
     <input type="text" hidden id="txtIdIps" name="ips">
     <input type="text" hidden name="num_ips" id="num_ips" value="<?=$num_ipss?>">
-    <div class="<?=$num_ipss == true ? 'col-sm-3 col-lg-3' : 'col-sm-5 col-lg-5'?>">
+    <div class="<?=$num_ipss == true ? 'col-sm-4 col-lg-4' : 'col-sm-5 col-lg-5'?>">
         <?= $form->field($model, 'idespecialidades', ['template'=>"{input}{error}"])->widget(Select2::classname(), [
                 'data'=>$lista_esp,
                 'language' => 'es',
@@ -29,9 +29,7 @@ use kartik\depdrop\DepDrop;
         ?>
     </div>
 
-<?php if($num_ipss){ ?>
-
-    <div class="col-sm-3 col-lg-3">
+    <div class="<?=$num_ipss == true ?  "col-sm-4 col-lg-4" : "col-sm-5 col-lg-5"?>">
          <?= $form->field($model, 'medicos_id', ['template'=>"{input}{error}"])->widget(DepDrop::classname(), [
                     'type' => 2,
                     'options'=>['id'=>'med_id'],
@@ -40,32 +38,12 @@ use kartik\depdrop\DepDrop;
                         'placeholder'=>'Seleccione un médico',
                         'url'=>Url::to(['/citas-medicas/submed2'])
                     ],
-                    // 'pluginEvents' => [
-                    //      'depdrop.afterChange'=> "function(event, id, value) { 
-                    //         if(value == 0){
-                    //             document.getElementById('submmitCalendar').click();
-                    //         }
-                    //       }"
-                    //  ]
+                  
             ]);  
         ?>
     </div>
-<?php }else{ ?>
-        <div class="col-sm-5 col-lg-5">
-         <?= $form->field($model, 'medicos_id', ['template'=>"{input}{error}"])->widget(DepDrop::classname(), [
-                    'type' => 2,
-                    'options'=>['id'=>'med_id'],
-                    'pluginOptions'=>[
-                        'depends'=>['esp', 'txtIdIps'],
-                        'placeholder'=>'Seleccione un médico',
-                        'url'=>Url::to(['/citas-medicas/submed2'])
-                    ],
-            ]);  
-        ?>
-    </div>
-<?php } ?>
 
-    <div class="col-sm-1 botones-search">
+    <div class="col-sm-1 botones-search" style="display:none">
         <?= Html::submitButton('<i class="busq search-icon"></i>Buscar', ['id'=>'submmitCalendar', 'class' => 'busqueda-boton btn btn-success']) ?>
     </div>
 
@@ -73,7 +51,11 @@ use kartik\depdrop\DepDrop;
 
 </div>
 <script type="text/javascript">
-    // $(document).ready(function() {
-    //     $('#txtIdIps').val($('#citasmedicassearch-ips').val());
-    // });
+    $(document).ready(function() {
+        $('#med_id').on('change', function(event) {
+            if($(this).val() !== ''){
+                document.getElementById('submmitCalendar').click();
+            }
+        });
+    });
 </script>

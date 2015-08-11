@@ -35,14 +35,10 @@ $this->title = 'Nuevo procedimiento';
         'lista_resid'=>$lista_resid,
         'lista_ciudades'=>$lista_ciudades,
         'lista_eps'=>$lista_eps,
-        // 'id_cliente'=>$id_cliente,
         'lista_pago'=>$lista_pago,
         'lista_med'=>$lista_med,
-        'medicoRemModel'=>$medicoRemModel,
-        'lista_especialidades'=>$lista_especialidades,
-        'lista_medRemGen'=>$lista_medRemGen,
         'rango_fecha'=>$rango_fecha,
-        'lista_meds'=>$lista_meds,
+        'cita_model'=> $cita_model,
     ]) ?>
 
 </div>

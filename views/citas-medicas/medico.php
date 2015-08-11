@@ -42,10 +42,10 @@ $this->title = 'Citas médicas';
                 'lang'=>'es',
                 'allDaySlot'=>false,
                 'axisFormat'=>'h(:mm)a',
-                'slotDuration'=>'00:20:00',
-                'minTime'=>"06:00:00",
-                'maxTime'=>"21:00:00",
-                'defaultTimedEventDuration'=>'00:20:00',
+                'slotDuration'=>$ips->tiempo_citas,
+                'minTime'=>$ips->hora_inicio,
+                'maxTime'=>$ips->hora_fin,
+                'defaultTimedEventDuration'=>$ips->tiempo_citas,
                 'timeFormat'=>'h:mm',
                 'aspectRatio'=>2.5,
 
@@ -55,6 +55,7 @@ $this->title = 'Citas médicas';
                     var id_cita = event.id;
                     $.get('view', {id: id_cita}).done(function(data) {
                         $('#citas').html(data);
+                        $('#citasModal h3.modal-title').text('Datos de la cita');
                         $('#citasModal').modal({backdrop:'static'});
                     });
                 }"),
@@ -70,15 +71,30 @@ $this->title = 'Citas médicas';
             ],
         ]); ?>
 </div>
+
 <div id="citasModal" class="modal fade bs-example-modal-lg" data-backdrop="false" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" title="Cerrar" class="close" data-dismiss="modal"><img src="<?=Yii::$app->request->baseUrl;?>/images/iconos/IconoBarraCerrar.png" alt="Cerrar"></button>
-                <h3 class="titulo-tarifa">Datos de la cita</h3>
+                <h3 class="modal-title"></h3>
             </div>
             <div class="modal-body">
                 <div id='citas'></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="historiaModal" class="modal fade bs-example-modal-lg" data-backdrop="false" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" title="Cerrar" class="close" data-dismiss="modal"><img src="<?=Yii::$app->request->baseUrl;?>/images/iconos/IconoBarraCerrar.png" alt="Cerrar"></button>
+                <h3 class="modal-title"></h3>
+            </div>
+            <div class="modal-body">
+                <div id='historia'></div>
             </div>
         </div>
     </div>

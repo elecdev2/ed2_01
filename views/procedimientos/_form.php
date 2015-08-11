@@ -18,221 +18,244 @@ use yii\bootstrap\Modal;
 
 <div class="procedimientos-form">
 
-    <?php $form = ActiveForm::begin(['layout'=>'horizontal', 'id'=>'procForm', 'validateOnType' => true, 'options'=>['onsubmit'=>'submitForm']]); ?>
+    <?php $form = ActiveForm::begin(['layout'=>'horizontal', 'id'=>'procForm', 'validateOnType' => true]); ?>
         
-                <div class="panelFormulario-contenido">
-                    <div class="panelFormulario-header">
-                        <h3 class="titulo-tarifa">Datos del paciente</h3>
-                    </div>
-                    <div class="modal-body">
-                        <?= $form->field($model, 'idpacientes')->hiddenInput()->label('') ?>
+        <div class="panelFormulario-contenido">
+            <div class="panelFormulario-header">
+                <h3 class="titulo-tarifa">Datos del paciente</h3>
+            </div>
+            <div class="modal-body">
+                <?= $form->field($ips_model, 'id')->widget(Select2::classname(), [
+                        'data'=>ArrayHelper::map($ips_list,'id','nombre'),
+                        'language' => 'es',
+                        'options' => ['id'=>'ips_id','placeholder' => 'Seleccione una IPS'],
+                    ])->label('IPS');
+                ?>
+                <?= $form->field($model, 'idpacientes')->hiddenInput()->label('') ?>
 
-                        <?php if(!$model->isNewRecord){ ?>
-                            <?= $form->field($paciente_model, 'identificacion')->textInput(['value'=>$model->idpacientes0->identificacion, 'maxlength' => 15]) ?>
-                        <?php }else{ ?>
-                            <div class="form-group">
-                                <label class="control-label col-sm-3">N° de identificación *</label>
-                                <div class="col-sm-6">                
-                                    <input id="documento" type="number" required class="form-control" value="<?= $model->isNewRecord ? '' : $model->idpacientes0->identificacion?>">
-                                </div>
-                            </div>
-                        <?php } ?>
+                    <?= $form->field($paciente_model, 'identificacion')->textInput(['maxlength' => 15])->label('Paciente ID *') ?>
 
+                     <?= $form->field($paciente_model, 'tipo_identificacion')->widget(Select2::classname(), [
+                            'data'=>$lista_tipoid,
+                            'language' => 'es',
+                            'options' => ['placeholder' => 'Seleccione un tipo de ID'],
+                            'pluginOptions' => [
+                                'allowClear' => true
+                            ],
+                        ])->label('Tipo de ID');
+                    ?>
 
-                            <h3 id="pacienteName"></h3>
-                            
+                    <?= $form->field($paciente_model, 'nombre1')->textInput(['value'=>$model->isNewRecord ? '' : $model->idpacientes0->nombre1, 'maxlength' => 30]) ?>
 
-                             <?= $form->field($paciente_model, 'tipo_identificacion')->widget(Select2::classname(), [
-                                    'data'=>$lista_tipoid,
-                                    'language' => 'es',
-                                    'options' => ['placeholder' => 'Seleccione un tipo de ID'],
-                                    'pluginOptions' => [
-                                        'allowClear' => true
-                                    ],
-                                ])->label('Tipo de ID');
-                            ?>
+                    <?= $form->field($paciente_model, 'nombre2')->textInput(['value'=>$model->isNewRecord ? '' : $model->idpacientes0->nombre2, 'maxlength' => 30]) ?>
 
-                            <?= $form->field($paciente_model, 'nombre1')->textInput(['value'=>$model->isNewRecord ? '' : $model->idpacientes0->nombre1, 'maxlength' => 30]) ?>
+                    <?= $form->field($paciente_model, 'apellido1')->textInput(['value'=>$model->isNewRecord ? '' : $model->idpacientes0->apellido1, 'maxlength' => 30]) ?>
 
-                            <?= $form->field($paciente_model, 'nombre2')->textInput(['value'=>$model->isNewRecord ? '' : $model->idpacientes0->nombre2, 'maxlength' => 30]) ?>
-
-                            <?= $form->field($paciente_model, 'apellido1')->textInput(['value'=>$model->isNewRecord ? '' : $model->idpacientes0->apellido1, 'maxlength' => 30]) ?>
-
-                            <?= $form->field($paciente_model, 'apellido2')->textInput(['value'=>$model->isNewRecord ? '' : $model->idpacientes0->apellido2, 'maxlength' => 30]) ?>
-                            
-                            <?= $form->field($paciente_model, 'direccion')->textInput(['value'=>$model->isNewRecord ? '' : $model->idpacientes0->direccion, 'maxlength' => 100]) ?>
-
-                            <?= $form->field($paciente_model, 'telefono')->textInput(['value'=>$model->isNewRecord ? '' : $model->idpacientes0->telefono, 'maxlength' => 15]) ?>
-                            
-                            <?= $form->field($paciente_model, 'email')->textInput(['value'=>$model->isNewRecord ? '' : $model->idpacientes0->email, 'maxlength' => 100]) ?>
-                            
-                <!-- --> <?= $form->field($paciente_model, 'codeps')->textInput()->label('Edad') ?> <!-- Campo usado para la edad -->
-
-                            <?= $form->field($paciente_model, 'fecha_nacimiento')->widget(yii\jui\DatePicker::classname(), ["dateFormat" => "yyyy-MM-dd", 'options' => ['value'=>$model->isNewRecord ? '' : $model->idpacientes0->fecha_nacimiento, 'class' => 'fecha form-control', "placeholder" => "aaaa-mm-dd"], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']) ?>
-                        </div>
-                    </div>
-                
-            
-
-        
-                <div class="panelFormulario-contenido">
-                    <div class="panelFormulario-header">
-                        <h3 class="titulo-tarifa">Datos del procedimiento</h3>
-                    </div>
-                    <div class="modal-body">
-        
-                        <div class="form-group">
-                            <div class="col-sm-6">
-                                <input type="text" name="url" id="url" hidden>
-                                <div class="help-block help-block-error "></div>
-                            </div>
-                        </div>
-                        <?= $form->field($model, 'fecha_atencion')->widget(yii\jui\DatePicker::classname(), ["dateFormat" => "yyyy-MM-dd", 'options' => ['value'=>$model->isNewRecord ? date('Y-m-d') : $model->fecha_atencion, 'class' => 'fecha form-control', "placeholder" => "aaaa-mm-dd"], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']) ?>
+                    <?= $form->field($paciente_model, 'apellido2')->textInput(['value'=>$model->isNewRecord ? '' : $model->idpacientes0->apellido2, 'maxlength' => 30]) ?>
                     
-                        <?= $form->field($ips_model, 'id')->widget(Select2::classname(), [
-                                'data'=>ArrayHelper::map($ips_list,'id','nombre'),
-                                'language' => 'es',
-                                'options' => ['id'=>'ips_id','placeholder' => 'Seleccione una IPS'],
-                            ])->label('IPS');
-                        ?>
-                            
-                    
-                        <?= $form->field($model, 'eps_ideps')->widget(DepDrop::classname(), [
+                    <?= $form->field($paciente_model, 'direccion')->textInput(['value'=>$model->isNewRecord ? '' : $model->idpacientes0->direccion, 'maxlength' => 100]) ?>
+
+                    <?= $form->field($paciente_model, 'sexo')->widget(Select2::classname(), [
+                            'data'=>['M'=>'Masculino', 'F'=>'Femenino'],
+                            'language' => 'es',
+                            'options' => ['placeholder' => 'Seleccione una opción'],
+                            'pluginOptions' => [
+                                'allowClear' => true
+                            ],
+                        ])->label('Sexo');
+                    ?>
+
+                    <?= $form->field($paciente_model, 'tipo_usuario')->widget(Select2::classname(), [
+                            'data'=>$lista_tipos,
+                            'language' => 'es',
+                            'options' => ['placeholder' => 'Seleccione un tipo de usuario'],
+                            'pluginOptions' => [
+                                'allowClear' => true
+                            ],
+                        ])->label('Tipo de usuario');
+                    ?>
+
+                    <?= $form->field($paciente_model, 'tipo_residencia')->widget(Select2::classname(), [
+                            'data'=>$lista_resid,
+                            'language' => 'es',
+                            'options' => ['placeholder' => 'Seleccione un tipo de residencia'],
+                            'pluginOptions' => [
+                                'allowClear' => true
+                            ],
+                        ])->label('Tipo de residencia');
+                    ?>
+
+                    <?= $form->field($paciente_model, 'idciudad')->widget(Select2::classname(), [
+                            'data'=>$lista_ciudades,
+                            'language' => 'es',
+                            'options' => ['placeholder' => 'Seleccione una ciudad'],
+                            'pluginOptions' => [
+                                'allowClear' => true
+                            ],
+                        ])->label('Ciudad');
+                    ?>
+
+                   
+
+                    <?= $form->field($paciente_model, 'ideps')->widget(DepDrop::classname(), [
                                 'type' => 2,
-                                'data'=>$model->isNewRecord ? '' : [$model->eps_ideps => $model->epsIdeps->nombre],
-                                'options'=>['id'=>'eps_id'],
+                                'data'=>$paciente_model->isNewRecord ? '' : [$paciente_model->ideps => $paciente_model->ideps0->nombre],
+                                // 'options'=>['id'=>'eps_id'],
                                 'pluginOptions'=>[
                                 'depends'=>['ips_id'],
                                 'placeholder'=>'Seleccione EPS',
                                 'url'=>Url::to(['/procedimientos/subeps'])
                             ]
-                        ])->label('EPS');  
-                        ?>
-                    
-                    
-                        <?= $form->field($model, 'idtipo_servicio')->widget(DepDrop::classname(), [
-                                    'type' => 2,
-                                    'data'=>$model->isNewRecord ? '' : [$model->idtipo_servicio => $model->idtipoServicio->nombre],
-                                    'options'=>['id'=>'tipo_id'],
-                                    'pluginOptions'=>[
-                                    'depends'=>['ips_id', 'eps_id'],
-                                    'placeholder'=>'Seleccione tipo de estudio',
-                                    'url'=>Url::to(['/procedimientos/subtipo'])
-                                ]
-                            ])->label('Tipo de servicio');  
-                        ?>
-                    
-                    
+                        ])->label('Afiliación');  
+                    ?>
 
+                    <?= $form->field($paciente_model, 'telefono')->textInput(['value'=>$model->isNewRecord ? '' : $model->idpacientes0->telefono, 'maxlength' => 15]) ?>
                     
-                        <?= $form->field($model, 'cod_cups')->widget(DepDrop::classname(), [
-                                    'type' => 2,
-                                    'data'=>$model->isNewRecord ? '' : [$model->cod_cups => $model->codCups->descripcion],
-                                    'pluginOptions'=>[
-                                    'depends'=>['ips_id', 'eps_id', 'tipo_id'],
-                                    'placeholder'=>'Seleccione un estudio',
-                                    'url'=>Url::to(['/procedimientos/subest'])
-                                ]
-                            ])->label('Estudio');
-                        ?>
+                    <?= $form->field($paciente_model, 'email')->textInput(['value'=>$model->isNewRecord ? '' : $model->idpacientes0->email, 'maxlength' => 100]) ?>
                     
-                    
+        <!-- --> <?= $form->field($paciente_model, 'codeps')->textInput()->label('Edad') ?> <!-- Campo usado para la edad -->
 
+                    <?= $form->field($paciente_model, 'fecha_nacimiento')->widget(yii\jui\DatePicker::classname(), ["dateFormat" => "yyyy-MM-dd", 'options' => ['value'=>$model->isNewRecord ? '' : $model->idpacientes0->fecha_nacimiento, 'class' => 'fecha form-control', "placeholder" => "aaaa-mm-dd"], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']) ?>
                     
-                        <?= $form->field($model, 'autorizacion')->textInput(['maxlength' => 15]) ?>
-                    
-                    
-                        <?= $form->field($model, 'cantidad_muestras')->textInput() ?>
-                    
-                    
-                        <?= $form->field($model, 'valor_procedimiento')->textInput() ?>
-
-                        <?= $form->field($model, 'descuento')->textInput(['readOnly'=>'']) ?>
-                    
-                        <?= $form->field($model, 'valor_copago')->textInput() ?>
-                    
-                        <?= $form->field($model, 'valor_abono')->textInput() ?>
-
-                        <?= $form->field($model, 'valor_saldo')->textInput(['readOnly'=>'']) ?>
-                    
-                    
-                        <?= $form->field($model, 'medico')->widget(Select2::classname(), [
-                                'data'=>$lista_med,
-                                'language' => 'es',
-                                'options' => ['placeholder' => 'Seleccione una opción'],
-                                'pluginOptions' => [
-                                    'allowClear' => true
-                                ],
-                            ])->label('Médico remitente');
-                        ?>
-                    
-                    
-                        <?= $form->field($model, 'observaciones')->textArea(['maxlength' => 200]) ?>
-                    
-
-                        <?= $form->field($model, 'forma_pago')->widget(Select2::classname(), [
-                                'data'=>$lista_pago,
-                                'language' => 'es',
-                                'options' => ['placeholder' => 'Seleccione una forma de pago'],
-                                'pluginOptions' => [
-                                    'allowClear' => true
-                                ],
-                            ])->label('Forma de pago');
-                        ?>
-
-                        <?php if(!$model->isNewRecord && $model->estado !== 'PND'){  ?>
-                               <?= $form->field($model, 'fecha_salida')->widget(yii\jui\DatePicker::classname(), ["dateFormat" => "yyyy-MM-dd", 'options' => ['class' => 'fecha form-control', "placeholder" => "aaaa-mm-dd"], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']) ?>                                                                                                                                                                                                                         
-                        <?php } ?>
-
-                    </div>
+                    <?= $form->field($paciente_model, 'envia_email')->dropDownList(['prompt'=>'Seleccione una opción', '1' => 'Si', '2' => 'No'])->label('Enviar email') ?>
                 </div>
+            </div>
+            
+        
 
-
-                <?php if(!$model->isNewRecord && ($model->estado !== 'FCT' && $model->estado !== 'IMP')){ ?>
-                        <div class="panelFormulario-contenido">
-                            <div class="panelFormulario-header">
-                                <h3 class="titulo-tarifa"><?=TiposServicio::find()->select('nombre')->where(['id'=>$model->idtipo_servicio])->scalar()?></h3>
-                            </div>
-                            <div class="modal-body">
-                                <?= $this->render('form_estudios', [
-                                        'campos'=>$campos,
-                                        'model'=>$model,
-                                        'form'=>$form,
-                                        'imp'=>0,
-                                ]) ?>
-                            </div>
-                        </div>
-                <?php } ?>  
-
-
-                    <div class="panel panel-default">
-                        <div class="panel-body" style="padding: 10px 0;"> 
-
-                            <?php if($model->estado == 'PND' || $model->estado == 'PRC') {?>
-                                    <div class="col-sm-6" style="padding: 5px 10px;">
-                                        <input type="checkbox" name="checkEstado">
-                                        <label for="checkEstado" style="font-size:1.25em;"><?= $model->estado == 'PND' ? 'Procesar' : 'Firmar' ?></label>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <?= Html::submitButton($model->isNewRecord ? '<i class="add icon-guardar"></i>Crear' : '<i class="add icon-actualizar"></i>Actualizar', ['style'=>'float:right', 'class' =>'btn btn-success']) ?>
-                                    </div>
-                            <?php }else{ ?>
-
-                                <div class="text-center">
-                                    <?= Html::submitButton($model->isNewRecord ? '<i class="add icon-guardar"></i>Crear' : '<i class="add icon-actualizar"></i>Actualizar', ['class' =>'btn btn-success']) ?>
-                                </div>
-                            <?php } ?>
-
+    
+            <div class="panelFormulario-contenido">
+                <div class="panelFormulario-header">
+                    <h3 class="titulo-tarifa">Datos del procedimiento</h3>
+                </div>
+                <div class="modal-body">
+    
+                    <div class="form-group">
+                        <div class="col-sm-6">
+                            <input type="text" name="url" id="url" hidden>
+                            <div class="help-block help-block-error "></div>
                         </div>
                     </div>
-
+                    <?= $form->field($model, 'fecha_atencion')->widget(yii\jui\DatePicker::classname(), ["dateFormat" => "yyyy-MM-dd", 'options' => ['value'=>$model->isNewRecord ? date('Y-m-d') : $model->fecha_atencion, 'class' => 'fecha form-control', "placeholder" => "aaaa-mm-dd"], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']) ?>
                 
-        
+                    <?= $form->field($model, 'eps_ideps')->widget(DepDrop::classname(), [
+                            'type' => 2,
+                            'data'=>$model->isNewRecord ? '' : [$model->eps_ideps => $model->epsIdeps->nombre],
+                            'options'=>['id'=>'eps_id'],
+                            'pluginOptions'=>[
+                                'depends'=>['ips_id'],
+                                'placeholder'=>'Seleccione EPS',
+                                'url'=>Url::to(['/procedimientos/subeps'])
+                            ]
+                        ])->label('EPS');  
+                    ?>
                 
+                    <?= $form->field($model, 'idtipo_servicio')->widget(DepDrop::classname(), [
+                            'type' => 2,
+                            'data'=>$model->isNewRecord ? '' : [$model->idtipo_servicio => $model->idtipoServicio->nombre],
+                            'options'=>['id'=>'tipo_id'],
+                            'pluginOptions'=>[
+                                'depends'=>['ips_id', 'eps_id'],
+                                'placeholder'=>'Seleccione tipo de estudio',
+                                'url'=>Url::to(['/procedimientos/subtipo'])
+                            ]
+                        ])->label('Tipo de servicio');  
+                    ?>
+                
+                    <?= $form->field($model, 'cod_cups')->widget(DepDrop::classname(), [
+                                'type' => 2,
+                                'data'=>$model->isNewRecord ? '' : [$model->cod_cups => $model->codCups->descripcion],
+                                'pluginOptions'=>[
+                                'depends'=>['ips_id', 'eps_id', 'tipo_id'],
+                                'placeholder'=>'Seleccione un estudio',
+                                'url'=>Url::to(['/procedimientos/subest'])
+                            ]
+                        ])->label('Estudio');
+                    ?>
+                
+                    <?= $form->field($model, 'autorizacion')->textInput(['maxlength' => 15]) ?>
+                
+                    <?= $form->field($model, 'cantidad_muestras')->textInput() ?>
+                
+                    <?= $form->field($model, 'valor_procedimiento')->textInput(['class'=>'form-control saldo']) ?>
 
+                    <?= $form->field($model, 'descuento')->textInput(['readOnly'=>'']) ?>
+                
+                    <?= $form->field($model, 'valor_copago')->textInput() ?>
+                
+                    <?= $form->field($model, 'valor_abono')->textInput(['class'=>'form-control saldo']) ?>
+
+                    <?= $form->field($model, 'valor_saldo')->textInput(['readOnly'=>'']) ?>
+                
+                    <?= $form->field($model, 'medico')->widget(Select2::classname(), [
+                            'data'=>$lista_med,
+                            'language' => 'es',
+                            'options' => ['placeholder' => 'Seleccione una opción'],
+                            'pluginOptions' => [
+                                'allowClear' => true
+                            ],
+                        ])->label('Médico remitente');
+                    ?>
+                
+                    <?= $form->field($model, 'observaciones')->textArea(['maxlength' => 200]) ?>
+
+                    <?= $form->field($model, 'forma_pago')->widget(Select2::classname(), [
+                            'data'=>$lista_pago,
+                            'language' => 'es',
+                            'options' => ['placeholder' => 'Seleccione una forma de pago'],
+                            'pluginOptions' => [
+                                'allowClear' => true
+                            ],
+                        ])->label('Forma de pago');
+                    ?>
+
+                    <?php if(!$model->isNewRecord && $model->estado !== 'PND'){  ?>
+                           <?= $form->field($model, 'fecha_salida')->widget(yii\jui\DatePicker::classname(), ["dateFormat" => "yyyy-MM-dd", 'options' => ['class' => 'fecha form-control', "placeholder" => "aaaa-mm-dd"], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']) ?>                                                                                                                                                                                                                         
+                    <?php } ?>
+
+                </div>
+            </div>
+
+
+            <?php if(!$model->isNewRecord && ($model->estado !== 'FCT' && $model->estado !== 'IMP')){ ?>
+                    <div class="panelFormulario-contenido">
+                        <div class="panelFormulario-header">
+                            <h3 class="titulo-tarifa"><?=TiposServicio::find()->select('nombre')->where(['id'=>$model->idtipo_servicio])->scalar()?></h3>
+                        </div>
+                        <div class="modal-body">
+                            <?= $this->render('form_estudios', [
+                                    'campos'=>$campos,
+                                    'model'=>$model,
+                                    'form'=>$form,
+                                    'imp'=>0,
+                            ]) ?>
+                        </div>
+                    </div>
+            <?php } ?>  
+
+
+            <div class="panel panel-default">
+                <div class="panel-body" style="padding: 10px 0;"> 
+
+                    <?php if($model->estado == 'PND' || $model->estado == 'PRC') {?>
+                            <div class="col-sm-6" style="padding: 5px 10px;">
+                                <input type="checkbox" name="checkEstado">
+                                <label for="checkEstado" style="font-size:1.25em;"><?= $model->estado == 'PND' ? 'Procesar' : 'Firmar' ?></label>
+                            </div>
+                            <div class="col-sm-6">
+                                <?= Html::submitButton($model->isNewRecord ? '<i class="add icon-guardar"></i>Crear' : '<i class="add icon-actualizar"></i>Actualizar', ['style'=>'float:right', 'class' =>'btn btn-success']) ?>
+                            </div>
+                    <?php }else{ ?>
+
+                        <div class="text-center">
+                            <?= Html::submitButton($model->isNewRecord ? '<i class="add icon-guardar"></i>Crear' : '<i class="add icon-actualizar"></i>Actualizar', ['class' =>'btn btn-success']) ?>
+                        </div>
+                    <?php } ?>
+
+                </div>
+            </div>
 
     <?php ActiveForm::end(); ?>
-
 </div>
 
 
@@ -274,132 +297,80 @@ use yii\bootstrap\Modal;
             </div>
             <div class="modal-body">
                 
-                    <div id="panelAddMedico" class="col-sm-12">
-                            <div class="col-sm-12">
-                                <label class="control-label" for="medrem">Médicos remitentes</label>
-                            </div>
-                            <div class="col-sm-10">
-                                <?= Select2::widget([
-                                        'name' => 'remitentes',
-                                        'id'=>'medrem',
-                                        'data'=>$lista_medRemGen,
-                                        'language' => 'es',
-                                        'options' => ['placeholder' => 'Seleccione una opción'],
-                                        'pluginOptions' => [
-                                            'allowClear' => true,
-                                        ],
-                                    ]);
-                                ?>
-                            </div>   
-                            <div class="col-sm-2"><a href="" id="agregar" onclick="cerrarModal(medRemNuevo)" class="btn btn-default">Añadir</a></div>
+                <div id="panelAddMedico" class="col-sm-12">
+                    <div class="col-sm-12">
+                        <label class="control-label" for="medrem">Médicos remitentes</label>
                     </div>
-                    <div class="col-sm-12" style="padding: 10px 30px;">
-                        <?= Html::input('checkBox','nombre','',['id'=>'showHidePanel', 'class'=>'']);?>
-                        <label for="showHidePanel">Agregar un médico nuevo</label>
-                    </div>
+                    <div class="col-sm-10">
+                        <?php if($model->isNewRecord){ ?>
+                            <?= Select2::widget([
+                                    'name' => 'remitentes',
+                                    'id'=>'medrem',
+                                    'data'=>$lista_medRemGen,
+                                    'language' => 'es',
+                                    'options' => ['placeholder' => 'Seleccione una opción'],
+                                    'pluginOptions' => [
+                                        'allowClear' => true,
+                                    ],
+                                ]);
+                            ?>
+                        <?php } ?>
+                    </div>   
+                    <div class="col-sm-2"><a href="" id="agregar" onclick="cerrarModal(medRemNuevo)" class="btn btn-default">Añadir</a></div>
+                </div>
+                <div class="col-sm-12" style="padding: 10px 30px;">
+                    <?= Html::input('checkBox','nombre','',['id'=>'showHidePanel', 'class'=>'']);?>
+                    <label for="showHidePanel">Agregar un médico nuevo</label>
+                </div>
 
 
                 <div class="panel panel-default">
                     <div class="panelFormulario-contenido">
                         <div id="panelMedico"  class="panel-body">
-                            <?=$this->render('//medicos-remitentes/_form', [
-                                'model'=>$medicoRemModel,
-                                'lista_especialidades'=>$lista_especialidades,
-                                'ips_model'=>$ips_model,
-                                'ips_list'=>$ips_list,
-                            ]);?>
+                            <?php if($model->isNewRecord){ ?>
+                                <?=$this->render('//medicos-remitentes/_form', [
+                                    'model'=>$medicoRemModel,
+                                    'lista_especialidades'=>$lista_especialidades,
+                                    'ips_model'=>$ips_model,
+                                    'ips_list'=>$ips_list,
+                                ]);?>
+                            <?php } ?>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
 </div>
 
+<?php 
+    $js = <<<SCRIPT
 
-<script type="text/javascript">
-    $(document).ready(function() {
-        $('#panelMedico').hide();
-        $('.field-procedimientos-medico').append('<a href="#" id="medRem" class="btn btn-default">Nuevo médico</a>');
-        $('#procedimientos-cod_cups').on('change', function(event) {
-            var cod_cup = $(this).val();
-            var eps_id = $('#eps_id').val();
-            if(cod_cup != ''){
-                $.post('precio', {cod: cod_cup, id: eps_id}, function(data) {
-                    saldo = data['valor_procedimiento'];
-                    $('#procedimientos-valor_procedimiento').val(data['valor_procedimiento']);
-                    $('#procedimientos-valor_saldo').val(data['valor_procedimiento']);
-                    $('#procedimientos-valor_copago').val(0);
-                    $('#procedimientos-valor_abono').val(0);
-                    $('#procedimientos-descuento').val(data['descuento']);
-                    // console.log(data['valor_procedimiento']);
-                });
-            }
-        });
+$('form#procForm').on('beforeSubmit', function(e)
+{
+    var \$form = $(this);
 
-        $('#procedimientos-valor_abono').on('change', function(event) {
-            event.preventDefault();
-            var abono = parseFloat($('#procedimientos-valor_abono').val());
-
-            if(isNaN(abono)){
-                $('#procedimientos-valor_saldo').val($('#procedimientos-valor_procedimiento').val());
-            }else{
-                $('#procedimientos-valor_saldo').val($('#procedimientos-valor_procedimiento').val()-abono);
-            }
-        });
-
-        $('#medRem').on('click', function(event) {
-            event.preventDefault();
-            $('#medRemNuevo').modal();
-        });
-
-        $('#showHidePanel').on('change', function(event) {
-            event.preventDefault();
-            $('#panelMedico').hide();
-            $('#panelAddMedico').show();
-            if($('#showHidePanel').is(':checked')){
-                $('#panelMedico').show();
-                $('#panelAddMedico').hide();
-            }
-        });
-
-    
-        $('#agregar').on('click', function(event) {
-            event.preventDefault();
-            var datos = $('#medrem').val();
-            if(datos != ''){
-                $.post('add-medico', {data: datos}, function(data) {
-                   var datos = jQuery.parseJSON(data); 
-                   var newOption = $('<optgroup label="'+datos['especialidad']+'"><option value="'+datos['id']+'">'+datos['nombre']+'</option></optgroup>');
-                   $('#procedimientos-medico').append(newOption);
-                });
-            }
-        });
-
-        $('#guardarMedico').on('click', function(event) {
-            event.preventDefault();
-            var formulario = $('#medRemForm').serialize();
-            $('#medRemForm')[0].reset();
-            $.post('guardar-medico', {data: formulario}, function(data) {
-                var datos = jQuery.parseJSON(data); 
-               // console.log(datos['nombre']);
-               var newOption = $('<optgroup label='+datos['especialidad']+'><option value="'+datos['id']+'">'+datos['nombre']+'</option></optgroup>');
-               $('#procedimientos-medico').append(newOption);
-            });
-
-        });
-
-        $('#pacientes-fecha_nacimiento').on('change', function(event) {
-            $.post('calcular-edad', {fecha: $(this).val()}).done(function(data) {
-                $('#pacientes-codeps').val(data);
-            });
-        });
-
-        $('#pacientes-codeps').on('change', function(event) {
-            $.post('calcular-fecha', {age:$(this).val()}).done(function(data) {
-                $('#pacientes-fecha_nacimiento').val(data);
-            });
-        });
-
+    $.post(
+        \$form.attr("action"), 
+        \$form.serialize()
+    )
+    .done(function(result) {
+        if(result == 0)
+        {
+            notification('Error: No se pudieron guardar los cambios', 2);
+        }else{
+            $('.modal').modal('hide');
+            notification('Se guardaron los cambios correctamente', 1);
+        }
+    })
+    .fail(function(){
+        notification("Server error", 2);
     });
-</script>
+    return false;
+});
+
+SCRIPT;
+$this->registerJs($js);
+
+?>

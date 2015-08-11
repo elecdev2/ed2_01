@@ -28,7 +28,11 @@ use app\models\AnalisisDiag;
 use app\models\AnalisisImpresiondiagnostica;
 use app\models\CodCie10;
 use app\models\TiposServicio;
-
+use app\models\Recomendaciones;
+use app\models\Formulacion;
+use app\models\UploadForm;
+use app\models\ArchivosHistorial;
+use yii\web\UploadedFile;
 
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -146,7 +150,7 @@ class CitasMedicasController extends Controller
         {
             $this->redirect(['index-ipss']);
         }else{
-            $this->redirect('index-ips');
+            $this->redirect(['index-ips']);
         }
 
     }
@@ -182,7 +186,7 @@ class CitasMedicasController extends Controller
         
         $js = <<<JS
             $("#esp").prepend("<option value=9999>Mostrar todos los médicos</option>");
-            $("#esp").prepend("<option value=0>Mostrar todas las citas</option>");
+            // $("#esp").prepend("<option value=0>Mostrar todas las citas</option>");
        
 JS;
         $this->getView()->registerJs($js, yii\web\View::POS_READY,null);
@@ -213,6 +217,8 @@ JS;
         $calendar = 0;
         $lista_esp = Especialidades::find();
 
+        $blockButton = '$("#submmitCalendar").prop("disabled", true);';
+
         if(Yii::$app->request->post())
         {
             $meds = Medicos::find()->select(['id'])->where(['ips_idips'=>$_POST['CitasMedicasSearch']['ips']]);
@@ -237,17 +243,19 @@ JS;
             }
             $calendar = 1;
 
+            $blockButton = '$("#submmitCalendar").prop("disabled", false);';
             $this->getView()->registerJs('$("#citasmedicassearch-ips").val('.$_POST['CitasMedicasSearch']['ips'].')', yii\web\View::POS_READY,null);
             $this->getView()->registerJs('$("#txtIdIps").attr("value", '.$_POST['CitasMedicasSearch']['ips'].');', yii\web\View::POS_READY,null);
             $lista_esp = Especialidades::find()->join('INNER JOIN', 'medicos m', 'idespecialidades = especialidades.id')->join('INNER JOIN', 'ips i', 'i.id = m.ips_idips')->where(['i.id'=>$_POST['CitasMedicasSearch']['ips']])->all();
             $js = <<<JS
                 $("#esp").prepend("<option value=9999>Mostrar todos los médicos</option>");
-                $("#esp").prepend("<option value=0>Mostrar todas las citas</option>");
+                // $("#esp").prepend("<option value=0>Mostrar todas las citas</option>");
        
 JS;
             $this->getView()->registerJs($js, yii\web\View::POS_READY,null);
         }                
 
+        $this->getView()->registerJs($blockButton, yii\web\View::POS_READY,null);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -269,7 +277,7 @@ JS;
         foreach ($events as $key => $value) {
             $medico = Medicos::findOne($value['medicos_id']);
             $cita = $this->findModel($value['id_citas']);
-            if(strtotime($value['fecha']) < strtotime(date('Y-m-d')) && $cita->estado !== 'AUS')
+            if(strtotime($value['fecha']) < strtotime(date('Y-m-d')) && $cita->estado == 'PRE')
             {
                 $cita->estado = 'CLS';
                 $cita->save();
@@ -338,7 +346,7 @@ JS;
         
         $js = <<<JS
         $("#esp").prepend("<option value=9999>Mostrar todos los médicos</option>");
-        $("#esp").prepend("<option value=0>Mostrar todas las citas</option>");
+        // $("#esp").prepend("<option value=0>Mostrar todas las citas</option>");
        
 JS;
         $this->getView()->registerJs($js, yii\web\View::POS_READY,null);
@@ -400,12 +408,19 @@ JS;
     public function actionMedico()
     {
         $medico = Usuarios::findOne(Yii::$app->user->id)->idmedicos;
+        $ips = Ips::findOne($medico);
         $events = CitasMedicas::find()->where(['medicos_id'=>$medico])->andWhere(['<>', 'estado', 'REP'])->andWhere(['<>', 'estado', 'CNL'])->asArray()->all();
         
         $i = 0;
         foreach ($events as $key => $value) {
             $cita = $this->findModel($value['id_citas']);
             $paciente = Pacientes::find()->where(['id'=>$cita->pacientes_id])->one();
+
+            if(strtotime($value['fecha']) == strtotime(date('Y-m-d')) && (strtotime($cita->hora) < strtotime(date('H:i:s'))) && $cita->estado == 'NOR')
+            {
+                $cita->estado = 'AUS';
+                $cita->save();
+            }
             $t[$i]['id'] = $value['id_citas'];
             $t[$i]['title'] = $paciente->nombre1.' '.$paciente->nombre2.' '.$paciente->apellido1.' '.$paciente->apellido2;
             $t[$i]['start'] = $value['fecha'].'T'.$value['hora'];
@@ -418,6 +433,7 @@ JS;
         return $this->render('medico', [
             'id_medico'=>$medico,
             'events'=>$events,
+            'ips'=>$ips,
         ]);
     }
 
@@ -455,24 +471,28 @@ JS;
         $model = new CitasMedicas();
         $paciente = new Pacientes();
 
-        if ($model->load(Yii::$app->request->post())) 
+        if ($model->load(Yii::$app->request->post()) && $paciente->load(Yii::$app->request->post())) 
         {
             if($this->validarHoras($model->medicos_id, date('w', strtotime($model->fecha)), substr($model->hora, 0, 5)))
             {
-                $paciente = Pacientes::find()->where(['identificacion'=>$_POST['documento_cita']])->one();
+                $pac = Pacientes::find()->where(['identificacion'=>$paciente->identificacion])->one();
                 $model->estado = 'NOR';
-                if($paciente != null)
+                if($pac == null)
                 {
-                    $paciente->load(Yii::$app->request->post());
-                }else{
-                    $paciente = new Pacientes();
-                    $paciente->identificacion = $_POST['documento_cita'];
-                    $paciente->load(Yii::$app->request->post());
-                }
-                if($paciente->save())
-                {
+                    $paciente->idclientes = Usuarios::findOne(Yii::$app->user->id)->idclientes;
+                    if(!$paciente->save())
+                    {
+                        return 0;
+                    }
                     $model->pacientes_id = $paciente->id;
+                }else{
+                    if(!$pac->save())
+                    {
+                        return 0;
+                    }
+                    $model->pacientes_id = $pac->id;
                 }
+                
                 if($model->save())
                 {
                     $pac = Pacientes::findOne($model->pacientes_id);
@@ -491,7 +511,7 @@ JS;
                 return 0;
             }
         }
-        if($med !== '')
+        if($med !== '' && substr($date, 11, 8) !== '00:00:00')
         {
             $temp = $this->validarHoras($med, $dia, substr($date, 11, 8));
             if(!$temp){
@@ -542,14 +562,14 @@ JS;
 //             if($this->validarHoras($model->medicos_id, date('w', strtotime($model->fecha)), substr($model->hora, 0, 5)))
 //             {
 //                 // $paciente = Pacientes::findOne($model->pacientes_id);
-//                 $paciente = Pacientes::find()->where(['identificacion'=>$_POST['documento_cita']])->one();
+//                 $paciente = Pacientes::find()->where(['identificacion'=>$model->identificacion])->one();
 //                 $model->estado = 'NOR';
 //                 if($paciente != null)
 //                 {
 //                     $paciente->load(Yii::$app->request->post());
 //                 }else{
 //                     $paciente = new Pacientes();
-//                     $paciente->identificacion = $_POST['documento_cita'];
+//                     $paciente->identificacion = $model->identificacion;
 //                     $paciente->load(Yii::$app->request->post());
 //                 }
 //                 if($paciente->save())
@@ -837,9 +857,10 @@ SCRIPT;
         $cita = $this->findModel($_POST['id']);
         $fecha_cita = $cita->fecha;
 
+
         if(!$this->validarHoras($_POST['med'], date('w', strtotime($fecha_cita)), substr($_POST['date'], 11, 8) ))
         {
-            return 0;
+            return 4;
         }
 
         $cita->estado = 'REP';
@@ -850,26 +871,66 @@ SCRIPT;
         $nueva_cita->tipo_servicio = $cita->tipo_servicio;
         $nueva_cita->estado = 'NOR';
         $nueva_cita->fecha = substr($_POST['date'], 0, 10);
-        $nueva_cita->hora = substr($_POST['date'], 11, 8);
+        $nueva_cita->hora = isset($_POST['CitasMedicas']['hora']) ? $_POST['CitasMedicas']['hora'] : substr($_POST['date'], 11, 8);
 
+        if(isset($_POST['CitasMedicas']['hora']))
+        {
+            $nueva_cita->hora = $_POST['CitasMedicas']['hora'];
+        }
 
         $temp = CitasMedicas::find()->where(['medicos_id'=>$cita->medicos_id, 'fecha'=>$cita->fecha, 'hora'=>$cita->hora])->andWhere(['<>', 'id_citas', $cita->id_citas])->andWhere(['<>', 'estado', 'REP'])->one();
         if($temp != null){ // Si ya hay una cita con el mismo doctor en esa hora
             return 1;
         }
-        if(strtotime($cita->fecha) < strtotime(date('Y-m-d'))) { //Si la fecha es anterior a la fecha actual
+        if(strtotime($nueva_cita->fecha) < strtotime(date('Y-m-d'))) { //Si la fecha es anterior a la fecha actual
             return 2;
         }
-        if((strtotime($cita->fecha) == strtotime(date('Y-m-d'))) && (strtotime($cita->hora) < strtotime(date('H:i:s')))) { //Si la fecha y la hora no son anteriores a la fecha y hora actuales
+        if((strtotime($nueva_cita->fecha) == strtotime(date('Y-m-d'))) && (strtotime($nueva_cita->hora) < strtotime(date('H:i:s')))) { //Si la fecha y la hora no son anteriores a la fecha y hora actuales
             return 3;
         }
-
-        if($cita->save())
+        
+        if($_POST['sw'] == 1)
         {
-            $nueva_cita->save();
-            return $nueva_cita->id_citas;
+            $dia = date('w', strtotime($_POST['date']));
+            $horas = HorarioMedico::find()->select(['horas'])->where(['medicos_id'=>$_POST['med'], 'dia'=>$dia])->scalar();
+            $ips = Ips::findOne($_POST['ips']);
+            $horas = explode(',', $horas);
+
+            $range = array();
+            $i = 0;
+            foreach ($horas as $key => $value) {
+                $temp = explode('-', $value);
+                $start = strtotime($temp[0]);
+                $end = strtotime($temp[1]);
+                while ($start != $end)
+                {
+                    if(!CitasMedicas::find()->where(['medicos_id'=>$_POST['med'], 'fecha'=>date('Y-m-d', strtotime($_POST['date'])), 'hora'=>date('H:i:s', $start)])->exists())
+                    {
+                        $range[date('H:i:s', $start)] = date('h:ia', $start);
+                    }
+                    $start = strtotime('+'.date('i', strtotime($ips->tiempo_citas)).' minutes',$start);
+                }
+            }
+            $cita->fecha = date('d-M-Y', strtotime(substr($_POST['date'], 0, 10)));
+            $this->getView()->registerJs('$(".bootbox-close-button").attr("onclick", "$(\'button.btn-default\').click()");', yii\web\View::POS_READY,null); //asigna la funcion revertFunc al boton de cerrar ventana del modal
+            return $this->renderAjax('confirmacion',[
+                    'model'=> $cita,
+                    'horario_med'=> $range,
+                ]);    
+
         }else{
-            return 0;
+
+
+            if($cita->save())
+            {
+                $nueva_cita->save();
+
+                $nueva_cita->fecha = $nueva_cita->fecha.'T'.$nueva_cita->hora;
+                \Yii::$app->response->format = 'json';
+                return $nueva_cita;
+            }else{
+                return 0;
+            }
         }
 
     }
@@ -919,29 +980,41 @@ SCRIPT;
 
     public function actionGetHistoria()
     {
-        $hc = HistoriaClinica::find()->select(['id'])->where(['id_paciente'=>$_POST['pac']]);
-        $hc2 = HistoriaClinica::find()->where(['id_paciente'=>$_POST['pac']]);
+        $hc = HistoriaClinica::find()->select(['id','fecha'=>'DATE_FORMAT(fecha,"%d %b %y")'])->where(['id_paciente'=>$_POST['pac']]); //Se asume que existe una sola historia clinica por fecha
         $paciente = Pacientes::findOne($_POST['pac']);
 
-        // return print_r($ant_pato_l);
+        $historia = HistoriaClinica::find()->select(['id'])->where(['id_paciente'=>$_POST['pac']])->max('id');
+        
+        if($historia == null)
+        {
+            return 0;
+        }
 
         return $this->renderAjax('//historia-clinica/medico',[
+                'hc' => $historia,
                 'paciente'=>$paciente,
-                'motivo_l'=>MotivoEnfermedad::find()->where(['id_historia'=>$hc])->all(),
+                'motivo_l'=>ArrayHelper::map($hc->having(['id'=> MotivoEnfermedad::find()->select(['id_historia'])])->all(), 'id', 'fecha'),
                 'motivo_e'=>new MotivoEnfermedad(),
-                'ant_pato_l'=>AntecedentesPatologicos::find()->where(['id_historia'=>$hc->max('id')])->one(),
+                'ant_pato_l'=>ArrayHelper::map($hc->having(['id'=> AntecedentesPatologicos::find()->select(['id_historia'])])->all(), 'id', 'fecha'),
                 'ant_pato_e'=>new AntecedentesPatologicos(),
-                'ant_fam_l'=>AntecedentesFamiliares::find()->where(['id_historia'=>$hc->max('id')])->one(),
+                'ant_fam_l'=> ArrayHelper::map($hc->having(['id'=> AntecedentesFamiliares::find()->select(['id_historia'])])->all(), 'id', 'fecha'),
                 'ant_fam_e'=>new AntecedentesFamiliares(),
-                'habitos_l'=>Habitos::find()->where(['id_historia'=>$hc->max('id')])->one(),
+                'habitos_l'=> ArrayHelper::map($hc->having(['id'=> Habitos::find()->select(['id_historia'])])->all(), 'id', 'fecha'),
                 'habitos_e'=>new Habitos(),
-                'rev_sis_l'=>RevSistemas::find()->where(['id_historia'=>$hc->max('id')])->one(),
+                'rev_sis_l'=> ArrayHelper::map($hc->having(['id'=> RevSistemas::find()->select(['id_historia'])])->all(), 'id', 'fecha'),
                 'rev_sis_e'=> new RevSistemas(),
-                'exam_fis_l'=>ExamenFisico::find()->where(['id_historia'=>$hc->max('id')])->one(),
+                'exam_fis_l'=> ArrayHelper::map($hc->having(['id'=> ExamenFisico::find()->select(['id_historia'])])->all(), 'id', 'fecha'),
                 'exam_fis_e'=>new ExamenFisico(),
-                'exp_reg_l'=>ExploracionRegional::find()->where(['id_historia'=>$hc->max('id')])->one(),
+                'exp_reg_l'=> ArrayHelper::map($hc->having(['id'=> ExploracionRegional::find()->select(['id_historia'])])->all(), 'id', 'fecha'),
                 'exp_reg_e'=>new ExploracionRegional(),
+                'analisis_l'=> ArrayHelper::map($hc->having(['id'=> AnalisisDiag::find()->select(['id_historia'])])->all(), 'id', 'fecha'),
                 'analisis'=>new AnalisisDiag(),
+                'an_imp' => new AnalisisImpresiondiagnostica(),
+                'recom_l' => ArrayHelper::map($hc->having(['id'=> Recomendaciones::find()->select(['id_historia'])])->all(), 'id', 'fecha'),
+                'recom_e' => new Recomendaciones(),
+                'formula_l' => ArrayHelper::map($hc->having(['id'=> Formulacion::find()->select(['id_historia'])])->all(), 'id', 'fecha'),
+                'formula_e' => new Formulacion(),
+                'archivo' => new UploadForm(),
                 'nombre_pac'=>$paciente->nombre1. ' ' .$paciente->nombre2. ' ' .$paciente->apellido1. ' ' .$paciente->apellido2,
             ]);
     }
@@ -1051,6 +1124,232 @@ SCRIPT;
                 $out['results'] = ['id' => $id, 'text' => $cod->descripcion.' - '.$cod->descripcion];
             }
             return $out;
+    }
+
+    public function actionNewMot()
+    {
+        $model = new MotivoEnfermedad();
+        if($model->load(Yii::$app->request->post()))
+        {
+            $model->id_historia = $_POST['historia_cli'];
+            if($model->save())
+            {
+                return 1;
+            }else{
+                return 0;
+            }
+        }
+    }
+
+    public function actionNewPat()
+    {
+        $model = new AntecedentesPatologicos();
+        if($model->load(Yii::$app->request->post()))
+        {
+            $i = 0;
+            foreach ($model->fields() as $key => $value) {
+                if($value != 'otros'){
+                    $model->setAttributes([$value=>$_POST['sino'][$i].'-'.$model->getAttribute($value)]);
+                    $i++;
+                }
+            }
+            $model->id_historia = $_POST['historia_cli'];
+            if($model->save())
+            {
+                return 1;
+            }else{
+                return 0;
+            }
+        }
+    }
+
+    public function actionNewFam()
+    {
+        $model = new AntecedentesFamiliares();
+        if($model->load(Yii::$app->request->post()))
+        {
+            $i = 0;
+            foreach ($model->fields() as $key => $value) {
+                if($value != 'otros'){
+                    $model->setAttributes([$value=>$_POST['sino_ant_fam'][$i].'-'.$model->getAttribute($value)]);
+                    $i++;
+                }
+            }
+            $model->id_historia = $_POST['historia_cli'];
+            if($model->save())
+            {
+                return 1;
+            }else{
+                return 0;
+            }
+        }
+    }
+
+    public function actionNewHab()
+    {
+        $model = new Habitos();
+        if($model->load(Yii::$app->request->post()))
+        {
+            $i = 0;
+            foreach ($model->fields() as $key => $value) {
+                if($value != 'otros'){
+                    $model->setAttributes([$value=>$_POST['sino_habitos'][$i].'-'.$model->getAttribute($value)]);
+                    $i++;
+                }
+            }
+            $model->id_historia = $_POST['historia_cli'];
+            if($model->save())
+            {
+                return 1;
+            }else{
+                return 0;
+            }
+        }
+    }
+
+    public function actionNewRev()
+    {
+        $model = new RevSistemas();
+        if($model->load(Yii::$app->request->post()))
+        {
+            $i = 0;
+            foreach ($model->fields() as $key => $value) {
+                if($value != 'otros'){
+                    $model->setAttributes([$value=>$_POST['sino_rev_sis'][$i].'-'.$model->getAttribute($value)]);
+                    $i++;
+                }
+            }
+            $model->id_historia = $_POST['historia_cli'];
+            if($model->save())
+            {
+                return 1;
+            }else{
+                return 0;
+            }
+        }
+    }
+
+    public function actionNewEx()
+    {
+        $model = new ExamenFisico();
+        if($model->load(Yii::$app->request->post()))
+        {
+            
+            $model->id_historia = $_POST['historia_cli'];
+            if($model->save())
+            {
+                return 1;
+            }else{
+                return 0;
+            }
+        }
+    }
+
+    public function actionNewExp()
+    {
+        $model = new ExploracionRegional();
+        if($model->load(Yii::$app->request->post()))
+        {
+            $i = 0;
+            foreach ($model->fields() as $key => $value) {
+                $model->setAttributes([$value=>$_POST['sino_expl'][$i].'-'.$model->getAttribute($value)]);
+                $i++;
+            }
+            $model->id_historia = $_POST['historia_cli'];
+            if($model->save())
+            {
+                return 1;
+            }else{
+                return 0;
+            }
+        }
+    }
+
+    public function actionNewAn()
+    {
+        $analisis = new AnalisisDiag();
+        
+
+        if($analisis->load(Yii::$app->request->post()))
+        {
+            $analisis->id_historia = $_POST['historia_cli'];
+            if($analisis->save())
+            {
+                foreach ($_POST['AnalisisImpresiondiagnostica']['id_cod'] as $key => $value) 
+                {
+                    $diagnosticos = new AnalisisImpresiondiagnostica();
+                    $diagnosticos->id_analisis = $analisis->id;
+                    $diagnosticos->id_cod = $value;
+                    if(!$diagnosticos->save())
+                    {
+                        return 0;
+                    }
+                }
+                return 1;
+            }else{
+                return 0;
+            }
+        }
+    }
+
+    public function actionNewRec()
+    {
+        $model = new Recomendaciones();
+        if(Yii::$app->request->post())
+        {
+            $model->recomendaciones = $_POST['Recomendaciones']['recomendaciones'];
+            $model->id_historia = $_POST['historia_cli'];
+            if($model->save())
+            {
+                return 1;
+            }else{
+                return 0;
+            }
+        }
+    }
+
+    public function actionNewFor()
+    {
+        $model = new Formulacion();
+        if(Yii::$app->request->post())
+        {
+            $model->formulacion = $_POST['Formulacion']['formulacion'];
+            $model->id_historia = $_POST['historia_cli'];
+            if($model->save())
+            {
+                return 1;
+            }else{
+                return 0;
+            }
+        }
+    }
+
+    public function actionUpload()
+    {
+        $model = new UploadForm();
+        if (Yii::$app->request->isPost) 
+        {
+            $model->files = UploadedFile::getInstances($model, 'files');
+            // return json_encode($model->files);
+            foreach ($model->files as $file) 
+            {
+                if($file->extension == 'exe')
+                {
+                    return 2;
+                }
+                $nombre = utf8_decode($file->baseName) . '.' . $file->extension;
+                $file->saveAs('images/hist/' . $nombre);
+                $archivo = new ArchivosHistorial();
+                $archivo->archivo = $file->baseName . '.' . $file->extension;
+                $archivo->id_historia = $_POST['historia_cli'];
+                if(!$archivo->save())
+                {
+                    return 0;
+                }
+            }
+            
+            return 1;
+        }
     }
 
 }

@@ -31,7 +31,8 @@ class AnalisisImpresiondiagnostica extends \yii\db\ActiveRecord
     {
         return [
             [['id_analisis'], 'integer'],
-            [['id_cod'], 'string', 'max' => 10]
+            // [['id_cod'], 'string', 'max' => 10]
+            [['id_cod'], 'safe']
         ];
     }
 

@@ -7,6 +7,12 @@ use app\models\Campos;
 <?php if($campos[0]->titulos_idtitulos != null){ ?>
 	<div style="padding:0 15px;"><h5><?=Campos::findOne($campos[0]->id)->titulosIdtitulos->descripcion?></h5></div>
 	<?php $titulo = $campos[0]->titulos_idtitulos;
+		foreach ($campos as $campo) {
+			if($campo->titulos_idtitulos != null){
+				$titulo = $campo->titulos_idtitulos;
+				break;
+			}
+		}
  } ?>
 
 
@@ -19,10 +25,9 @@ use app\models\Campos;
 				if($model->estado != 'PND'){
 					$val_campos = VlrsCamposProcedimientos::find()->where(['idcampos_tipos_servicio'=>$campo->id, 'id_procedimiento'=>$model->id])->one();
 				}
+				// print_r($campos);
 					
-					// $val_campos = (new \Yii\db\Query())->select('*')->from('vlrs_campos_procedimientos')->where(['idcampos_tipos_servicio'=>$campo['id'], 'id_procedimiento'=>$model->id])->all();
 				
-				// print_r($val_campos);
 		?>
 
 				
@@ -34,7 +39,7 @@ use app\models\Campos;
 				}?>
 
 				<div class="col-sm-12">
-					<?php if($model->estado !== 'PND' && !empty($val_campos)){ ?>
+					<?php if($model->estado !== 'PND' && $val_campos !== null){ ?>
 						<?= Html::input('checkBox','check_list[]',$campo->id,['checked'=>'checked']);?>
 						<?= Html::label(utf8_encode(strtolower($campo->nombre_campo)),'',['class'=>'']);?>
 					<?php }else{ ?>

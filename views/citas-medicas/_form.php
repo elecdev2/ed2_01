@@ -57,9 +57,6 @@ use kartik\select2\Select2;
 
                 <input type="text" hidden name="url" value="<?=$model->isNewRecord ? 0 : $model->medicos_id?>">
                 
-                <?php if(!$model->isNewRecord){ ?>
-                    <?= $form->field($model, 'hora_llegada')->textInput(['type'=>'time'])->label('Hora de llegada') ?>
-                <?php } ?>
                 
                 <div class="text-center">
                     <?= Html::submitButton($model->isNewRecord ? '<i class="add icon-guardar"></i>Crear' : '<i class="add icon-actualizar"></i>Actualizar', ['class' =>'btn btn-success']) ?>
@@ -210,7 +207,15 @@ use kartik\select2\Select2;
 
                     <?= $form->field($paciente, 'telefono')->textInput(['maxlength' => 15]) ?>
 
-                    <?= $form->field($paciente, 'sexo')->dropDownList(['prompt'=>'Seleccione una opción', 'M' => 'Masculino', 'F' => 'Femenino']) ?>
+                    <?= $form->field($paciente, 'sexo')->widget(Select2::classname(), [
+                            'data'=>['M'=>'Masculino', 'F'=>'Femenino'],
+                            'language' => 'es',
+                            'options' => ['placeholder' => 'Seleccione una opción'],
+                            'pluginOptions' => [
+                                'allowClear' => true
+                            ],
+                        ])->label('Sexo');
+                    ?>
 
                     <?= $form->field($paciente, 'fecha_nacimiento')->widget(yii\jui\DatePicker::classname(), ["dateFormat" => "yyyy-MM-dd", 'options' => ['value'=>$paciente->fecha_nacimiento, 'class' => 'fecha form-control', "placeholder" => "aaaa-mm-dd"], 'clientOptions'=>['yearRange'=>$rango_fecha,'changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']) ?>
 
@@ -303,9 +308,7 @@ use kartik\select2\Select2;
 
                 <input type="text" hidden name="url" value="<?=$model->isNewRecord ? 0 : $model->medicos_id?>">
                 
-                <?php if(!$model->isNewRecord){ ?>
-                    <?= $form->field($model, 'hora_llegada')->textInput(['type'=>'time'])->label('Hora de llegada') ?>
-                <?php } ?>
+                
                 
                <div class="text-center">
                     <?= Html::submitButton($model->isNewRecord ? '<i class="add icon-guardar"></i>Crear' : '<i class="add icon-actualizar"></i>Actualizar', ['class' =>'btn btn-success']) ?>
@@ -333,7 +336,7 @@ $('form#citasForm').on('beforeSubmit', function(e)
     .done(function(result) {
         if(result == 0)
         {
-            bootbox.alert('Error al guardar los cambios');
+            notification('Error al guardar los cambios', 2);
         }else{
             
             if(sw){
@@ -344,19 +347,19 @@ $('form#citasForm').on('beforeSubmit', function(e)
             }else{
                 switch (result) {
                     case '1':
-                        bootbox.alert('Error: La fecha es anterior al día de hoy ');
+                        notification('Error: La fecha es anterior al día de hoy ', 2);
                         break;
 
                     case '2':
-                        bootbox.alert('Error: La hora es anterior a la hora actual ');
+                        notification('Error: La hora es anterior a la hora actual ', 2);
                         break;
 
                     case '3':
-                        bootbox.alert('Error: El médico no atiende en ese horario ');
+                        notification('Error: El médico no atiende en ese horario ', 2);
                         break;
 
                     case '4':
-                        bootbox.alert('Error: Ya existe una cita en ese día y hora ');
+                        notification('Error: Ya existe una cita en ese día y hora ', 2);
                         break;
                     
                     default:
@@ -364,14 +367,14 @@ $('form#citasForm').on('beforeSubmit', function(e)
                         var event = result;
                         $('.fullcalendar').fullCalendar( 'removeEvents', event.id);
                         $('.fullcalendar').fullCalendar( 'renderEvent', result, true);
-                        bootbox.alert('Se guardaron los cambios');
+                        notification('Se guardaron los cambios', 1);
                         break;
                 }
             }
         }
     })
     .fail(function(){
-        console.log("Server error");
+        notification("Server error", 2);
     });
     return false;
 });

@@ -75,9 +75,9 @@ use kartik\select2\Select2;
         ])->label('Tipo de residencia');
     ?>
     
-
-    <?= $form->field($model, 'activo')->dropDownList(['1' => 'Si', '2' => 'No'])->label('Activo') ?>
-
+    <?php if(Yii::$app->user->can('admin')){ ?>
+        <?= $form->field($model, 'activo')->dropDownList(['1' => 'Si', '2' => 'No'])->label('Activo') ?>
+    <?php } ?>
     
     <?= $form->field($model, 'ideps')->widget(Select2::classname(), [
             'data'=>$lista_eps,
@@ -117,13 +117,13 @@ $('form#pacForm').on('beforeSubmit', function(e)
         {
             $(document).find('#updateModal').modal('hide');
             $.pjax.reload({container:'#pacientes_pjax'});
-            bootbox.alert('Se guardaron los cambios');
+            notification('Se guardaron los cambios', 1);
         }else{
-            bootbox.alert('Error al guardar los cambios');
+            notification('Error al guardar los cambios', 2);
         }
     })
     .fail(function(){
-        console.log("Server error");
+        notification("Server error", 2);
     });
     return false;
 });

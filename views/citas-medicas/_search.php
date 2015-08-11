@@ -19,13 +19,13 @@ use kartik\depdrop\DepDrop;
     ]); ?>
 
    
-    <div class="col-sm-3 col-lg-3">
+    <div class="col-sm-4 col-lg-4">
         <?= $form->field($model, 'ips', ['template'=>"{input}{error}"])->widget(Select2::classname(), [
                 'data'=>$ipss,
                 'language' => 'es',
                 'options' => ['placeholder' => 'Seleccione una IPS'],
                 'pluginEvents'=>[
-                    "change" => "function() { 
+                    "change" => "function() {
                         document.getElementById('btnIps').click();
                      }",
                 ]
@@ -40,6 +40,3 @@ use kartik\depdrop\DepDrop;
     <?php ActiveForm::end(); ?>
 
 </div>
-<script type="text/javascript">
-    
-</script>

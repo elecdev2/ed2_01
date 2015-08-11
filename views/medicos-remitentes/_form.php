@@ -62,13 +62,13 @@ $('form#medRemForm').on('beforeSubmit', function(e)
         {
             $(document).find('#updateModal').modal('hide');
             $.pjax.reload({container:'#medicosRem_pjax'});
-            bootbox.alert('Se guardaron los cambios');
+            notification('Se guardaron los cambios', 1);
         }else{
-            bootbox.alert('Error al guardar los cambios');
+            notification('Error al guardar los cambios', 2);
         }
     })
     .fail(function(){
-        console.log("Server error");
+        notification("Server error", 2);
     });
     return false;
 });

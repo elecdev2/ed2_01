@@ -48,12 +48,12 @@ class ExamenFisico extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'peso' => 'Peso',
-            'estatura' => 'Estatura',
-            'presion_arterial' => 'Presion Arterial',
+            'peso' => 'Peso (Kg)',
+            'estatura' => 'Estatura (cm)',
+            'presion_arterial' => 'Presion Arterial (mm de Hg)',
             'frec_respiratoria' => 'Frec Respiratoria',
             'pulso' => 'Pulso',
-            'temperatura' => 'Temperatura',
+            'temperatura' => 'Temperatura (°C)',
             'complexion' => 'Complexion',
             'id_historia' => 'Id Historia',
         ];

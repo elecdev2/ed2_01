@@ -19,7 +19,7 @@ use yii\widgets\ActiveForm;
         <?= $form->field($model, 'id_paciente', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'ID paciente'])->label('') ?>
     </div>
     <div class="col-sm-6 col-lg-4">
-        <?= $form->field($model, 'fecha', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Fecha'])->label('') ?>
+        <?= $form->field($model, 'fecha', ['template'=>"{input}{error}"])->widget(yii\jui\DatePicker::classname(), ["dateFormat" => "yyyy-MM-dd", 'options' => ['id'=>'fecha_hist', 'class' => 'fecha form-control', "placeholder" => "Fecha"], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']) ?>
     </div>
     <div class="col-sm-6 col-lg-4">
         <?= $form->field($model, 'hora', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Hora'])->label('') ?>

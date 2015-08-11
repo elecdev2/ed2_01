@@ -12,6 +12,9 @@ use app\models\HistoriaClinica;
  */
 class HistoriaClinicaSearch extends HistoriaClinica
 {
+    public $paciente;
+    public $tipo_servicio;
+    public $medico;
     /**
      * @inheritdoc
      */
@@ -19,7 +22,7 @@ class HistoriaClinicaSearch extends HistoriaClinica
     {
         return [
             [['id', 'id_paciente', 'id_tipos', 'id_medico'], 'integer'],
-            [['fecha', 'hora'], 'safe'],
+            [['fecha', 'hora', 'paciente', 'tipo_servicio', 'medico'], 'safe'],
         ];
     }
 
@@ -43,9 +46,26 @@ class HistoriaClinicaSearch extends HistoriaClinica
     {
         $query = HistoriaClinica::find();
 
+        $query->joinWith(['idMedico', 'idPaciente', 'idTipos']);
+
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
+
+        $dataProvider->sort->attributes['medico'] = [
+            'asc'=>['medicos.nombre'=>SORT_ASC],
+            'desc'=>['medicos.nombre'=>SORT_DESC],
+        ];
+
+        $dataProvider->sort->attributes['paciente'] = [
+            'asc'=>['pacientes.identificacion'=>SORT_ASC],
+            'desc'=>['pacientes.identificacion'=>SORT_DESC],
+        ];
+
+        $dataProvider->sort->attributes['tipo_servicio'] = [
+            'asc'=>['tipos_servicio.nombre'=>SORT_ASC],
+            'desc'=>['tipos_servicio.nombre'=>SORT_DESC],
+        ];
 
         $this->load($params);
 
@@ -60,9 +80,15 @@ class HistoriaClinicaSearch extends HistoriaClinica
             'id_paciente' => $this->id_paciente,
             'id_tipos' => $this->id_tipos,
             'fecha' => $this->fecha,
-            'hora' => $this->hora,
             'id_medico' => $this->id_medico,
         ]);
+
+         $query->andFilterWhere(['like', 'hora', $this->hora])
+            ->andFilterWhere(['like', 'medicos.nombre', $this->medico])
+            ->andFilterWhere(['like', 'pacientes.identificacion', $this->paciente])
+            ->andFilterWhere(['like', 'tipos_servicio.nombre', $this->tipo_servicio]);
+
+        $query->limit(20);
 
         return $dataProvider;
     }

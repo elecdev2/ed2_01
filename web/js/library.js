@@ -118,7 +118,7 @@ function getUrlVars() {
 //Ventanta Ver click en tabla
 
     $(document).on('click', 'table.kv-grid-table tr:not(tr.skip-export) td:not(:last-child)',function(event) {
-        event.preventDefault();
+        // event.preventDefault();
         openModalView('vista',$(this).parent());
     }); 
 // botones del actionColumn
@@ -181,17 +181,22 @@ function getUrlVars() {
         document.getElementById("cargarFirma").click();
     });
 
-    $(document).on('blur', '#pacientes-identificacion', function(event) {
+    $(document).on('change', '#pacientes-identificacion', function(event) {
         var doc = $(this).val();
         $.post('paciente', {data: doc}).done(function(data) {
+            $('.alert-danger').remove();
             if(data == '0'){
                 if($('#pacientes-identificacion').val() != ''){
                     $('.field-pacientes-identificacion').append('<div class="col-sm-2 alert-danger"><span>El paciente no existe</span><div>');
                 }
-                $('form').find("input[type=text], textarea, select").val("");
-                $('#pacientes-identificacion').val(doc);
+                $('form').find("input[type=text], textarea").val("");
+                // $('div.procedimientos-create').html('');
+                // $.get('create', function(data) {
+                //     $('div.procedimientos-create').html(data);
+                // });
+                // $('.select2-selection__rendered').click();
+                // $('#pacientes-identificacion').val(doc);
             }else{
-                $('.alert-danger').remove();
                 $('#citasmedicas-pacientes_id').val(data['id']);
                 $('#procedimientos-idpacientes').val(data['id']);
                 $('#pacientes-tipo_identificacion').select2('val', data['tipo_identificacion']);
@@ -230,7 +235,7 @@ function getUrlVars() {
             if(result){
                 $.post('cancel', {id: id}).done( function(data) {
                     $('.modal').modal('hide');
-                    bootbox.alert(data);
+                    notification(data, 1);
                     $('.fullcalendar').fullCalendar( 'removeEvents', id );
                 });
             }
@@ -253,16 +258,17 @@ function getUrlVars() {
         if(fecha == 'false')
         {
             $.get('update', {id: id_cita, ips:ips, num_ips:num_ips, med:med}).done(function(data) {
-                $('#citas').html(data);
+                $('#editCitas').html(data);
                 var titulo = $('#helperHid').attr('data-titulo');
                 $('#helperHid').attr('data-cita', id_cita);
+                $('#helperHid').attr('data-fecha', fecha);
                 $('.modal-title').text('');
                 $('.modal-title').text(titulo);
 
-                $('#citasModal').modal({backdrop:'static'});
+                $('#editCitasModal').modal({backdrop:'static'});
             });
         }else{
-            bootbox.alert('No se pueden modificar los datos de una cita pasada');
+            notification('No se pueden modificar los datos de una cita pasada', 3);
         }
     }
 
@@ -274,26 +280,27 @@ function getUrlVars() {
         var num_ips = $('#num_ips').val();
         if($('#helperHid').attr('data-new') != 0)
         {
-            $.get('view', {id: id_cita}).done(function(data) {
+            $.get('view-cita', {id: id_cita}).done(function(data) {
                 $('#infoCitas').html(data);
                 $('#helper').attr('data-cita', id_cita);
                 $('#helper').attr('data-ips', ips);
                 $('#helper').attr('data-num', num_ips);
+                $('#helper').attr('data-fecha',$('#helperHid').attr('data-fecha'));
                 $('#infoCitasModal').modal({backdrop:'static'});
             });
         }else{
-            bootbox.alert('No existe un registro para ver');
+            notification('No existe un registro para ver', 3);
         }
     }
 
 // view de historia clinica boton ver mas en datos de paciente
     $(document).on('hide.bs.collapse', '#vistaPaciente', function(event) {
-        event.preventDefault();
+        // event.preventDefault();
         $("a.search-boton").html('<span style="vertical-align: middle" class="glyphicon glyphicon-eye-open"></span> ver más <i class="fa fa-caret-down fa-lg"></i>');
     });
 
     $(document).on('show.bs.collapse', '#vistaPaciente', function(event) {
-        event.preventDefault();
+        // event.preventDefault();
         $("a.search-boton").html('<span style="vertical-align: middle" class="glyphicon glyphicon-eye-close"></span> ver menos <i class="fa fa-caret-up fa-lg"></i>');
     });
 
@@ -312,6 +319,46 @@ function getUrlVars() {
             });
         }
     });
+
+    $('#pacientes-fecha_nacimiento').on('change', function(event) {
+        $.post('calcular-edad', {fecha: $(this).val()}).done(function(data) {
+            $('#pacientes-codeps').val(data);
+        });
+    });
+
+    $('#pacientes-codeps').on('change', function(event) {
+        $.post('calcular-fecha', {age:$(this).val()}).done(function(data) {
+            $('#pacientes-fecha_nacimiento').val(data);
+        });
+    });
+
+    // function confirmacion (event, revertFunc, med, ips, date) 
+    // {
+
+    //     $.post('cambiar-fecha', {date: date, id:event.id, med:med, sw: 1, ips:ips}).done(function(data) {
+    //         $('#mover').html(data);
+    //         $('#date').attr('value', date);
+    //         $('#id').attr('value', event.id);
+    //         $('#med').attr('value', med);
+    //         $('#moveCitasModal h3.modal-title').text('Cambiar fecha y/o hora');
+    //         $('#cancelar').attr('onclick', revertFunc);
+    //         $('#moveCitasModal').modal({backdrop:'static'});
+    //     });
+
+    // }
+
+    $('.saldo').on('change', function(event) {
+        event.preventDefault();
+        var abono = parseFloat($('#procedimientos-valor_abono').val());
+
+        if(isNaN(abono)){
+            $('#procedimientos-valor_saldo').val($('#procedimientos-valor_procedimiento').val());
+        }else{
+            $('#procedimientos-valor_saldo').val($('#procedimientos-valor_procedimiento').val()-abono);
+        }
+    });
+
+
 
     
 

@@ -31,7 +31,7 @@ class VlrsCamposProcedimientos extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['valor', 'id_procedimiento', 'idcampos_tipos_servicio'], 'required'],
+            [['id_procedimiento', 'idcampos_tipos_servicio'], 'required'],
             [['id_procedimiento', 'idcampos_tipos_servicio'], 'integer'],
             [['valor'], 'string', 'max' => 1000],
             [['idcampos_tipos_servicio', 'id_procedimiento'], 'unique', 'targetAttribute' => ['idcampos_tipos_servicio', 'id_procedimiento'], 'message' => 'The combination of Id Procedimiento and Idcampos Tipos Servicio has already been taken.']

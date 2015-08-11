@@ -188,26 +188,27 @@ class ProcedimientosController extends Controller
         $paciente = new Pacientes();
         $medicoRem = new MedicosRemitentes();
 
-        if ($model->load(Yii::$app->request->post()))
+        if ($model->load(Yii::$app->request->post()) && $paciente->load(Yii::$app->request->post()))
         {
             $model->estado = 'PND';
             $model->usuario_recibe = Yii::$app->user->id;
             $tipo_serv = $this->findModelTipos($model->idtipo_servicio);
             $model->numero_muestra = $tipo_serv->serie.$tipo_serv->consecutivo.'-'.date('y');
-            $pac = $this->findModelPaciente($model->idpacientes);
-            if($paciente->load(Yii::$app->request->post()))
-            {
-                $pac->tipo_identificacion = $paciente->tipo_identificacion != '' ? $paciente->tipo_identificacion : $pac->tipo_identificacion;
-                $pac->nombre1 = $paciente->nombre1;
-                $pac->nombre2 = $paciente->nombre2;
-                $pac->apellido1 = $paciente->apellido1;
-                $pac->apellido2 = $paciente->apellido2;
-                $pac->direccion = $paciente->direccion;
-                $pac->telefono = $paciente->telefono;
-                $pac->fecha_nacimiento = $paciente->fecha_nacimiento;
-                $pac->save();
 
+            $pac = Pacientes::find()->where(['identificacion'=>$paciente->identificacion])->one();
+
+            if($pac == null)
+            {
+                $paciente->idclientes = Usuarios::findOne($model->usuario_recibe)->idclientes; 
+                $paciente->activo = 1;
+                $paciente->save();
+                $model->idpacientes = $paciente->id;
+            }else{
+                
+                $pac->save();
+                $model->idpacientes = $pac->id;
             }
+
             if($model->save())
             {
                 $cons = $tipo_serv->consecutivo + 1;
@@ -230,36 +231,69 @@ class ProcedimientosController extends Controller
         }
         $id_ips = (new Query())->select('idips')->from('usuarios_ips')->where(['idusuario'=>Yii::$app->user->id]);
         $id_cliente = Usuarios::findOne(Yii::$app->user->id)->idclientes;
-        // $id_cliente = 1;
-        $rango_fecha = $this->rangoFecha();
-        $ips = new Ips();
-        $ips_list = Ips::find()->where(['idclientes'=>$id_cliente])->all();
-        $lista_tipos = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_usuario"')->all(),'codigo','descripcion');
-        $lista_tipoid = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_identificacion"')->all(),'codigo','descripcion');
-        $lista_resid = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_residencia"')->all(),'codigo','descripcion');
-        $lista_pago = ArrayHelper::map(ListasSistema::find()->where('tipo="forma_pago"')->all(),'codigo','descripcion');
-        $lista_ciudades = ArrayHelper::map(Ciudades::find()->all(),'id','nombre');
-        $lista_eps = ArrayHelper::map(Eps::find()->all(),'id','nombre');
-        $lista_especialidades = ArrayHelper::map(Especialidades::find()->all(),'id','nombre');
-        $lista_med = ArrayHelper::map($this->getMedRemIps($id_ips),'id','nombre', 'especialidad');
-        $lista_medRemGen = ArrayHelper::map($this->getMedRemGen(),'id','nombre', 'especialidad');
+
+        $js = <<<JS
+            $('#panelMedico').hide();
+            // $('.field-procedimientos-medico').append('<a href="#" id="medRem" class="btn btn-default">Nuevo médico</a>');
+            $('#medRem').on('click', function(event) {
+                event.preventDefault();
+                $('#medRemNuevo').modal();
+            });
+
+            $('#showHidePanel').on('change', function(event) {
+                event.preventDefault();
+                $('#panelMedico').hide();
+                $('#panelAddMedico').show();
+                if($('#showHidePanel').is(':checked')){
+                    $('#panelMedico').show();
+                    $('#panelAddMedico').hide();
+                }
+            });
+
+            $('#agregar').on('click', function(event) {
+                event.preventDefault();
+                var datos = $('#medrem').val();
+                if(datos != ''){
+                    $.post('add-medico', {data: datos}, function(data) {
+                       var datos = jQuery.parseJSON(data); 
+                       var newOption = $('<optgroup label="'+datos['especialidad']+'"><option value="'+datos['id']+'">'+datos['nombre']+'</option></optgroup>');
+                       $('#procedimientos-medico').append(newOption);
+                    });
+                }
+            });
+
+        $('#guardarMedico').on('click', function(event) {
+            event.preventDefault();
+            var formulario = $('#medRemForm').serialize();
+            $('#medRemForm')[0].reset();
+            $.post('guardar-medico', {data: formulario}, function(data) {
+                var datos = jQuery.parseJSON(data); 
+               // console.log(datos['nombre']);
+               var newOption = $('<optgroup label='+datos['especialidad']+'><option value="'+datos['id']+'">'+datos['nombre']+'</option></optgroup>');
+               $('#procedimientos-medico').append(newOption);
+            });
+
+        });
+JS;
+
+        $this->getView()->registerJs($js, \yii\web\View::POS_READY, null);
         return $this->render('create', [
             'model' => $model, 
+            'id_cliente'=> $id_cliente,
             'paciente_model'=>$paciente,
-            'ips_model'=>$ips,
-            'ips_list'=>$ips_list,
-            'lista_tipos'=>$lista_tipos,
-            'lista_tipoid'=>$lista_tipoid,
-            'lista_resid'=>$lista_resid,
-            'lista_ciudades'=>$lista_ciudades,
-            'lista_eps'=>$lista_eps,
-            'id_cliente'=>$id_cliente,
-            'lista_pago'=>$lista_pago,
-            'lista_med'=>$lista_med,
+            'ips_model'=> new Ips(),
+            'ips_list'=> Ips::find()->where(['idclientes'=>$id_cliente])->all(),
+            'lista_tipos'=> ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_usuario"')->all(),'codigo','descripcion'),
+            'lista_tipoid'=> ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_identificacion"')->all(),'codigo','descripcion'),
+            'lista_resid'=> ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_residencia"')->all(),'codigo','descripcion'),
+            'lista_pago'=> ArrayHelper::map(ListasSistema::find()->where('tipo="forma_pago"')->all(),'codigo','descripcion'),
+            'lista_ciudades'=> ArrayHelper::map(Ciudades::find()->all(),'id','nombre'),
+            'lista_eps'=>  ArrayHelper::map(Eps::find()->all(),'id','nombre'),
+            'lista_especialidades'=> ArrayHelper::map(Especialidades::find()->all(),'id','nombre'),
+            'lista_med'=> ArrayHelper::map($this->getMedRemIps($id_ips),'id','nombre'),
+            'lista_medRemGen'=> ArrayHelper::map($this->getMedRemGen(),'id','nombre', 'especialidad'),
             'medicoRemModel'=>$medicoRem,
-            'lista_especialidades'=>$lista_especialidades,
-            'lista_medRemGen'=>$lista_medRemGen,
-            'rango_fecha'=>$rango_fecha,
+            'rango_fecha'=> $this->rangoFecha(),
         ]);
         
     }
@@ -305,7 +339,7 @@ class ProcedimientosController extends Controller
     public function getMedRemIps($id_ips)
     {
         $query = new Query();
-        $query->select('(r.id) AS id, (m.nombre) AS nombre, (e.nombre) AS especialidad')->from('especialidades e')
+        $query->select(['id'=>'m.id', 'nombre'=>'CONCAT(m.nombre," - ",e.nombre)'])->from('especialidades e')
         ->join('INNER JOIN', 'medicos_remitentes m', 'm.especialidades_id = e.id')
         ->join('INNER JOIN', 'medicos_remitentes_ips r', 'r.medicos_remitentes_id = m.id')
         ->join('INNER JOIN', 'ips i', 'i.id = r.ips_id')
@@ -391,31 +425,24 @@ class ProcedimientosController extends Controller
     {
         $model = $this->findModel($id);
 
-        $paciente = new Pacientes();
+        $paciente = $this->findModelPaciente($model->idpacientes);
         $medicoRem = new MedicosRemitentes();
 
-        if ($model->load(Yii::$app->request->post())) {
-            $pac = $this->findModelPaciente($model->idpacientes);
-            if($paciente->load(Yii::$app->request->post()))
-            {
-                $pac->identificacion = $paciente->identificacion;
-                $pac->tipo_identificacion = $paciente->tipo_identificacion != '' ? $paciente->tipo_identificacion : $pac->tipo_identificacion;
-                $pac->nombre1 = $paciente->nombre1;
-                $pac->nombre2 = $paciente->nombre2;
-                $pac->apellido1 = $paciente->apellido1;
-                $pac->apellido2 = $paciente->apellido2;
-                $pac->direccion = $paciente->direccion;
-                $pac->telefono = $paciente->telefono;
-                $pac->fecha_nacimiento = $paciente->fecha_nacimiento;
-                $pac->save();
+        if ($model->load(Yii::$app->request->post()) && $paciente->load(Yii::$app->request->post())) {
 
+            if(!$paciente->save())
+            {
+                return 0;
             }
-            if(isset($_POST['checkEstado'])){
-                if($_POST['checkEstado'] == 'on'){
+            
+            if(isset($_POST['checkEstado']))
+            {
+                if($_POST['checkEstado'] == 'on')
+                {
 
 //Procesamiento del formulario-----------------------------------------------------------------
-                    if(isset($_POST['check_list'])){
-                        // return print_r($_POST['check_list']);
+                    if(isset($_POST['check_list']))
+                    {
                         foreach ($_POST['check_list'] as $value) {
 
                             $valores_proc = VlrsCamposProcedimientos::find()->where(['idcampos_tipos_servicio'=>$value, 'id_procedimiento'=>$model->id])->one();
@@ -428,12 +455,14 @@ class ProcedimientosController extends Controller
                             $valores_proc->valor = '1';
                             $valores_proc->save();
                         }
-                        $model->estado = $model->estado == 'PND' ? 'PRC' : 'FRM';
 
-                    }else{
+                    }
+
+                    if(isset($_POST['VlrsCamposProcedimientos']))
+                    {
 
                         $val_proc = new VlrsCamposProcedimientos();
-                        if($val_proc->load(Yii::$app->request->post()) && isset($_POST['VlrsCamposProcedimientos'])){
+                        if($val_proc->load(Yii::$app->request->post())){
                             
                             foreach ($val_proc->idcampos_tipos_servicio as $key => $value) {
 
@@ -445,11 +474,13 @@ class ProcedimientosController extends Controller
                                 $valores_proc->id_procedimiento = $model->id;
                                 $valores_proc->idcampos_tipos_servicio = $val_proc->idcampos_tipos_servicio[$key];
                                 $valores_proc->valor = $_POST['VlrsCamposProcedimientos'][$value]['valor'];
-                                $valores_proc->save();
+                                if(!$valores_proc->save()){
+                                    return 0;
+                                }
                             }
-                             $model->estado = $model->estado == 'PND' ? 'PRC' : 'FRM';
                         }
                     }
+                    $model->estado = $model->estado == 'PND' ? 'PRC' : 'FRM';
 
                     if($model->estado == 'FRM')
                     {
@@ -491,48 +522,97 @@ class ProcedimientosController extends Controller
 
             }
             if($model->save()){
-                $model->refresh();
-                Yii::$app->response->format = 'json';
-                \Yii::$app->getSession()->setFlash('success', 'Estudio actualizado con exito!');
-                return $this->redirect($_POST['url']);
+                // $model->refresh();
+                // Yii::$app->response->format = 'json';
+                // \Yii::$app->getSession()->setFlash('success', 'Estudio actualizado con exito!');
+                // return $this->redirect($_POST['url']);
+                return 1;
             }
         }
         $id_ips = (new Query())->select('idips')->from('usuarios_ips')->where(['idusuario'=>Yii::$app->user->id]);
-        $id_cliente = Usuarios::findOne(Yii::$app->user->id)->idclientes;
-        $paciente = new Pacientes();
-        $rango_fecha = $this->rangoFecha();
-        $ips = new Ips();
-        $plantilla = new PlantillasDiagnosticos();
-        $ips_list = Ips::find()->where(['idclientes'=>$id_cliente])->all();
-        $lista_estados = ArrayHelper::map(ListasSistema::find()->where('tipo="estado_prc"')->all(),'codigo','descripcion');
-        $lista_pago = ArrayHelper::map(ListasSistema::find()->where('tipo="forma_pago"')->all(),'codigo','descripcion');
-        $lista_tipoid = ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_identificacion"')->all(),'codigo','descripcion');
-        $lista_med = ArrayHelper::map($this->getMedRemIps($id_ips),'id','nombre', 'especialidad');
-        $lista_especialidades = ArrayHelper::map(Especialidades::find()->all(),'id','nombre');
-        $lista_med = ArrayHelper::map($this->getMedRemIps($id_ips),'id','nombre', 'especialidad');
-        $lista_medRemGen = ArrayHelper::map($this->getMedRemGen(),'id','nombre', 'especialidad');
-        $campos = $this->getCampos($model->idtipo_servicio);
         if($model->fecha_salida ==  null){ $model->fecha_salida = date('Y-m-d');}
-        // return print_r($plantilla_titulos);
+
         $js = <<<SCRIPT
-        $("#url").val(getUrlVars());
+            $('#lista').on('change',  function(event) {
+                var id = $('#lista').val();
+                $('#descripcion').val('');
+
+                if(id != ''){
+                    $.post('get-descripcion', {id: $('#lista').val()}).done(function(data) {
+                        $('#descripcion').val(data);
+                    });
+                }
+            });
+
+            $('#addDesc').on('click',  function(event) {
+                event.preventDefault();
+                var id = $(this).attr('data-value');
+                $('#vlrscamposprocedimientos-'+id+'-valor').val($('#descripcion').val());
+                $('#lista').val('');
+                $('#descripcion').val('');
+                $('#plantillaModal').modal('hide');
+            });
+
+            $('#guardarPlantilla').on('click', function(event) {
+                event.preventDefault();
+                var titulo = $('input[name="tituloName"]').val();
+                var descripcion = $('#descripcionNuevo').val();
+                if(titulo != '' && descripcion != '')
+                {
+                    $.post('nueva-plantilla', {titulo: titulo, desc: descripcion}).done(function(data) {
+                        alert(data);
+                        $('input[name="tituloName"]').val('');
+                        $('#descripcionNuevo').val('');
+                        $('#plantillaNuevaModal').modal('hide');
+                    });
+                }else{
+                    alert('Por favor verifique el titulo y la descripcion antes de guardar');
+                }
+            });
+
+            $('#edicion').on('click',  function(event) {
+                event.preventDefault();
+                var id = $('#lista').val();
+                var descripcion = $('#descripcion').val();
+
+                $.post('editar-plantilla', {id: id, desc:descripcion}).done(function(data) {
+                    alert(data);
+                });
+            });
+
+            $('#descripcion').on('keydown', function() {
+                $('#edicion').removeAttr('disabled');
+            });
+
+            $('#plantillaModal').on('hidden.bs.modal', function() {
+                $('#lista').val('');
+                $('#descripcion').val('');
+                $('#edicion').attr('disabled', '');
+            });
+
+            function pasarTexto()
+            {
+                var id = $('#guardarPlantilla').attr('data-value');
+                $('#vlrscamposprocedimientos-'+id+'-valor').val($('#descripcionNuevo').val());
+            }
 SCRIPT;
         $this->getView()->registerJs($js.' '.'$("#ips_id").val('.$model->epsIdeps->idips0->id.')', yii\web\View::POS_READY,null);
         return $this->renderAjax('update', [
                     'model' => $model,
-                    'paciente_model'=>$paciente,
-                    'ips_model'=>$ips,
-                    'ips_list'=>$ips_list,
-                    'lista_estados'=>$lista_estados,
-                    'lista_pago'=>$lista_pago,
-                    'lista_med'=>$lista_med,
-                    'medicoRemModel'=>$medicoRem,
-                    'lista_especialidades'=>$lista_especialidades,
-                    'lista_medRemGen'=>$lista_medRemGen,
-                    'lista_tipoid'=>$lista_tipoid,
-                    'campos'=>$campos,
-                    'plantilla'=>$plantilla,
-                    'rango_fecha'=>$rango_fecha,
+                    'paciente_model'=>Pacientes::findOne($model->idpacientes),
+                    'ips_model'=>new Ips(),
+                    'ips_list'=>Ips::find()->where(['idclientes'=>Usuarios::findOne(Yii::$app->user->id)->idclientes])->all(),
+                    'lista_estados'=>ArrayHelper::map(ListasSistema::find()->where('tipo="estado_prc"')->all(),'codigo','descripcion'),
+                    'lista_pago'=> ArrayHelper::map(ListasSistema::find()->where('tipo="forma_pago"')->all(),'codigo','descripcion'),
+                    'lista_med'=>ArrayHelper::map($this->getMedRemIps($id_ips),'id','nombre'),
+                    'lista_especialidades'=>ArrayHelper::map(Especialidades::find()->all(),'id','nombre'),
+                    'lista_tipoid'=>ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_identificacion"')->all(),'codigo','descripcion'),
+                    'campos'=>$this->getCampos($model->idtipo_servicio),
+                    'plantilla'=> new PlantillasDiagnosticos(),
+                    'rango_fecha'=>$this->rangoFecha(),
+                    'lista_tipos'=>ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_usuario"')->all(),'codigo','descripcion'),
+                    'lista_resid'=>ArrayHelper::map(ListasSistema::find()->where('tipo="tipo_residencia"')->all(),'codigo','descripcion'),
+                    'lista_ciudades'=>ArrayHelper::map(Ciudades::find()->all(),'id','nombre'),
                 ]);
   
     }
@@ -547,6 +627,14 @@ SCRIPT;
             return $this->redirect(['create']);
         } 
         
+    }
+
+    public function actionPaciente()
+    {
+        \Yii::$app->response->format = 'json';
+        $paciente = Pacientes::find()->where(['identificacion'=>$_POST['data']])->one();
+
+       return $paciente == null ? 0 : $paciente;
     }
 
     public function enviarEmail($email,$asunto,$text)
@@ -656,7 +744,6 @@ SCRIPT;
     //         ]
     //     ]);
 
-    //      // $this->getView()->registerJs('this.print()', yii\web\View::POS_READY,null);
     //     return $pdf->render(); 
     // }
 

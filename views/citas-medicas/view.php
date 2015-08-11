@@ -14,6 +14,16 @@ $this->title = "Información de la cita";
 ?>
 <div class="citas-medicas-view">
 
+<?php if(Yii::$app->user->can('medico') && (strtotime($model->fecha) == strtotime(date('Y-m-d')))){ ?>
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="col-sm-6">
+            <button class="btn btn-primary" id="historia_clinica" data-dismiss="modal" data-paciente="<?=$model->pacientes_id?>" data-medico="<?=$model->medicos_id?>" onclick="abrirHistoria()" ><i class=""></i>Ver historia clinica</button>
+        </div>
+    </div>
+</div>
+<?php } ?>
+
 <input type="text" hidden data-titulo="<?= Html::encode($this->title) ?>" id="helperHid"> <!-- input para almacenar id_cita, ips y numero de ipss (ver index evento eventClick de calendario)-->
 <div class="panelFormulario-contenido">
     <div class="panelFormulario-header">
@@ -39,8 +49,12 @@ $this->title = "Información de la cita";
                 'attribute'=>'hora',
                 'value'=>date('h:i a', strtotime($model->hora)),
             ],
+            [
+                'attribute'=>'tipo_servicio',
+                'label'=>'Motivo de consulta',
+                'value'=> $model->tipoServicio->nombre,
+            ],
                 
-                'motivo',
                 'observaciones',
             ],
         ]) ?>

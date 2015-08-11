@@ -14,37 +14,7 @@ $this->title = 'Citas médicas';
 // $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<!-- <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-    
-        <div class="panel panel-default">
-          <div class="panelTituloBoton" role="tab" id="headingOne" style="padding-left: 10px;">
-            <h3 class="panel-title tituloIndex">
-              <a role="button" data-toggle="collapse" style="display:block;" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                Disponibilidad por médico
-              </a>
-            </h3>
-          </div>
-          <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-            <div class="panel-body">
-               
-            </div>
-          </div>
-        </div>
 
-        <div class="panel panel-default">
-          <div class="panelTituloBoton" role="tab" id="headingTwo" style="padding-left: 10px;">
-            <h4 class="panel-title tituloIndex">
-              <a class="collapsed" role="button" data-toggle="collapse" style="display:block;" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                Disponibilidad por especialidad
-              </a>
-            </h4>
-          </div>
-          <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
-            <div class="panel-body">
-            </div>
-          </div>
-        </div>
-  </div> -->
 <div class="panel panel-default panelBordeInferior">
     <div class="panel-body">
         <div class="panelTituloBoton col-md-12">
@@ -102,17 +72,17 @@ $this->title = 'Citas médicas';
                     $.get('create', {date: date.toISOString(), ips:ips, dia:dia, med:med}).done(function(result) 
                     {
                         switch (result) {
-                            case '0': bootbox.alert('Error: La hora está por fuera del horario del médico');
+                            case '0': notification('La hora está por fuera del horario del médico', 3);
                                 break;
-                            case '1': bootbox.alert('Error: La fecha es anterior al día de hoy');
+                            case '1': notification('La fecha es anterior al día de hoy', 3);
                                 break;
-                            case '2': bootbox.alert('Error: La hora es anterior a la hora actual');
+                            case '2': notification('La hora es anterior a la hora actual', 3);
                                 break;
-                            case '3': bootbox.alert('Error: Ya existe una cita a esa hora');
+                            case '3': notification('Ya existe una cita a esa hora', 3);
                                 break;
                             
                             default:
-                                $('#citas').html(result);
+                                $('#editCitas').html(result);
                                 var titulo = $('#helperHid').attr('data-titulo');
                                 $('#helperHid').attr('data-new',0);
                                 $('.modal-title').text('');
@@ -120,7 +90,7 @@ $this->title = 'Citas médicas';
                                 if(med != null){
                                     $('#citasmedicas-medicos_id').select2('val', $('#nombre_med').attr('data-value'));
                                 }
-                                $('#citasModal').modal({backdrop:'static'});
+                                $('#editCitasModal').modal({backdrop:'static'});
                                 break;
                         }
                     });
@@ -153,48 +123,111 @@ $this->title = 'Citas médicas';
 
                 'eventDrop' => new \yii\web\JsExpression("function(event, delta, revertFunc) {
 
-                    
                     var dia = moment(event.start).format('d');
                     var med = $('#nombre_med').attr('data-value') == '' ? null : $('#nombre_med').attr('data-value');
 
                     if(med == null){
-                        bootbox.alert('Para mover la cita dirijase al calendario del médico');
+                        notification('Para mover la cita dirijase al calendario del médico', 4);
                         revertFunc();
                     }else{
+                        var view = $('.fullcalendar').fullCalendar(\"getView\");
+                        if(view.name == 'month')
+                        {
+                            // confirmacion(event, revertFunc, med, {$modelIps->id}, event.start.format());
+                            $.post('cambiar-fecha', {date: event.start.format(), id:event.id, med:med, sw: 1, ips:{$modelIps->id}}).done(function(data) {
+                                switch (data) {
+                                            case '0':
+                                                revertFunc();
+                                                notification('Error al guardar los cambios', 2);
+                                                break;
+                                            case '1':
+                                                revertFunc();
+                                                notification('Ya existe una cita a esa hora', 2);
+                                                break;
+                                            case '2':
+                                                revertFunc();
+                                                notification('La fecha es anterior al día de hoy', 2);
+                                                break;
+                                            case '3':
+                                                revertFunc();
+                                                notification('La hora es anterior a la hora actual', 2);
+                                                break;
+                                            case '4':
+                                                revertFunc();
+                                                notification('La hora está por fuera del horario del médico', 2);
+                                                break;
+                                            default:
+                                                bootbox.dialog({
+                                                    title: 'Cambiar fecha y/o hora',
+                                                    message:'<p>Se moverá la cita al siguiente horario:</p>'+data,
+                                                    buttons: 
+                                                    {
+                                                        success: 
+                                                        {
+                                                            label: '<i class=\"add icon-guardar\"></i>'+'Guardar',
+                                                            className: 'btn-success',
+                                                            callback: function () 
+                                                            {
+                                                                document.getElementById('submitConf').click();
+                                                            }
+                                                        },
+                                                        main: 
+                                                        {
+                                                            label: 'Cancelar',
+                                                            className: 'btn-default',
+                                                            callback: function () 
+                                                            {
+                                                                revertFunc();
+                                                            }
+                                                        }
+                                                    }
+                                                });
+                                                break;
+                                        }
 
-                        bootbox.confirm('¿Está seguro que desea realizar este cambio?', function(result) {
-                            if(!result){
-                                revertFunc();
-                            }else{
-                                $.post('cambiar-fecha', {date: event.start.format(), id:event.id, med:med}).done(function(data) {
-                                    console.log(data);
-                                    switch (data) {
-                                        case '0':
-                                            revertFunc();
-                                            bootbox.alert('Erro al guardar los cambios');
-                                            break;
-                                        case '1':
-                                            revertFunc();
-                                            bootbox.alert('Ya existe una cita a esa hora');
-                                            break;
-                                        case '2':
-                                            revertFunc();
-                                            bootbox.alert('La fecha es anterior al día de hoy');
-                                            break;
-                                        case '3':
-                                            revertFunc();
-                                            bootbox.alert('La hora es anterior a la hora actual');
-                                            break;
-                                        default:
-                                            event.id = data;
-                                            $('.fullcalendar').fullCalendar('updateEvent', event);
-                                            bootbox.alert('La cita fue reprogramada');
-                                            break;
-                                    }
-                                   
-                                });
-                            }
-                        }); 
+                            });
+                            
+                        }else{
+
+                            bootbox.confirm('¿Está seguro que desea realizar este cambio?', function(result) {
+                                if(!result){
+                                    revertFunc();
+                                }else{
+
+                                    $.post('cambiar-fecha', {date: event.start.format(), id:event.id, med:med, sw: 0}).done(function(data) {
+                                        switch (data) {
+                                            case '0':
+                                                revertFunc();
+                                                notification('Error al guardar los cambios', 2);
+                                                break;
+                                            case '1':
+                                                revertFunc();
+                                                notification('Ya existe una cita a esa hora', 2);
+                                                break;
+                                            case '2':
+                                                revertFunc();
+                                                notification('La fecha es anterior al día de hoy', 2);
+                                                break;
+                                            case '3':
+                                                revertFunc();
+                                                notification('La hora es anterior a la hora actual', 2);
+                                                break;
+                                            case '4':
+                                                revertFunc();
+                                                notification('La hora está por fuera del horario del médico', 2);
+                                                break;
+                                            default:
+                                                event.id = data;
+                                                $('.fullcalendar').fullCalendar('updateEvent', event);
+                                                notification('La cita fue reprogramada', 1);
+                                                break;
+                                        }
+                                       
+                                    });
+                                }
+                            }); 
+                        }
+
                     }
                     
 
@@ -203,7 +236,7 @@ $this->title = 'Citas médicas';
         ]); ?>
 <?php } ?>
 
-    <div id="citasModal" class="modal fade bs-example-modal-lg" data-backdrop="false" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div id="editCitasModal" class="modal fade bs-example-modal-lg" data-backdrop="false" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -212,7 +245,7 @@ $this->title = 'Citas médicas';
                     <h3 class="modal-title"></h3>
                 </div>
                 <div class="modal-body">
-                    <div id='citas'></div>
+                    <div id='editCitas'></div>
                 </div>
             </div>
         </div>
@@ -230,6 +263,21 @@ $this->title = 'Citas médicas';
                 </div>
                 <div class="modal-body">
                     <div id='infoCitas'></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="moveCitasModal" class="modal fade bs-example-modal-md" data-backdrop="false" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" title="Cerrar" class="close" data-dismiss="modal"><img src="<?=Yii::$app->request->baseUrl;?>/images/iconos/IconoBarraCerrar.png" alt="Cerrar"></button>
+                    <h3 class="modal-title"></h3>
+                </div>
+                <div class="modal-body">
+                    <p>Se moverá la cita al siguiente horario:</p>
+                    <div id='mover'></div>
                 </div>
             </div>
         </div>

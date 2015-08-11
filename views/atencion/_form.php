@@ -14,16 +14,15 @@ use kartik\select2\Select2;
 
 <div class="atencion-form">
     
-    <?php $ruta = Yii::$app->request->baseUrl.'/atencion/create'; ?>
 
     <?php $form = ActiveForm::begin(['layout'=>'horizontal', 'id'=>'ateForm', 'validateOnType' => true]); ?>
     
+    <input type="text" hidden value="<?=$model->isNewRecord ?>" id="nuevo_registro">
     <div class="panelFormulario-contenido">
         <div class="panelFormulario-header">
             <h3 class="titulo-tarifa">Datos del paciente</h3>
         </div>
         <div class="modal-body">
-            <?= $form->field($model, 'idpacientes')->hiddenInput()->label('') ?>
 
 			<?= $form->field($paciente_model, 'identificacion')->textInput(['maxlength' => 15]) ?>
 
@@ -100,7 +99,7 @@ use kartik\select2\Select2;
             
             <?= $form->field($paciente_model, 'email')->textInput(['maxlength' => 100]) ?>
 
-            <?= $form->field($paciente_model, 'fecha_nacimiento')->widget(yii\jui\DatePicker::classname(), ["dateFormat" => "yyyy-MM-dd", 'options' => ['class' => 'fecha form-control', "placeholder" => "aaaa-mm-dd"], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']) ?>
+            <?= $form->field($paciente_model, 'fecha_nacimiento')->widget(yii\jui\DatePicker::classname(), ["dateFormat" => "yyyy-MM-dd", 'options' => ['class' => 'fecha form-control', "placeholder" => "aaaa-mm-dd"], 'clientOptions'=>['yearRange'=>$rango_fecha, 'changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']) ?>
             
             <?= $form->field($paciente_model, 'envia_email')->dropDownList(['prompt'=>'Seleccione una opción', '1' => 'Si', '2' => 'No'])->label('Enviar email') ?>
 
@@ -113,23 +112,27 @@ use kartik\select2\Select2;
         </div>
         <div class="modal-body">
 
-        	<?= $form->field($model, 'fecha_atencion')->widget(yii\jui\DatePicker::classname(), ["dateFormat" => "yyyy-MM-dd", 'options' => ['class' => 'fecha form-control', "placeholder" => "aaaa-mm-dd"], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']) ?>
-        	
-			<?= $form->field($model, 'idmedico')->widget(Select2::classname(), [
-                    'data'=>$lista_meds,
-                    'language' => 'es',
-                    'options' => ['placeholder' => 'Seleccione una opción'],
-                    'pluginOptions' => [
-                        'allowClear' => true
-                    ],
-                ])->label('Médico tratante');
-            ?>
+        	<?= $form->field($model, 'fecha_atencion')->widget(yii\jui\DatePicker::classname(), ["dateFormat" => "yyyy-MM-dd", 'options' => ['class' => 'fecha form-control', "placeholder" => "aaaa-mm-dd"], 'clientOptions'=>['yearRange'=>$rango_fecha, 'changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']) ?>
+            
+            <?= $form->field($cita_model, 'hora_llegada')->textInput(['type'=>'time', 'step'=>1])->label('Hora de llegada') ?>
 
         	<?= $form->field($ips_model, 'id')->widget(Select2::classname(), [
                     'data'=>$ips_list,
                     'language' => 'es',
                     'options' => ['id'=>'ips_id','placeholder' => 'Seleccione una IPS'],
                 ])->label('IPS');
+            ?>
+            
+
+            <?= $form->field($model, 'idmedico')->widget(DepDrop::classname(), [
+                        'type' => 2,
+                        'data'=>$model->isNewRecord ? '' : [$model->idmedico => $model->idmedico0->nombre],
+                        'pluginOptions'=>[
+                        'depends'=>['ips_id'],
+                        'placeholder'=>'Seleccione un médico',
+                        'url'=>Url::to(['/atencion/submed'])
+                    ]
+                ])->label('Médico tratante');
             ?>
 
             <?= $form->field($model, 'eps_ideps')->widget(DepDrop::classname(), [
@@ -167,13 +170,13 @@ use kartik\select2\Select2;
                 ])->label('Estudio');
             ?>
 			
-			<?= $form->field($model, 'valor_procedimiento')->textInput()->label('Valor del procedimiento  $') ?>
+			<?= $form->field($model, 'valor_procedimiento')->textInput(['class'=>'form-control saldo'])->label('Valor del procedimiento  $') ?>
 
 			<?= $form->field($model, 'descuento')->textInput(['readOnly'=>'']) ?>
                     
             <?= $form->field($model, 'valor_copago')->textInput()->label('Valor del copago  $') ?>
         
-            <?= $form->field($model, 'valor_abono')->textInput()->label('Valor del abono  $') ?>
+            <?= $form->field($model, 'valor_abono')->textInput(['class'=>'form-control saldo'])->label('Valor del abono  $') ?>
 
             <?= $form->field($model, 'valor_saldo')->textInput(['readOnly'=>''])->label('Valor del saldo  $') ?>
 
@@ -201,9 +204,12 @@ use kartik\select2\Select2;
         </div>
     </div>
     
-
-    <div class="form-group text-center">
-        <?= Html::submitButton($model->isNewRecord ? '<i class="add icon-guardar"></i>Crear' : '<i class="add icon-actualizar"></i>Actualizar', ['class' =>'btn btn-success']) ?>
+     <div class="panel panel-default">
+        <div class="panel-body" style="padding: 10px 0;"> 
+            <div class="text-center">
+                <?= Html::submitButton($model->isNewRecord ? '<i class="add icon-guardar"></i>Crear' : '<i class="add icon-actualizar"></i>Actualizar', ['class' =>'btn btn-success']) ?>
+            </div>
+        </div>
     </div>
 
     <?php ActiveForm::end(); ?>
@@ -216,8 +222,8 @@ use kartik\select2\Select2;
 $('form#ateForm').on('beforeSubmit', function(e)
 {
     var \$form = $(this);
-    var ruta = \$ruta;
-    
+    var sw = $('#nuevo_registro').val();
+
     $.post(
         \$form.attr("action"), 
         \$form.serialize()
@@ -225,28 +231,32 @@ $('form#ateForm').on('beforeSubmit', function(e)
     .done(function(result) {
         if(result == '0')
         {
-            bootbox.alert('Error al guardar los cambios');
+            notification('Error al guardar los cambios', 2);
         }else{
-            bootbox.alert('Se guardaron los cambios');
-            $('form').find("input[type=text], textarea, select").val("");
-            
-            // window.location.assign(ruta);
-            // $('.select2-hidden-accessible').select2('val', '');
-            $('#pacientes-tipo_identificacion').select2('val', '');
-            $('#pacientes-sexo').select2('val', '');
-            $('#pacientes-tipo_usuario').select2('val', '');
-            $('#pacientes-tipo_residencia').select2('val', '');
-            $('#pacientes-idciudad').select2('val', '');
-            $('#pacientes-ideps').select2('val', '');
-            $('#procedimientos-idmedico').select2('val', '');
-            $('#ips_id').select2('val', '');
-            $('#procedimientos-medico').select2('val', '');
-            $('#procedimientos-forma_pago').select2('val', '');
+            if(sw == 1)
+            {
+                notification('Se guardaron los cambios', 1);
+                $('form').find("input, textarea, select").val("");
+
+                $('#pacientes-tipo_identificacion').select2('val', '');
+                $('#pacientes-sexo').select2('val', '');
+                $('#pacientes-tipo_usuario').select2('val', '');
+                $('#pacientes-tipo_residencia').select2('val', '');
+                $('#pacientes-idciudad').select2('val', '');
+                $('#pacientes-ideps').select2('val', '');
+                $('#procedimientos-idmedico').select2('val', '');
+                $('#ips_id').select2('val', '');
+                $('#procedimientos-medico').select2('val', '');
+                $('#procedimientos-forma_pago').select2('val', '');
+            }else{
+                $(document).find('#updateModal').modal('hide');
+                notification('Se guardaron los cambios', 1);
+            }
 
         }
     })
     .fail(function(){
-        console.log("Server error");
+        notification("Server error", 2);
     });
     return false;
 });

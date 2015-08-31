@@ -19,7 +19,7 @@ use kartik\select2\Select2;
 /* @var $searchModel app\models\ProcedimientosSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Atencion a pacientes';
+$this->title = 'Consultas';
 // $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="procedimientos-index">
@@ -48,6 +48,12 @@ $this->title = 'Atencion a pacientes';
                 'headerRowOptions'=>['class'=>'cabecera'],
                 'filterModel' => $searchModel,
                 'pjax'=>true,
+                'pjaxSettings'=>[
+                    'neverTimeout'=>true,
+                    'options'=>[
+                        'id'=>'atn_pjax',
+                    ]
+                ],
                 'columns' => [
                     [
                         'attribute'=>'fecha_atencion',
@@ -61,46 +67,44 @@ $this->title = 'Atencion a pacientes';
                         'format' => 'html',
                     ],
                     [
+                        'attribute'=>'hora',
+                        'value'=>function($model){
+                            return date('h:i a', strtotime($model->hora));
+                        }
+                    ],
+                    [
                         'attribute'=>'tipo_servicio',
-                        'label'=>'Tipo de servicio',
+                        'label'=>'Motivo',
                         'value'=>'idtipoServicio.nombre',
                     ],
                     
-                    [
-                        'attribute'=>'numero_muestra',
-                        'label'=>'N° muestra',
-                        'hAlign'=>GridView::ALIGN_CENTER,                     
-                    ],
-                    
-
-                    // 'numero_muestra',
+                    // [
+                    //     'attribute'=>'numero_muestra',
+                    //     'label'=>'N° muestra',
+                    //     'hAlign'=>GridView::ALIGN_CENTER,                     
+                    // ],
 
                     [
                         'attribute'=>'eps',
                         'label'=>'EPS',
                         'value'=> 'epsIdeps.nombre',
                     ],
-                    // 'eps_ideps',
+
+                    [
+                        'attribute'=>'paciente',
+                        'label'=>'Paciente',
+                        'value'=> function($model){
+                            return $model->idpacientes0->nombre1.' '.$model->idpacientes0->nombre2.' '.$model->idpacientes0->apellido1.' '.$model->idpacientes0->apellido2;
+                        },
+                    ],
 
                     [
                         'attribute'=>'numid_paciente',
                         'label'=>'ID paciente',
                         'value'=> 'idpacientes0.identificacion',
                     ],
-                    // 'idpacientes',
-                    // [
-                    //     'attribute'=>'cod_cups',
-                    //     'hAlign'=>GridView::ALIGN_CENTER,
-                    // ],
-                    // 'cod_cups',
-                    [ 
-                        'attribute'=>'valor_procedimiento',
-                        'label'=>'Valor estudio',
-                        'value'=>function($model){
-                            return '$'.number_format($model->valor_procedimiento);
-                        },
-                        'hAlign'=>GridView::ALIGN_RIGHT,
-                    ],
+                  
+                 
                     // 'valor_procedimiento',
                     // 'numero_factura',
                     // 'estado',
@@ -114,22 +118,12 @@ $this->title = 'Atencion a pacientes';
                     // 'forma_pago',
                     // 'numero_cheque',
                     // 'fecha_informe',
-                    [
-                        'attribute'=>'fecha_salida',
-                        'value'=>function($model){
-                            return Yii::$app->formatter->asDate($model->fecha_salida, 'd-MMM-yyyy');
-                        },
-                        'hAlign'=>GridView::ALIGN_RIGHT,
-                        'filterType'=>'\yii\jui\DatePicker',
-                        'filterWidgetOptions'=>['dateFormat' => 'yyyy-MM-dd', 'options' => ['class' => 'form-control'], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true']],
-                        // 'filter' => yii\jui\DatePicker::widget(['name' => 'ProcedimientosSearch[fecha_salida]',"dateFormat" => 'yyyy-MM-dd', 'options' => ['class' => 'form-control'], 'clientOptions'=>['changeMonth'=>'true', 'changeYear'=>'true'], 'language'=>'es']),
-                        'format' => 'html',
-                    ],
+                   
                     [
                         'attribute' => 'estado',
-                        'filter'=>ArrayHelper::map(ListasSistema::find()->where('tipo="estado_prc"')->all(),'codigo','descripcion'),
+                        'filter'=>ArrayHelper::map(ListasSistema::find()->where('tipo="estado_atencion"')->all(),'codigo','descripcion'),
                         'value'=>function($model){
-                            return ListasSistema::find()->select(['descripcion'])->where(['tipo'=>"estado_prc", 'codigo'=>$model->estado])->scalar();
+                            return ListasSistema::find()->select(['descripcion'])->where(['tipo'=>"estado_atencion", 'codigo'=>$model->estado])->scalar();
                         },
                         'filterInputOptions'=>['class'=>'filtro-opciones', 'placeholder'=>'Seleccione un estado'],
                         'hAlign'=>GridView::ALIGN_CENTER,  
@@ -184,7 +178,7 @@ $this->title = 'Atencion a pacientes';
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" title="Cerrar" class="close" data-dismiss="modal"><img src="<?=Yii::$app->request->baseUrl;?>/images/iconos/IconoBarraCerrar.png" alt="Cerrar"></button>
+                <button type="button" title="Cerrar" class="close" onclick="swichtWIndow(historiaModal,viewModal)"><img src="<?=Yii::$app->request->baseUrl;?>/images/iconos/IconoBarraCerrar.png" alt="Cerrar"></button>
                 <h3 class="titulo-tarifa">Historia clínica</h3>
             </div>
             <div class="modal-body">

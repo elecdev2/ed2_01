@@ -63,6 +63,19 @@ class ReportesController extends Controller
         $ips = new Ips();
         $lista_ips = ArrayHelper::map(Ips::find()->all(), 'id', 'nombre');
 
+        $js = <<<JS
+
+        if($('.search-botonReporte').attr('data-value') != 1){
+            $('.fomularioTituloReporte').hide();
+        }
+        $('.search-botonReporte').on('click', function() {
+            $('.fomularioTituloReporte').slideToggle('fast');
+            return false;
+        });
+JS;
+
+        $this->getView()->registerJs($js, yii\web\View::POS_READY,null);
+
         return $this->render('index', [
             'lista_ips'=>$lista_ips,
             'ips'=>$ips,
@@ -79,6 +92,19 @@ class ReportesController extends Controller
         $ips = new Ips();
         $lista_ips = ArrayHelper::map(Ips::find()->all(), 'id', 'nombre');
         $lista_rips = ArrayHelper::map(ListasSistema::find()->where(['tipo'=>'rips'])->all(), 'codigo', 'descripcion');
+
+        $js = <<<JS
+
+        if($('.search-botonReporte').attr('data-value') != 1){
+            $('.fomularioTituloReporte').hide();
+        }
+        $('.search-botonReporte').on('click', function() {
+            $('.fomularioTituloReporte').slideToggle('fast');
+            return false;
+        });
+JS;
+
+        $this->getView()->registerJs($js, yii\web\View::POS_READY,null);
         return $this->render('rips', [
             'lista_ips'=>$lista_ips,
             'ips'=>$ips,
@@ -251,27 +277,30 @@ class ReportesController extends Controller
             switch ($proc->fecha_fin) //fecha_fin tiene el valor del tipo de reporte rips
             { 
                 case 'AF':
-                    $query->select(['i.codigo AS codigoips', 'i.nombre AS nombreips', 'i.tipo_identificacion AS tipoid_ips', 'i.nit', 't.numero_factura', 't.periodo_facturacion', 'DATE_FORMAT(t.periodo_facturacion, "%d/%m/%y") AS periodo_facturacion','DATE_FORMAT(LAST_DAY(t.periodo_facturacion), "%d/%m/%y") AS fecha_fin', 'e.codigo', 'e.nombre', 'SUM(t.valor_copago) AS copago', 'SUM(t.valor_procedimiento) AS valor_procedimiento'])
+                    $query->select(['codigoips'=>'i.codigo', 'nombreips'=>'i.nombre', 'tipoid_ips'=>'i.tipo_identificacion', 'i.nit', 't.numero_factura', 'periodo_facturacion'=>'DATE_FORMAT(t.periodo_facturacion, "%d/%m/%y")', 'fecha_fin'=>'DATE_FORMAT(LAST_DAY(t.periodo_facturacion), "%d/%m/%y")', 'e.codigo', 'e.nombre', 'copago'=>'SUM(t.valor_copago)', 'valor_procedimiento'=>'SUM(t.valor_procedimiento)'])
                     ->from('procedimientos t')
                     ->join('INNER JOIN', 'eps e', 't.eps_ideps = e.id')
                     ->join('INNER JOIN', 'ips i', 'i.id = e.idips')
                     ->where(['i.idclientes'=>$id_cliente]);
+                    $render = 'tabla_af';
                     break;
                 case 'AP':
-                    $query->select(['CONCAT(p.nombre1," ",p.nombre2," ",p.apellido1," ",p.apellido2) AS nombre', 'p.tipo_identificacion', 'p.identificacion', 'DATE_FORMAT(t.fecha_atencion, "%d/%m/%y") AS fecha_atencion', 'DATE_FORMAT( LAST_DAY( t.fecha_atencion), "%d/%m/%y") AS fecha_fin', 'e.codigo', 'DATE_FORMAT(t.periodo_facturacion, "%d/%m/%y") AS periodo_facturacion', 't.numero_factura', 'i.nit', 'i.tipo_identificacion AS tipoid_ips', 'i.codigo AS codips', 'i.nombre AS nombre_ips', 'e.nombre', 't.valor_copago', 't.valor_saldo', 't.autorizacion', 't.cod_cups', 't.valor_procedimiento'])
+                    $query->select(['nombre_pac'=>'CONCAT(p.nombre1," ",p.nombre2," ",p.apellido1," ",p.apellido2)', 'p.tipo_identificacion', 'p.identificacion', 'fecha_atencion'=>'DATE_FORMAT(t.fecha_atencion, "%d/%m/%y")', 'fecha_fin'=>'DATE_FORMAT( LAST_DAY( t.fecha_atencion), "%d/%m/%y")', 'e.codigo', 'periodo_facturacion'=>'DATE_FORMAT(t.periodo_facturacion, "%d/%m/%y")', 't.numero_factura', 'i.nit', 'tipoid_ips'=>'i.tipo_identificacion', 'codips'=>'i.codigo', 'nombre_ips'=>'i.nombre', 'e.nombre', 't.valor_copago', 't.valor_saldo', 't.autorizacion', 't.cod_cups', 't.valor_procedimiento'])
                     ->from('procedimientos t')
                     ->join('INNER JOIN', 'eps e', 't.eps_ideps = e.id')
                     ->join('INNER JOIN', 'ips i', 'e.idips = i.id')
                     ->join('INNER JOIN', 'pacientes p', 't.idpacientes = p.id')
                     ->where(['i.idclientes'=>$id_cliente]);
+                    $render = 'tabla_ap';
                     break;
                 case 'US':
-                    $query->select(['CONCAT(p.nombre1," ",p.nombre2," ",p.apellido1," ",p.apellido2) AS nombre', 'p.*', 'e.codigo', 'DATE_FORMAT((YEAR(CURDATE())-YEAR(p.fecha_nacimiento) ), "%d/%m/%y") AS edad', 'c.codigo AS ciudad', 'c.codigo_departamento AS departamento'])
+                    $query->select(['nombre_pac'=>'CONCAT(p.nombre1," ",p.nombre2," ",p.apellido1," ",p.apellido2)', 'p.*', 'e.codigo', 'edad'=>'DATE_FORMAT((YEAR(CURDATE())-YEAR(p.fecha_nacimiento) ), "%d/%m/%y")', 'ciudad'=>'c.codigo', 'departamento'=>'c.codigo_departamento'])
                     ->from('pacientes p')
                     ->join('INNER JOIN', 'procedimientos t', 't.idpacientes = p.id')
                     ->join('INNER JOIN', 'eps e', 'p.ideps = e.id')
                     ->join('INNER JOIN', 'ciudades c', 'p.idciudad = c.id')
                     ->where(['p.idclientes'=>$id_cliente]);
+                    $render = 'tabla_us';
                     break;
                 default:
                     $query->select(['COUNT(t.numero_muestra) AS PF', 'i.codigo AS codips']);
@@ -293,6 +322,7 @@ class ReportesController extends Controller
             }
 
             $sql = $this->whereCondition($query,$proc,$ips);
+
 
             if(count($proc->errors) == 0)
             {
@@ -320,6 +350,79 @@ class ReportesController extends Controller
                     \Yii::$app->getSession()->setFlash('error', 'No hay registros con las condiciones seleccionadas');
                 }
             }
+        }
+        return $this->redirect(['rips']);
+    }
+
+
+    public function actionRepTabla()
+    {
+        $proc = new Procedimientos();
+        $ips = new Ips();
+        if($proc->load(Yii::$app->request->post()) && $ips->load(Yii::$app->request->post()))
+        {
+            $id_cliente = Usuarios::findOne(Yii::$app->user->id)->idclientes;
+            $query = new Query();
+            switch ($proc->fecha_fin) //fecha_fin tiene el valor del tipo de reporte rips
+            { 
+                case 'AF':
+                    $query->select(['codigoips'=>'i.codigo', 'nombreips'=>'i.nombre', 'tipoid_ips'=>'i.tipo_identificacion', 'i.nit', 't.numero_factura', 'periodo_facturacion'=>'DATE_FORMAT(t.periodo_facturacion, "%d/%m/%y")', 'fecha_fin'=>'DATE_FORMAT(LAST_DAY(t.periodo_facturacion), "%d/%m/%y")', 'e.codigo', 'e.nombre', 'copago'=>'SUM(t.valor_copago)', 'valor_procedimiento'=>'SUM(t.valor_procedimiento)'])
+                    ->from('procedimientos t')
+                    ->join('INNER JOIN', 'eps e', 't.eps_ideps = e.id')
+                    ->join('INNER JOIN', 'ips i', 'i.id = e.idips')
+                    ->where(['i.idclientes'=>$id_cliente]);
+                    $render = 'tabla_af';
+                    break;
+                case 'AP':
+                    $query->select(['nombre_pac'=>'CONCAT(p.nombre1," ",p.nombre2," ",p.apellido1," ",p.apellido2)', 'p.tipo_identificacion', 'p.identificacion', 'fecha_atencion'=>'DATE_FORMAT(t.fecha_atencion, "%d/%m/%y")', 'fecha_fin'=>'DATE_FORMAT( LAST_DAY( t.fecha_atencion), "%d/%m/%y")', 'e.codigo', 'periodo_facturacion'=>'DATE_FORMAT(t.periodo_facturacion, "%d/%m/%y")', 't.numero_factura', 'i.nit', 'tipoid_ips'=>'i.tipo_identificacion', 'codips'=>'i.codigo', 'nombre_ips'=>'i.nombre', 'e.nombre', 't.valor_copago', 't.valor_saldo', 't.autorizacion', 't.cod_cups', 't.valor_procedimiento'])
+                    ->from('procedimientos t')
+                    ->join('INNER JOIN', 'eps e', 't.eps_ideps = e.id')
+                    ->join('INNER JOIN', 'ips i', 'e.idips = i.id')
+                    ->join('INNER JOIN', 'pacientes p', 't.idpacientes = p.id')
+                    ->where(['i.idclientes'=>$id_cliente]);
+                    $render = 'tabla_ap';
+                    break;
+                case 'US':
+                    $query->select(['nombre_pac'=>'CONCAT(p.nombre1," ",p.nombre2," ",p.apellido1," ",p.apellido2)', 'p.*', 'e.codigo', 'edad'=>'DATE_FORMAT((YEAR(CURDATE())-YEAR(p.fecha_nacimiento) ), "%d/%m/%y")', 'ciudad'=>'c.codigo', 'departamento'=>'c.codigo_departamento'])
+                    ->from('pacientes p')
+                    ->join('INNER JOIN', 'procedimientos t', 't.idpacientes = p.id')
+                    ->join('INNER JOIN', 'eps e', 'p.ideps = e.id')
+                    ->join('INNER JOIN', 'ciudades c', 'p.idciudad = c.id')
+                    ->where(['p.idclientes'=>$id_cliente]);
+                    $render = 'tabla_us';
+                    break;
+                default:
+                    $query->select(['COUNT(t.numero_muestra) AS PF', 'i.codigo AS codips']);
+                    break;
+            }
+            $subQuery = (new Query())->select(['COUNT(p.id)'])->from('pacientes p')
+            ->join('INNER JOIN', 'procedimientos t', 't.idpacientes = p.id')
+            ->join('INNER JOIN', 'eps e', 'p.ideps = e.id')
+            ->join('INNER JOIN', 'ciudades c', 'p.idciudad = c.id')
+            ->where(['p.idclientes'=>$id_cliente]);
+
+            if($proc->fecha_fin == 'CT'){
+                $query->addSelect([$subQuery])
+                ->from('procedimientos t')
+                ->join('INNER JOIN', 'eps e', 't.eps_ideps = e.id')
+                ->join('INNER JOIN', 'ips i', 'i.id = e.idips')
+                ->join('INNER JOIN', 'pacientes p', 't.idpacientes = p.id')
+                ->where(['i.idclientes'=>$id_cliente]);
+            }
+
+            $sql = $this->whereCondition($query,$proc,$ips);
+
+            $dataProvider = new ActiveDataProvider([
+                'query' => $sql,
+                'sort'=>false,
+                'pagination'=>false,
+            ]);
+
+            
+            return $this->renderAjax($render,[
+                'dataProvider'=>$dataProvider,
+            ]);
+
         }
         return $this->redirect(['rips']);
     }

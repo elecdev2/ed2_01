@@ -17,11 +17,12 @@ $this->title = $model->numero_muestra;
    
     <input type="text" hidden name="id_help" data-value="<?=$model->id?>" data-titulo="<?=Html::encode($this->title)?>" id="helperHid">
     
-    <?php if(Yii::$app->user->can('medico') && (strtotime($model->fecha_atencion) !== strtotime(date('Y-m-d')))){ ?>
+    <?php if(Yii::$app->user->can('medico') && ($model->estado !== 'CER')){ ?>
         <div class="panel panel-default">
             <div class="panel-body">
-                <div class="col-sm-6">
-                    <button class="btn btn-primary" id="historia_clinica" data-dismiss="modal" data-paciente="<?=$model->idpacientes?>" data-medico="<?=$model->idmedico?>" onclick="abrirHistoria()" ><i class=""></i>Ver historia clinica</button>
+                <div class="col-sm-12 text-right">
+                    <button class="btn btn-primary" id="historia_clinica" data-dismiss="modal" data-paciente="<?=$model->idpacientes?>" data-medico="<?=$model->idmedico?>" onclick="abrirHistoria()" ><i class="icon-his his"></i>Crear historia clinica</button>
+                    <button class="btn btn-default" id="cerrar_cita" onclick="cerrarCita(<?=$model->id?>)" ><i class=""></i>Cerrar cita</button>
                 </div>
             </div>
         </div>

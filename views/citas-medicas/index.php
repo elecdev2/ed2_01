@@ -182,6 +182,9 @@ $this->title = 'Citas médicas';
                                                         }
                                                     }
                                                 });
+                                            $('input#id').val(event.id);
+                                            $('input#med').val(med);
+                                            $('input#date').val(event.start.format());
                                                 break;
                                         }
 

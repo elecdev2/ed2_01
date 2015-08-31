@@ -90,7 +90,7 @@ $this->title = 'Citas médicas';
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" title="Cerrar" class="close" data-dismiss="modal"><img src="<?=Yii::$app->request->baseUrl;?>/images/iconos/IconoBarraCerrar.png" alt="Cerrar"></button>
+                <button type="button" title="Cerrar" class="close" onclick="swichtWIndow(historiaModal,citasModal)"><img src="<?=Yii::$app->request->baseUrl;?>/images/iconos/IconoBarraCerrar.png" alt="Cerrar"></button>
                 <h3 class="modal-title"></h3>
             </div>
             <div class="modal-body">

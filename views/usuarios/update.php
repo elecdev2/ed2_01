@@ -21,7 +21,7 @@ $this->title = $model->nombre;
             <div class="panel-body" style="padding:10px;">
                 <img class="img-rounded img-responsive" src="<?=Yii::$app->request->baseUrl?>/images/fotos_perfiles/<?=$model->foto?>" alt="<?=$model->nombre?>">
                 <div style="float:right;position:relative;">
-                    <?= Html::a('', [''], ['id'=>'cambiarFoto', 'title'=>'Cambiar foto', 'class' => 'up']) ?>
+                    <?= Html::a('', ['#'], ['id'=>'cambiarFoto', 'title'=>'Cambiar foto', 'class' => 'up']) ?>
                     <?php if($model->foto != 'MDMasAvatar.png' && $model->foto != 'MDFemAvatar.png' && $model->foto != 'SecretariaAvatar.png' && $model->foto != 'UsuarioAvatar.png'){ ?>
                         <?= Html::a('', ['borrar-foto','id'=>$model->id], ['title'=>'Eliminar foto', 'class' => 'del','data' => [
                                 'confirm' => '¿Está seguro que desea eliminar esta foto?',
@@ -37,9 +37,8 @@ $this->title = $model->nombre;
 
     <!-- Formulario oculto: revisar library.js y buscar los id de los input y el boton -->
     <div style="display:none">
-        <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data',  'name' => 'formulario1'], 'action' => 'upload']) ?>
+        <?php $form = ActiveForm::begin(['id'=>'fotoForm', 'options' => ['enctype' => 'multipart/form-data'], 'action' => 'upload']) ?>
                 <?= $form->field($imagen, 'file')->fileInput(['id'=>'input-1']) ?>
-                <!-- <input id="input-1" required name="UploadFormImages[file]" type="file" class="file filestyle" data-buttonName="btn-primary" data-buttonText="Examinar"> -->
                 <input hidden id="iu" type="text" name="usuario" value="<?=$model->id;?>">
                 <button id="cargar" type="submit" class="btn btn-success" name="submit">Cargar Imagen</button>
         <?php ActiveForm::end() ?>
@@ -63,11 +62,4 @@ $this->title = $model->nombre;
             </div>
         </div>
     </div>
-<script type="text/javascript">
-    $(document).ready(function() {
-        if($('#usuarios-perfil').val() == 'medico')
-        {
-            $('#campoIPSs').hide();
-        }
-    });
-</script>
+

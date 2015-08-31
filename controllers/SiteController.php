@@ -163,13 +163,42 @@ class SiteController extends Controller
         $usuario =  Usuarios::findOne(Yii::$app->user->id);
         $ips = new Ips();
         $id_cliente = $usuario->idclientes;
-        if(Yii::$app->user->can('admin')){
-            $lista_perf = ArrayHelper::map(Items::find()->where(['data'=>'0'])->all(),'name','description');
+
+        if(Yii::$app->user->can('super_admin')){
+            $lista_perf = ArrayHelper::map(Items::find()->all(),'name','description');
         }else{
-            $lista_perf = ArrayHelper::map(Items::find()->where(['data'=>'0'])->andWhere(['<>','name','admin'])->all(),'name','description');
+            if(Yii::$app->user->can('admin')){
+                $lista_perf = ArrayHelper::map(Items::find()->where(['data'=>'0'])->all(),'name','description');
+            }else{
+
+                $lista_perf = ArrayHelper::map(Items::find()->where(['data'=>'0'])->andWhere(['<>','name','admin'])->all(),'name','description');
+            }
         }
         $lista_ips = ArrayHelper::map(Ips::find()->all(),'id','nombre');
         $lista_especialidades = ArrayHelper::map(Especialidades::find()->all(),'id','nombre');
+
+        $sw = 0;
+
+        if(isset($_GET['sw'])){$sw = $_GET['sw'];}
+
+         $js = <<<JS
+        $("#url").val(getUrlVars());
+        $("#panelMedico").hide();
+        if($('#usuarios-perfil').val() == 'medico')
+        {
+            $('#campoIPSs').hide();
+        }
+        if($sw == 1)
+        {
+            notification('Se guardaron los cambios', 1);
+        }
+        if($sw == 2)
+        {
+            notification('Error al guardar los cambios', 2);
+        }
+JS;
+
+        $this->getView()->registerJs($js, yii\web\View::POS_READY,null);
 
         $ips->id = $model->perfil != 'medico' ? $this->ipsSeleccionadas($model) : '';
         
@@ -199,7 +228,8 @@ class SiteController extends Controller
         {
             $imagen->file = UploadedFile::getInstance($imagen, 'file');
             $model = $this->findModel($_POST['usuario']);
-            if (isset($imagen->file))
+
+            if (isset($imagen->file) && ($imagen->file->extension == 'jpg' || $imagen->file->extension == 'png' || $imagen->file->extension == 'gif'))
             {
                 if($model->foto !== null && $model->foto != 'MDMasAvatar.png' && $model->foto != 'MDFemAvatar.png' && $model->foto != 'SecretariaAvatar.png' && $model->foto != 'UsuarioAvatar.png')
                 {
@@ -207,17 +237,21 @@ class SiteController extends Controller
                 }
                 $img = md5(time()).'.'. $imagen->file->extension;
 
-                if($imagen->file->extension == 'jpg' || $imagen->file->extension == 'png' || $imagen->file->extension == 'gif')
+               
+                $imagen->file->saveAs('images/fotos_perfiles/'.$img);
+                $model->foto = $img;
+                if(!$model->save())
                 {
-                    $imagen->file->saveAs('images/fotos_perfiles/'.$img);
-                    $model->foto = $img;
-                    $model->save();
-                    \Yii::$app->getSession()->setFlash('success', 'Foto de perfil actualizada!');
+                    $sw = 1;
                 }else{
-                    \Yii::$app->getSession()->setFlash('error', 'Error: No se pudo cargar su foto, intentelo de nuevo');
+                    $sw = 2;
                 }
-                $this->redirect(['update', 'id'=>$model->id]);
+                // \Yii::$app->getSession()->setFlash('success', 'Foto de perfil actualizada!');
+            }else{
+                // \Yii::$app->getSession()->setFlash('error', 'Error: No se pudo cargar su foto, intentelo de nuevo');
+                $sw = 2;
             }
+            $this->redirect(['update', 'id'=>$model->id, 'sw'=> $sw]);
         }
     }
 
@@ -255,11 +289,13 @@ class SiteController extends Controller
         
         if($model->save())
         {
-            \Yii::$app->getSession()->setFlash('success', 'Foto de perfil borrada!');
+            $sw = 1;
+            // \Yii::$app->getSession()->setFlash('success', 'Foto de perfil borrada!');
         }else{
-            \Yii::$app->getSession()->setFlash('error', 'Error: No se pudo borrar su foto, intentelo de nuevo');
+            $sw = 2;
+            // \Yii::$app->getSession()->setFlash('error', 'Error: No se pudo borrar su foto, intentelo de nuevo');
         }
-        $this->redirect(['update', 'id'=>$model->id]);
+        $this->redirect(['update', 'id'=>$model->id, 'sw'=> $sw]);
 
     }
 
@@ -283,12 +319,18 @@ class SiteController extends Controller
                 {
                     $imagen->file->saveAs('images/firmas/'.$img);
                     $model->ruta_firma = $img;
-                    $model->save();
-                    \Yii::$app->getSession()->setFlash('success', 'Firma cambiada!');
+                    if(!$model->save())
+                    {
+                        $sw = 1;
+                    }else{
+                        $sw = 2;
+                    }
+                    // \Yii::$app->getSession()->setFlash('success', 'Firma cambiada!');
                 }else{
-                    \Yii::$app->getSession()->setFlash('error', 'Error: No se pudo cargar su firma, intentelo de nuevo');
+                    $sw = 2;
+                    // \Yii::$app->getSession()->setFlash('error', 'Error: No se pudo cargar su firma, intentelo de nuevo');
                 }
-                $this->redirect(['update', 'id'=>\Yii::$app->user->id]);
+                $this->redirect(['update', 'id'=>\Yii::$app->user->id, 'sw'=> $sw]);
             }
         }
     }
@@ -306,11 +348,13 @@ class SiteController extends Controller
        
         if($model->save())
         {
-            \Yii::$app->getSession()->setFlash('success', 'Firma borrada!');
+            $sw = 1;
+            // \Yii::$app->getSession()->setFlash('success', 'Firma borrada!');
         }else{
-            \Yii::$app->getSession()->setFlash('error', 'Error: No se pudo borrar su firma, intentelo de nuevo');
+            $sw = 2;
+            // \Yii::$app->getSession()->setFlash('error', 'Error: No se pudo borrar su firma, intentelo de nuevo');
         }
-        $this->redirect(['index']);
+        $this->redirect(['update', 'id'=>\Yii::$app->user->id, 'sw'=> $sw]);
 
     }
 

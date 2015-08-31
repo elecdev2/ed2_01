@@ -104,7 +104,7 @@ use yii\bootstrap\Modal;
                                 'pluginOptions'=>[
                                 'depends'=>['ips_id'],
                                 'placeholder'=>'Seleccione EPS',
-                                'url'=>Url::to(['/procedimientos/subeps'])
+                                'url'=>Url::to(['/procedimientos/subafiliacion'])
                             ]
                         ])->label('Afiliación');  
                     ?>

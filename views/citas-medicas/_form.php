@@ -343,7 +343,8 @@ $('form#citasForm').on('beforeSubmit', function(e)
 
                 $(document).find('#citasModal').modal('hide');
                 $('.fullcalendar').fullCalendar( 'renderEvent', result, true);
-                bootbox.alert('Se guardaron los cambios');
+                notification('Se guardaron los cambios', 1);
+                $('.modal').modal('hide');
             }else{
                 switch (result) {
                     case '1':

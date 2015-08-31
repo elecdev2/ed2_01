@@ -5,19 +5,21 @@ use yii\helpers\Url;
  ?>
 
 <?php if($tipo == 1){ ?>
-	<table class="table-striped" width="100%">
-		<tr>
-			<?php 
-				$totales = false;
-				foreach ($campos as $c) { 
+	<table class="kv-grid-table table table-hover table-bordered table-striped kv-table-wrap" width="100%">
+		<thead>
+			<tr>
+				<?php 
+					$totales = false;
+					foreach ($campos as $c) { 
 
-					if($c->idcolumna0->total){
-						${$c->idcolumna0->alias} = 0;
-						$totales = true;
-					}?>
-		        	<th class="" > <?= Html::encode($c->idcolumna0->descripcion); ?></th>
-		    <?php } ?>
-		</tr>
+						if($c->idcolumna0->total){
+							${$c->idcolumna0->alias} = 0;
+							$totales = true;
+						}?>
+			        	<th class="" > <?= Html::encode($c->idcolumna0->descripcion); ?></th>
+			    <?php } ?>
+			</tr>
+		</thead>
 		<?php foreach ($lista as $l) { ?>
 
 				<tr>
@@ -69,20 +71,21 @@ use yii\helpers\Url;
 	<?php }else{ ?>
 	<!-- Tabla de estudios facturados -->
 	
-	<table class="table-striped" width="100%">
-		<tr width="100%">
-			<?php foreach ($campos as $c) { ?>
-				<th><?= Html::encode($c); ?></th>	
-			<?php } ?>
-			<th></th>
-		</tr>
-		
+	<table class="kv-grid-table table table-hover table-bordered table-striped kv-table-wrap" width="100%">
+		<thead>
+			<tr width="100%">
+				<?php foreach ($campos as $c) { ?>
+					<th><?= Html::encode($c); ?></th>	
+				<?php } ?>
+				<th></th>
+			</tr>
+		</thead>
 		<?php foreach ($lista as $l) { ?>
 			<tr>
 				<?php foreach ($campos as $c) { ?>
 					<td><?= Html::encode($l[strtoupper($c)]);  ?></td>		
 				<?php } ?>
-				<td><?= Html::a('Detalle', ['imprimir-facturados','fac'=>$l['FACTURA'], 'id_ips'=>$l['IDIPS'], 'id_eps'=>$l['IDEPS']], ['target'=>'_blank']) ?></td>
+				<td><?= Html::a('', ['imprimir-facturados','fac'=>$l['FACTURA'], 'id_ips'=>$l['IDIPS'], 'id_eps'=>$l['IDEPS']], ['target'=>'_blank','class'=>'vi', 'title'=>'detalle']) ?></td>
 			</tr>	
 		<?php } ?>
 	</table>

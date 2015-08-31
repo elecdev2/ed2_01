@@ -37,6 +37,8 @@ use app\models\Recomendaciones;
 use app\models\Formulacion;
 use app\models\UploadForm;
 use app\models\ArchivosHistorial;
+use app\models\EpsTipos;
+use app\models\EstudiosIps;
 use yii\web\UploadedFile;
 
 use yii\web\Controller;
@@ -69,6 +71,16 @@ class AtencionController extends Controller
                         'allow' => true,
                         'roles' => ['admin'],
                     ],
+                    [
+                        'allow' => true,
+                        'actions' => ['index','view', 'update','get-descripcion','nueva-plantilla','editar-plantilla','get-historia','new-for','upload','new-rec','new-an','new-exp','new-ex','new-rev','new-hab','new-fam','new-pat','new-mot','cod-diag'],
+                        'roles' => ['medico'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['index','create','view','update','guardar-medico','add-medico','get-paciente','calcular-edad','calcular-fecha','pacientes-create','precio'],
+                        'roles' => ['procedimientos'],
+                    ],
                    
                 ],
             ],
@@ -93,7 +105,7 @@ class AtencionController extends Controller
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'lista_estados'=> ArrayHelper::map(ListasSistema::find()->where('tipo="estado_prc"')->all(),'codigo','descripcion'),
+            'lista_estados'=> ArrayHelper::map(ListasSistema::find()->where('tipo="estado_atencion"')->all(),'codigo','descripcion'),
         ]);
     }
 
@@ -133,7 +145,8 @@ class AtencionController extends Controller
             $model->numero_muestra = $tipo_serv->serie.$tipo_serv->consecutivo.'-'.date('y');
             $model->cantidad_muestras = 1;
             $model->periodo_facturacion = $model->fecha_atencion;
-
+            $model->hora = $_POST['CitasMedicas']['hora_llegada'];
+            $model->estado = 'ABT';
 
             $pac = Pacientes::find()->where(['identificacion'=>$paciente->identificacion])->one();
 
@@ -157,6 +170,8 @@ class AtencionController extends Controller
             
             if($model->save())
             {
+                $sw = true;
+
                 $cons = $tipo_serv->consecutivo + 1;
                 if($model->epsIdeps->idips0->idclientes0->tipo_consecutivo == 'E')
                 {
@@ -179,19 +194,21 @@ class AtencionController extends Controller
                 $hc->fecha = date('Y-m-d');
                 $hc->hora = date('H:i:s');
                 $hc->id_medico = $model->idmedico;
+                $hc->id_procedimiento = $model->id;
                 $hc->save();
 
                 $cita = CitasMedicas::find()->where(['pacientes_id'=>$model->idpacientes, 'medicos_id'=>$model->idmedico, 'fecha'=>$model->fecha_atencion])->one();
                 if($cita != null)
                 {
                     $cita->hora_llegada = $_POST['CitasMedicas']['hora_llegada'];
-                    $cita->estado = 'PRE';
+                    $cita->estado = 'PRE';   
                     if(!$cita->save())
                     {
                         return 0;
                     }
+                    $sw = false;
                 }
-                return $this->redirect(['citas-medicas/index']);
+                return $sw == true ? Yii::$app->request->baseUrl.'/atencion/index' : Yii::$app->request->baseUrl.'/citas-medicas/index';
                 // return 1;
              
             }else{
@@ -250,7 +267,7 @@ SCRIPT;
         $model = $this->findModel($id);
         $paciente = Pacientes::findOne($model->idpacientes);
         $ips_model = Ips::findOne($model->epsIdeps->idips0->id);
-        $cita = CitasMedicas::find()->where(['pacientes_id'=>$model->idpacientes, 'medicos_id'=>$model->idmedico, 'fecha'=>$model->fecha_atencion])->one();
+        $cita = CitasMedicas::find()->where(['pacientes_id'=>$model->idpacientes, 'medicos_id'=>$model->idmedico, 'fecha'=>$model->fecha_atencion, 'hora'=>$model->hora])->one();
 
         if ($model->load(Yii::$app->request->post()) && $paciente->load(Yii::$app->request->post())) 
         {
@@ -303,9 +320,16 @@ SCRIPT;
     public function actionGetHistoria()
     {
         $hc = HistoriaClinica::find()->select(['id','fecha'=>'DATE_FORMAT(fecha,"%d %b %y")'])->where(['id_paciente'=>$_POST['pac']]); //Se asume que existe una sola historia clinica por fecha
+        $proc_fechas = Procedimientos::find()->select(['id','fecha_atencion'=>'DATE_FORMAT(fecha_atencion,"%d %b %y")'])->where(['idpacientes'=>$_POST['pac']]);
         $paciente = Pacientes::findOne($_POST['pac']);
 
         $historia = HistoriaClinica::find()->select(['id'])->where(['id_paciente'=>$_POST['pac']])->max('id');
+        $historia_model = HistoriaClinica::findOne($historia);
+
+        $tipo_estudio = TiposServicio::findOne($historia_model->id_tipos);
+
+        $campos = Campos::find()->where(['idtipos_servicio'=>$tipo_estudio->id])->all();
+
         
         if($historia == null)
         {
@@ -314,7 +338,10 @@ SCRIPT;
 
         return $this->renderAjax('//historia-clinica/medico',[
                 'hc' => $historia,
+                'pr' => $historia_model->id_procedimiento,
+                'tipo_estudio' => $tipo_estudio,
                 'paciente'=>$paciente,
+                'campos' => $campos,
                 'motivo_l'=>ArrayHelper::map($hc->having(['id'=> MotivoEnfermedad::find()->select(['id_historia'])])->all(), 'id', 'fecha'),
                 'motivo_e'=>new MotivoEnfermedad(),
                 'ant_pato_l'=>ArrayHelper::map($hc->having(['id'=> AntecedentesPatologicos::find()->select(['id_historia'])])->all(), 'id', 'fecha'),
@@ -340,6 +367,7 @@ SCRIPT;
                 'archivo_historial_l' => ArrayHelper::map($hc->having(['id'=> ArchivosHistorial::find()->select(['id_historia'])])->all(), 'id', 'fecha'),
                 'archivo' => new UploadForm(),
                 'nombre_pac'=>$paciente->nombre1. ' ' .$paciente->nombre2. ' ' .$paciente->apellido1. ' ' .$paciente->apellido2,
+                'tipo_estudio_l' => ArrayHelper::map($proc_fechas->all(), 'id', 'fecha_atencion'),
             ]);
     }
 
@@ -355,6 +383,33 @@ SCRIPT;
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
+    }
+
+    /**
+     * Cambia el estado de una cita a cerrada.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionCerrarCita()
+    {
+        $cita = $this->findModel($_POST['id']);
+        $cita->estado = 'CER';
+
+        $cita_prog = CitasMedicas::find()->where(['pacientes_id'=>$cita->idpacientes, 'medicos_id'=>$cita->idmedico, 'fecha'=>$cita->fecha_atencion])->one();
+
+        if($cita_prog !== null)
+        {
+            $cita_prog->estado = 'CLS';
+            $cita_prog->save();
+        }
+
+        if($cita->save())
+        {
+            return 1;
+        }else{
+            return 0;
+        }
+
     }
 
     /**
@@ -450,8 +505,10 @@ SCRIPT;
 
     public function eps($id_ips)
     {
+        $subquery = EpsTipos::find()->distinct()->select(['eps_id']);
+        $subquery2 = Tarifas::find()->distinct()->select(['eps_id']);
         $query = (new Query());
-        $query->select(['id'=>'id', 'name'=>'nombre'])->from('eps')->where(['idips'=>$id_ips]);
+        $query->select(['id'=>'id', 'name'=>'nombre'])->from('eps')->where(['idips'=>$id_ips])->andWhere(['id'=>$subquery])->andWhere(['id'=>$subquery2]);
         $r = $query->all();
 
         return $r;
@@ -459,12 +516,14 @@ SCRIPT;
 
     public function tipos_s($id_ips, $id_eps)
     {
+        $subquery2 = Tarifas::find()->distinct()->select(['idestudios'])->where(['eps_id'=>$id_eps]);
+        $subquery = EstudiosIps::find()->distinct()->select(['idtipo_servicio'])->where(['cod_cups'=>$subquery2]);
         $query = (new Query());
         $query->select('ts.id,(ts.nombre)AS name')->from('tipos_servicio ts')
         ->join('INNER JOIN', 'eps_tipos ep','ep.tipos_servicio_id = ts.id')
         ->join('INNER JOIN', 'eps e','e.id = ep.eps_id')
         ->join('INNER JOIN', 'ips i','i.id = e.idips')
-        ->where(['e.id'=>$id_eps]);
+        ->where(['e.id'=>$id_eps])->andWhere(['ts.id'=>$subquery]);
 
         return $query->all();
     }
@@ -480,7 +539,8 @@ SCRIPT;
         ->join('INNER JOIN', 'eps_tipos et','et.tipos_servicio_id = ts.id')
         ->join('INNER JOIN', 'eps e','e.id = et.eps_id')
         ->join('INNER JOIN', 'ips i','i.id = e.idips')
-        ->where(['i.id'=>$id_ips,'e.id'=>$id_eps, 'ts.id'=>$id_tipo])->andWhere(['es.cod_cups'=>$tarifas]);
+        ->where(['i.id'=>$id_ips,'e.id'=>$id_eps, 'ts.id'=>$id_tipo])
+        ->andWhere(['es.cod_cups'=>$tarifas]);
 
         return $query->all();
     }
@@ -547,12 +607,39 @@ SCRIPT;
             $tipo_id = empty($ids[2]) ? null : $ids[2];
             if ($ips_id != null) {
                $data = self::estudio($ips_id, $eps_id, $tipo_id);
-            
+
                 return Json::encode(['output'=>$data, 'selected'=>'']);
                 // return Json::encode(['output'=>$data['out'], 'selected'=>$data['selected']]);
             }
         }
         return Json::encode(['output'=>'', 'selected'=>'']);
+    }
+
+
+    public function actionImprimirRf($hc, $rf)
+    {
+        switch ($rf) 
+        {
+            case 'r':
+                $model = Recomendaciones::find()->where(['id_historia'=>$hc])->one();
+                $model = $model->recomendaciones;
+                break;
+            case 'f':
+                $model = Formulacion::find()->where(['id_historia'=>$hc])->one();
+                $model = $model->formulacion;
+                break;
+        }
+        $this->layout = 'resultados_layout';
+        $pdf = new Pdf();
+        $mpdf = $pdf->api;
+
+
+        $mpdf->WriteHtml($this->render('//historia-clinica/recomFor', [
+                'model' => $model,
+            ], true));
+        $mpdf->SetJS('this.print()');
+        $mpdf->output();
+
     }
 
 
@@ -801,6 +888,31 @@ SCRIPT;
             }
             
             return 1;
+        }
+    }
+
+    public function actionNewEspecialidad()
+    {
+        if(Yii::$app->request->post())
+        {
+            $i = 0;
+            foreach ($_POST['TiposServicio'] as $clave => $val) 
+            {
+                if($clave != 'id_campo' && $clave != 'id')
+                {
+                    foreach ($_POST['TiposServicio'][$clave] as $key => $value) 
+                    {
+                        $valor = new VlrsCamposProcedimientos();
+                        $valor->valor = $value;
+                        $valor->idcampos_tipos_servicio = $_POST['TiposServicio']['id_campo'][$i];
+                        $valor->id_procedimiento = $_POST['procedimiento_id'];
+                        $valor->save();
+                        $i++;
+                    }
+                }
+            }
+            return 1;
+           
         }
     }
 }

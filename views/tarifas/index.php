@@ -46,6 +46,7 @@ $this->title = 'Tarifas'.' - '.$eps;
                 'attribute'=>'estudio',
                 'label'=>'Estudios',
                 'value'=> 'idestudios0.descripcion',
+                'contentOptions'=>['style'=>'width:70%; word-wrap: break-word;']
             ],
             [
                 'attribute'=>'valor_procedimiento',
@@ -74,6 +75,7 @@ $this->title = 'Tarifas'.' - '.$eps;
                         ]);
                     },
                 ],
+
             ],
         ],
         'toolbar' => [

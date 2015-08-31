@@ -207,7 +207,7 @@ use kartik\select2\Select2;
      <div class="panel panel-default">
         <div class="panel-body" style="padding: 10px 0;"> 
             <div class="text-center">
-                <?= Html::submitButton($model->isNewRecord ? '<i class="add icon-guardar"></i>Crear' : '<i class="add icon-actualizar"></i>Actualizar', ['class' =>'btn btn-success']) ?>
+                <?= Html::submitButton($model->isNewRecord ? '<i class="add icon-guardar"></i>Crear' : '<i class="add icon-actualizar"></i>Actualizar', ['class' =>'btn btn-success', 'style'=>$model->estado == 'CER' ? 'display:none' : 'display:initial']) ?>
             </div>
         </div>
     </div>
@@ -233,25 +233,26 @@ $('form#ateForm').on('beforeSubmit', function(e)
         {
             notification('Error al guardar los cambios', 2);
         }else{
-            if(sw == 1)
-            {
-                notification('Se guardaron los cambios', 1);
-                $('form').find("input, textarea, select").val("");
+            window.location.replace(result);
+            // if(sw == 1)
+            // {
+            //     notification('Se guardaron los cambios', 1);
+            //     $('form').find("input, textarea, select").val("");
 
-                $('#pacientes-tipo_identificacion').select2('val', '');
-                $('#pacientes-sexo').select2('val', '');
-                $('#pacientes-tipo_usuario').select2('val', '');
-                $('#pacientes-tipo_residencia').select2('val', '');
-                $('#pacientes-idciudad').select2('val', '');
-                $('#pacientes-ideps').select2('val', '');
-                $('#procedimientos-idmedico').select2('val', '');
-                $('#ips_id').select2('val', '');
-                $('#procedimientos-medico').select2('val', '');
-                $('#procedimientos-forma_pago').select2('val', '');
-            }else{
-                $(document).find('#updateModal').modal('hide');
-                notification('Se guardaron los cambios', 1);
-            }
+            //     $('#pacientes-tipo_identificacion').select2('val', '');
+            //     $('#pacientes-sexo').select2('val', '');
+            //     $('#pacientes-tipo_usuario').select2('val', '');
+            //     $('#pacientes-tipo_residencia').select2('val', '');
+            //     $('#pacientes-idciudad').select2('val', '');
+            //     $('#pacientes-ideps').select2('val', '');
+            //     $('#procedimientos-idmedico').select2('val', '');
+            //     $('#ips_id').select2('val', '');
+            //     $('#procedimientos-medico').select2('val', '');
+            //     $('#procedimientos-forma_pago').select2('val', '');
+            // }else{
+            //     $(document).find('#updateModal').modal('hide');
+            //     notification('Se guardaron los cambios', 1);
+            // }
 
         }
     })

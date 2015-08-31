@@ -1,4 +1,8 @@
 
+$('.modal').on('shown.bs.modal', function () {
+    $(".modal-body").scrollTop(0);
+});
+
 function nombrePaciente(docInput,idInput,nombretag,nombre1,nombre2,apellido1,apellido2,direccion,telefono,fecha,edad,email,tipoId)
 {
     $(docInput).on('blur', function(event) {
@@ -167,7 +171,7 @@ function getUrlVars() {
     });
 
     $(document).on('change', '#input-1', function(event) {
-        event.preventDefault();
+        // event.preventDefault();
         document.getElementById("cargar").click();
     });
 
@@ -358,9 +362,7 @@ function getUrlVars() {
         }
     });
 
-
-
-    
+   
 
         // $(document)
         // .ajaxStart(function() {

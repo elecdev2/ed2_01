@@ -186,6 +186,7 @@ class UsuariosController extends Controller
             }
 
             if($model->idmedicos != null){
+                $modelMedico->nombre = $model->nombre;
                 $modelMedico->activo = $model->activo == 1 ? 1 : 2;
                 $modelMedico->save();
             }
@@ -218,8 +219,27 @@ class UsuariosController extends Controller
 
         $ips->id = $model->perfil != 'medico' ? $this->ipsSeleccionadas($model) : '';
 
-        $this->getView()->registerJs('$("#url").val(getUrlVars());$("#panelMedico").hide();', yii\web\View::POS_READY,null);
-        // return print_r($lista_ips_select);
+        $sw = 0;
+
+        $js = <<<JS
+        $("#url").val(getUrlVars());
+        $("#panelMedico").hide();
+        if($('#usuarios-perfil').val() == 'medico')
+        {
+            $('#campoIPSs').hide();
+        }
+        if($sw == 1)
+        {
+            notification('Se guardaron los cambios', 1);
+        }
+        if($sw == 2)
+        {
+            notification('Error al guardar los cambios', 2);
+        }
+JS;
+
+        $this->getView()->registerJs($js, yii\web\View::POS_READY,null);
+        
         return $this->renderAjax('update', [
             'model' => $model,
             'id_cliente'=>$id_cliente,
@@ -257,12 +277,17 @@ class UsuariosController extends Controller
                 {
                     $imagen->file->saveAs('images/fotos_perfiles/'.$img);
                     $model->foto = $img;
-                    $model->save();
-                    \Yii::$app->getSession()->setFlash('success', 'Foto de perfil actualizada!');
+                    if($model->save())
+                    {
+                        $sw = 1;
+                    }else{
+                        $sw = 2;
+                    }
+                    // return Yii::$app->request->baseUrl.'/images/fotos_perfiles/'.$img;
                 }else{
-                    \Yii::$app->getSession()->setFlash('error', 'Error: No se pudo cargar su foto, intentelo de nuevo');
+                    $sw = 2;
                 }
-                $this->redirect(['index']);
+                $this->redirect(['index', 'sw'=>$sw]);
             }
         }
     }
@@ -301,11 +326,13 @@ class UsuariosController extends Controller
         
         if($model->save())
         {
-            \Yii::$app->getSession()->setFlash('success', 'Foto de perfil borrada!');
+            $sw = 1;
+            // \Yii::$app->getSession()->setFlash('success', 'Foto de perfil borrada!');
         }else{
-            \Yii::$app->getSession()->setFlash('error', 'Error: No se pudo borrar su foto, intentelo de nuevo');
+            $sw = 2;
+            // \Yii::$app->getSession()->setFlash('error', 'Error: No se pudo borrar su foto, intentelo de nuevo');
         }
-        $this->redirect(['index']);
+        $this->redirect(['index', 'sw'=>$sw]);
 
     }
 

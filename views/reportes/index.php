@@ -235,15 +235,3 @@ use kartik\grid\GridView;
 	    ]); ?>
 
 <?php } ?>
-<script type="text/javascript">
-	$(document).ready(function() {
-        // $('.fomularioTitulo').hide();
-        if($('.search-botonReporte').attr('data-value') != 1){
-        	$('.fomularioTituloReporte').hide();
-        }
-        $('.search-botonReporte').on('click', function() {
-            $('.fomularioTituloReporte').slideToggle('fast');
-            return false;
-        });
-    });
-</script>

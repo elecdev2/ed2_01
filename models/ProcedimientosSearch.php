@@ -14,6 +14,7 @@ class ProcedimientosSearch extends Procedimientos
 {
     public $eps;
     public $numid_paciente;
+    public $paciente;
     public $tipo_servicio;
     public $medico;
     /**
@@ -23,7 +24,7 @@ class ProcedimientosSearch extends Procedimientos
     {
         return [
             [['id', 'idpacientes', 'eps_ideps', 'cantidad_muestras', 'idtipo_servicio', 'idmedico', 'usuario_recibe', 'usuario_transcribe'], 'integer'],
-            [['eps','numid_paciente','tipo_servicio','medico','fecha_atencion', 'autorizacion', 'numero_muestra', 'cod_cups', 'medico', 'observaciones', 'forma_pago', 'numero_cheque', 'estado', 'fecha_informe', 'numero_factura', 'fecha_salida', 'fecha_entrega', 'periodo_facturacion'], 'safe'],
+            [['eps','numid_paciente','tipo_servicio','medico','fecha_atencion', 'autorizacion', 'numero_muestra', 'cod_cups', 'medico', 'observaciones', 'forma_pago', 'numero_cheque', 'estado', 'fecha_informe', 'numero_factura', 'fecha_salida', 'fecha_entrega', 'periodo_facturacion', 'hora','paciente'], 'safe'],
             [['valor_procedimiento', 'valor_copago', 'valor_saldo', 'valor_abono', 'descuento'], 'number'],
         ];
     }
@@ -52,8 +53,14 @@ class ProcedimientosSearch extends Procedimientos
 
         $query->where(['eps.idips'=>UsuariosIps::find()->select('idips')->where(['idusuario'=>Yii::$app->user->id])]);
 
+        if(Yii::$app->user->can('medico') && !Yii::$app->user->can('admin'))
+        {
+            $query->andWhere(['idmedico'=>Usuarios::find()->select(['idmedicos'])->where(['id'=>Yii::$app->user->id])]);
+        }
+
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort'=> ['defaultOrder' => ['fecha_atencion'=>SORT_DESC, 'hora'=>SORT_DESC]]
         ]);
 
         $dataProvider->sort->attributes['eps'] =[
@@ -64,6 +71,11 @@ class ProcedimientosSearch extends Procedimientos
         $dataProvider->sort->attributes['numid_paciente'] =[
             'asc'=>['pacientes.identificacion'=>SORT_ASC],
             'desc'=>['pacientes.identificacion'=>SORT_DESC],
+        ];
+
+        $dataProvider->sort->attributes['paciente'] =[
+            'asc'=>['pacientes.apellido1'=>SORT_ASC],
+            'desc'=>['pacientes.apellido1'=>SORT_DESC],
         ];
 
         $dataProvider->sort->attributes['tipo_servicio'] =[
@@ -125,8 +137,10 @@ class ProcedimientosSearch extends Procedimientos
             ->andFilterWhere(['like', 'estado', $this->estado])
             ->andFilterWhere(['like', 'eps.nombre', $this->eps])
             ->andFilterWhere(['like', 'pacientes.identificacion', $this->numid_paciente])
+            ->andFilterWhere(['like', 'pacientes.apellido1', $this->paciente])
             ->andFilterWhere(['like', 'medicos.nombre', $this->medico])
             ->andFilterWhere(['like', 'tipos_servicio.nombre', $this->tipo_servicio])
+            ->andFilterWhere(['like', 'hora', $this->hora])
             ->andFilterWhere(['like', 'numero_factura', $this->numero_factura]);
 
         $query->limit(20);

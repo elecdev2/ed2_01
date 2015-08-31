@@ -14,11 +14,12 @@ $this->title = "Información de la cita";
 ?>
 <div class="citas-medicas-view">
 
-<?php if(Yii::$app->user->can('medico') && (strtotime($model->fecha) == strtotime(date('Y-m-d')))){ ?>
+<?php if(Yii::$app->user->can('medico') && (strtotime($model->fecha) == strtotime(date('Y-m-d'))) && $model->estado !== 'CLS'){ ?>
 <div class="panel panel-default">
     <div class="panel-body">
-        <div class="col-sm-6">
-            <button class="btn btn-primary" id="historia_clinica" data-dismiss="modal" data-paciente="<?=$model->pacientes_id?>" data-medico="<?=$model->medicos_id?>" onclick="abrirHistoria()" ><i class=""></i>Ver historia clinica</button>
+        <div class="col-sm-12 text-right">
+            <button class="btn btn-primary" id="historia_clinica" data-dismiss="modal" data-paciente="<?=$model->pacientes_id?>" data-medico="<?=$model->medicos_id?>" onclick="abrirHistoria()" ><i class="icon-his his"></i>Crear historia clínica</button>
+            <button class="btn btn-default" id="cerrar_cita" onclick="cerrarCita(<?=$model->id_citas?>)" ><i class=""></i>Cerrar cita</button>
         </div>
     </div>
 </div>

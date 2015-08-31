@@ -61,7 +61,7 @@ $this->title = $model->nombre;
     <!-- Formulario oculto: revisar library.js y buscar los id de los input y el boton -->
     <div style="display:none">
         <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data',  'name' => 'formulario1'], 'action' => 'upload']) ?>
-                <?= $form->field($imagen, 'file')->fileInput(['id'=>'input-1']) ?>
+                <?= $form->field($imagen, 'file')->fileInput(['id'=>'input-1', 'accept' => 'image/*']) ?>
                 <!-- <input id="input-1" required name="UploadFormImages[file]" type="file" class="file filestyle" data-buttonName="btn-primary" data-buttonText="Examinar"> -->
                 <input hidden id="iu" type="text" name="usuario" value="<?=$model->id;?>">
                 <button id="cargar" type="submit" class="btn btn-success" name="submit">Cargar Imagen</button>
@@ -72,7 +72,7 @@ $this->title = $model->nombre;
     <?php if(\Yii::$app->user->can('medico')){?>
         <div style="display:none">
             <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data',  'name' => 'formulario2'], 'action' => 'upload-firma']) ?>
-                    <?= $form->field($imagen, 'file')->fileInput(['id'=>'input-2']) ?>
+                    <?= $form->field($imagen, 'file')->fileInput(['id'=>'input-2', 'accept' => 'image/*']) ?>
                     <!-- <input id="input-1" required name="UploadFormImages[file]" type="file" class="file filestyle" data-buttonName="btn-primary" data-buttonText="Examinar"> -->
                     <input hidden id="im" type="text" name="usuario" value="<?=$medico->id;?>">
                     <button id="cargarFirma" type="submit" class="btn btn-success" name="submit">Cargar Imagen</button>
@@ -98,11 +98,3 @@ $this->title = $model->nombre;
             </div>
         </div>
     </div>
-<script type="text/javascript">
-    $(document).ready(function() {
-        if($('#usuarios-perfil').val() == 'medico')
-        {
-            $('#campoIPSs').hide();
-        }
-    });
-</script>

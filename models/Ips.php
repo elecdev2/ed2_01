@@ -26,6 +26,7 @@ use Yii;
  * @property string $tiempo_citas
  * @property string $hora_inicio
  * @property string $hora_fin
+ * @property integer $tiempo_cierre 
  *
  * @property Eps[] $eps
  * @property Clientes $idclientes0
@@ -50,7 +51,7 @@ class Ips extends \yii\db\ActiveRecord
     {
         return [
             [['codigo', 'nombre', 'direccion', 'tipo_identificacion', 'nit', 'telefono', 'idclientes', 'activo', 'consecutivo_fact', 'representante_legal', 'consecutivo_recibo', 'mensaje_email'], 'required'],
-            [['idclientes', 'activo', 'consecutivo_fact', 'consecutivo_recibo'], 'integer'],
+            [['idclientes', 'activo', 'consecutivo_fact', 'consecutivo_recibo','tiempo_cierre'], 'integer'],
             [['tiempo_citas', 'hora_inicio', 'hora_fin'], 'safe'],
             [['codigo', 'nit'], 'string', 'max' => 15],
             [['nombre'], 'string', 'max' => 150],
@@ -58,7 +59,8 @@ class Ips extends \yii\db\ActiveRecord
             [['tipo_identificacion'], 'string', 'max' => 3],
             [['telefono'], 'string', 'max' => 30],
             [['mensaje_email', 'mensaje_med'], 'string', 'max' => 1000],
-            [['url'], 'string', 'max' => 200]
+            [['url'], 'string', 'max' => 200],
+            [['id','hora_inicio', 'hora_fin', 'tiempo_cierre', 'tiempo_citas'], 'required', 'on'=> 'config']
         ];
     }
 
@@ -68,7 +70,7 @@ class Ips extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
+            'id' => 'IPS',
             'codigo' => 'Codigo',
             'nombre' => 'IPS',
             'direccion' => 'Direccion',
@@ -80,13 +82,22 @@ class Ips extends \yii\db\ActiveRecord
             'consecutivo_fact' => 'Consecutivo Fact',
             'representante_legal' => 'Representante Legal',
             'consecutivo_recibo' => 'Consecutivo Recibo',
-            'descripcion' => 'Descripcion',
+            'descripcion' => 'Descripción',
             'mensaje_email' => 'Mensaje Email',
-            'tiempo_citas' => 'Tiempo Citas', 
+            'tiempo_citas' => 'Duración de citas', 
             'hora_inicio' => 'Hora Inicio', 
-            'hora_fin' => 'Hora Fin', 
+            'hora_fin' => 'Hora Fin',
+            'tiempo_cierre' => 'Tiempo de cierre',
         ];
     }
+
+    // public function scenarios()
+    // {
+    //     $scenarios = parent::scenarios();
+    //     $scenarios['config'] = ['id','hora_inicio', 'hora_fin', 'tiempo_cierre', 'tiempo_citas'];
+                               
+    //     return $scenarios;
+    // }
 
     /**
     * @return \yii\db\ActiveQuery

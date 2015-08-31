@@ -45,7 +45,7 @@ $(document).on('click', '.imprimir', function(event) {
 function imprimirHistoria(id)
 {
 	$.post('imprimir', {keys: id}).done(function(result) {
-		console.log(result);
+		// console.log(result);
 	});
 }
 
@@ -58,6 +58,117 @@ function openModalViewHistoria(elemento){
     });
 }
 
+function swichtWIndow(me,id){
+	
+	var formsCollection = document.getElementsByTagName("form");
+	var iniDiv = '';
+	for(var i = 1; i < formsCollection.length; i++)
+	{
+		var btn = formsCollection[i].elements[formsCollection[i].length-1];
+
+		var isDirty = false;
+		$.each(formsCollection[i].elements, function(index, val) 
+		{
+			switch(val.type)
+			{
+				case 'textarea':
+					if(val.value !== '' && btn.disabled == false)
+					{
+						isDirty = true;
+					}
+				break;
+				case 'select-one':
+					if(val.title !== 'historico')
+					{
+						if(val.value !== '' && btn.disabled == false)
+						{
+							isDirty = true;
+						}
+						
+					}
+				break;
+				case 'select-multiple':
+					if(val.title !== 'historico')
+					{
+						if(val.value !== '' && btn.disabled == false)
+						{
+							isDirty = true;
+						}
+						
+					}
+				break;
+				case 'file':
+					if(val.title !== 'historico')
+					{
+						if(val.value !== '' && btn.disabled == false)
+						{
+							isDirty = true;
+						}
+						
+					}
+				break;
+			}
+		});
+		if(isDirty == true)
+		{			
+			var div = '<div class="alert-info"><div class="col-sm-9"><p>'+formsCollection[i].name+'</p></div></div>';
+			iniDiv = iniDiv+div;
+			// console.log(div);
+		}
+		
+	}
+	if(iniDiv !== '')
+	{
+		bootbox.dialog({
+	        title: "Atención",
+	        message: '<h4>No se han guardado los cambios en los siguientes formularios:</h4><br>'+ iniDiv,
+	        buttons: {
+	            success: {
+	                label: "Cerrar de todas formas",
+	                className: "btn btn-danger",
+	                callback: function () {
+						$(me).modal('hide');
+						$(id).modal({backdrop:'static'});
+	                }
+	            }
+	        }
+	    });
+	}else{
+		$(me).modal('hide');
+		$(id).modal({backdrop:'static'});
+	}
+}
+
+
+function cerrarCita(id){
+	bootbox.confirm('ADVERTENCIA: Está apunto de cerrar la cita, una vez cerrada no se podrá acceder a su información. ¿Desea cerrar la cita?',function(result)
+	{
+		if(result)
+		{
+			$.post('cerrar-cita', {id: id}).done(function(data){
+				switch(data)
+				{
+					case '0': notification('Error al cerrar la cita, por favor intentelo más tarde', 2); break;
+
+					case '1': 
+							$(document).find('#viewModal').modal('hide');
+							$.pjax.reload({container:'#atn_pjax'});
+				            notification('Se guardaron los cambios', 1);
+				    break;
+
+					default:
+						notification('La cita se ha cerrado', 1);
+						$('.modal').modal('hide');
+						
+						$('.fullcalendar').fullCalendar( 'removeEvents', id );
+						$('.fullcalendar').fullCalendar( 'renderEvent', data);
+					break;
+				}
+				
+			});
+		}
+	})
+}
 
 function notification(mensaje, num)
 {
@@ -86,3 +197,4 @@ function notification(mensaje, num)
 		case 4: toastr.info(mensaje);break;
 	}
 }
+

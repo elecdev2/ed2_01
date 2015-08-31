@@ -26,18 +26,6 @@ use kartik\select2\Select2;
     </div>
 
     <div class="col-sm-6 col-lg-4">
-        <?= $form->field($model, 'autorizacion', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Autorización']) ?>
-    </div>
-
-    <div class="col-sm-6 col-lg-4">
-        <?= $form->field($model, 'numero_muestra', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Número de muestra']) ?>
-    </div>
-
-    <div class="col-sm-6 col-lg-4">
-        <?= $form->field($model, 'valor_procedimiento', ['template'=>"{input}{error}"])->textInput(['placeholder'=>'Costo del procedimiento']) ?>
-    </div>
-
-    <div class="col-sm-6 col-lg-4">
         <?= $form->field($model, 'estado', ['template'=>"{input}{error}"])->widget(Select2::classname(), [
             'data'=>$lista_estados,
             'language' => 'es',

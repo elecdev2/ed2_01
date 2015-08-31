@@ -32,13 +32,14 @@ use kartik\select2\Select2;
                 <?= $form->field($model, 'id')->widget(Select2::classname(), [
                         'data'=>$ips_list,
                         'language' => 'es',
-                        'options' => ['required'=>'', 'placeholder' => 'Seleccione una opción'],
+                        'options' => ['placeholder' => 'Seleccione una opción'],
                         'pluginEvents' => [
                             "change" => "function() { 
                                 $.post('consulta-horas', {id: $('#ips-id').val()}).done(function(data) {
                                     $('#ips-tiempo_citas').val(data['tiempo_citas']);
                                     $('#ips-hora_inicio').val(data['hora_inicio']);
                                     $('#ips-hora_fin').val(data['hora_fin']);
+                                    $('#ips-tiempo_cierre').val(data['tiempo_cierre']);
                                 });
                              }",
                         ]
@@ -50,6 +51,8 @@ use kartik\select2\Select2;
                 <?= $form->field($model, 'hora_inicio')->textInput(['type'=>'time'])->label('Hora de inicio de atención *') ?>
 
                 <?= $form->field($model, 'hora_fin')->textInput(['type'=>'time'])->label('Hora de fin de atención *') ?>
+
+                <?= $form->field($model, 'tiempo_cierre')->textInput(['required'=>true])->label('Cierre automatico de citas (# dias) *') ?>
 
                 <div class="text-center">
                     <?= Html::submitButton('<i class="add icon-actualizar"></i>Actualizar', ['class' =>'btn btn-success']) ?>

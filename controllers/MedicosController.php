@@ -275,14 +275,14 @@ class MedicosController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $usuario = Usuarios::find()->where(['idmedicos'=>$model->id])->one();
         $nombre = $model->nombre;
 
         if ($model->load(Yii::$app->request->post())) {
 
             if($model->nombre !== $nombre){
-                $usuario = new Usuarios();
-                $usuario->nombre = $nombre;
-                $model->nombre = $nombre;
+                $usuario->nombre = $model->nombre;
+                // $model->nombre = $nombre;
                 $usuario->save();
             }
 

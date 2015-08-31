@@ -2,24 +2,14 @@
     use yii\helpers\Html;
     use yii\widgets\ActiveForm;
     use kartik\select2\Select2;
-    use yii\web\JsExpression;
  ?>
 
 
-<?php $form = ActiveForm::begin(['id' => 'confForm', 'validateOnType' => true, 'action'=>'cambiar-fecha']); ?>
+<?php $form = ActiveForm::begin(['id' => 'confForm', 'validateOnType' => true]); ?>
 
-    <?= $form->field($model, 'fecha')->textInput(['disabled'=>true]) ?>
+    <?= $form->field($model, 'fecha')->textInput(['readOnly'=>true]) ?>
     
-    <?= $form->field($model, 'hora')->widget(Select2::classname(), [
-            'data'=>$horario_med,
-            'language' => 'es',
-            'readonly'=>true, 
-            'options' => ['placeholder' => 'Seleccione una opción'],
-            'pluginOptions' => [
-                'allowClear' => true
-            ],
-        ])->label('Horas disponibles');
-    ?>
+    <?= $form->field($model, 'hora')->dropDownList($horario_med, ['prompt'=>'Seleccione una opción'])->label('Horas disponibles');?>
 
     <input type="text" id="med" hidden name="med">
     <input type="text" id="id" hidden name="id">
@@ -41,7 +31,7 @@ $('form#confForm').on('beforeSubmit', function(e)
     var event_id = $('#id').val();
 
     $.post(
-        \$form.attr("action"), 
+        'cambiar-fecha', //POR QUE cambiar-fecha NO SIRVE?????
         \$form.serialize()
     )
     .done(function(result) {

@@ -32,6 +32,7 @@ use app\models\Recomendaciones;
 use app\models\Formulacion;
 use app\models\UploadForm;
 use app\models\ArchivosHistorial;
+use app\models\Procedimientos;
 use yii\web\UploadedFile;
 
 use yii\web\Controller;
@@ -96,6 +97,7 @@ class CitasMedicasController extends Controller
     public function actionConfig()
     {
         $model = new Ips();
+        $model->scenario = 'config';
         $ipss = UsuariosIps::find()->select(['idips'])->where(['idusuario'=>Yii::$app->user->id]);
         return $this->render('config', [
             'model' => $model,
@@ -170,12 +172,13 @@ class CitasMedicasController extends Controller
         $events = CitasMedicas::find()->where(['<>', 'estado', 'REP'])->andWhere(['<>', 'estado', 'CNL'])->andWhere(['medicos_id'=>$meds])->asArray()->all();
 
         $i = 0;
-        foreach ($events as $key => $value) {
+        foreach ($events as $key => $value) 
+        {
             $medico = Medicos::findOne($value['medicos_id']);
             $t[$i]['id'] = $value['id_citas'];
             $t[$i]['title'] = $medico->nombre;
             $t[$i]['start'] = $value['fecha'].'T'.$value['hora'];
-            $t[$i]['color'] = strtotime($value['fecha']) < strtotime(date('Y-m-d')) ? '#C1CAD1' : ListasSistema::find()->select(['descripcion'])->where(['id'=>$medico->color])->scalar();
+            $t[$i]['color'] = strtotime('+'.$ipss.' days', strtotime($value['fecha'])) < strtotime(date('Y-m-d')) ? '#C1CAD1' : ListasSistema::find()->select(['descripcion'])->where(['id'=>$medico->color])->scalar();
             $t[$i]['medico'] = $medico->id;
             $i++;
         }
@@ -186,7 +189,7 @@ class CitasMedicasController extends Controller
         
         $js = <<<JS
             $("#esp").prepend("<option value=9999>Mostrar todos los médicos</option>");
-            // $("#esp").prepend("<option value=0>Mostrar todas las citas</option>");
+            $("#esp").prepend("<option value=0>Mostrar todas las citas</option>");
        
 JS;
         $this->getView()->registerJs($js, yii\web\View::POS_READY,null);
@@ -217,7 +220,7 @@ JS;
         $calendar = 0;
         $lista_esp = Especialidades::find();
 
-        $blockButton = '$("#submmitCalendar").prop("disabled", true);';
+        // $blockButton = '$("#submmitCalendar").prop("disabled", true);';
 
         if(Yii::$app->request->post())
         {
@@ -226,12 +229,13 @@ JS;
 
             $modelIps = Ips::findOne($_POST['CitasMedicasSearch']['ips']);
             $i = 0;
-            foreach ($events as $key => $value) {
+            foreach ($events as $key => $value) 
+            {
                 $medico = Medicos::findOne($value['medicos_id']);
                 $t[$i]['id'] = $value['id_citas'];
                 $t[$i]['title'] = $medico->nombre;
                 $t[$i]['start'] = $value['fecha'].'T'.$value['hora'];
-                $t[$i]['color'] = (strtotime($value['fecha']) < strtotime(date('Y-m-d'))) ? '#C1CAD1' : ListasSistema::find()->select(['descripcion'])->where(['id'=>$medico->color])->scalar();
+                $t[$i]['color'] = (strtotime('+'.$modelIps->tiempo_cierre.' days', strtotime($value['fecha'])) < strtotime(date('Y-m-d'))) ? '#C1CAD1' : ListasSistema::find()->select(['descripcion'])->where(['id'=>$medico->color])->scalar();
                 $t[$i]['medico'] = $medico->id;
                 $i++;
             }
@@ -243,19 +247,19 @@ JS;
             }
             $calendar = 1;
 
-            $blockButton = '$("#submmitCalendar").prop("disabled", false);';
+            // $blockButton = '$("#submmitCalendar").prop("disabled", false);';
             $this->getView()->registerJs('$("#citasmedicassearch-ips").val('.$_POST['CitasMedicasSearch']['ips'].')', yii\web\View::POS_READY,null);
             $this->getView()->registerJs('$("#txtIdIps").attr("value", '.$_POST['CitasMedicasSearch']['ips'].');', yii\web\View::POS_READY,null);
             $lista_esp = Especialidades::find()->join('INNER JOIN', 'medicos m', 'idespecialidades = especialidades.id')->join('INNER JOIN', 'ips i', 'i.id = m.ips_idips')->where(['i.id'=>$_POST['CitasMedicasSearch']['ips']])->all();
             $js = <<<JS
                 $("#esp").prepend("<option value=9999>Mostrar todos los médicos</option>");
-                // $("#esp").prepend("<option value=0>Mostrar todas las citas</option>");
+                $("#esp").prepend("<option value=0>Mostrar todas las citas</option>");
        
 JS;
             $this->getView()->registerJs($js, yii\web\View::POS_READY,null);
         }                
 
-        $this->getView()->registerJs($blockButton, yii\web\View::POS_READY,null);
+        // $this->getView()->registerJs($blockButton, yii\web\View::POS_READY,null);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -271,18 +275,19 @@ JS;
        
     }
 
-    public function codEvents($events)
+    public function codEvents($events, $tiempo_cierre)
     {
          $i = 0;
-        foreach ($events as $key => $value) {
+        foreach ($events as $key => $value) 
+        {
             $medico = Medicos::findOne($value['medicos_id']);
             $cita = $this->findModel($value['id_citas']);
-            if(strtotime($value['fecha']) < strtotime(date('Y-m-d')) && $cita->estado == 'PRE')
+            if(strtotime('+'.$tiempo_cierre.' days', strtotime($value['fecha'])) < strtotime(date('Y-m-d')) && $cita->estado == 'PRE')
             {
                 $cita->estado = 'CLS';
                 $cita->save();
             }
-            if(strtotime($value['fecha']) == strtotime(date('Y-m-d')) && (strtotime($cita->hora) < strtotime(date('H:i:s'))) && $cita->estado == 'NOR')
+            if(strtotime($value['fecha']) == strtotime(date('Y-m-d')) && (strtotime($cita->hora) < strtotime(date('H:i:s'))) && $cita->estado == 'NOR' || (strtotime($value['fecha']) < strtotime(date('Y-m-d') && $cita->estado == 'NOR')))
             {
                 $cita->estado = 'AUS';
                 $cita->save();
@@ -290,7 +295,7 @@ JS;
             $paciente = Pacientes::find()->where(['id'=>$cita->pacientes_id])->one();
             $t[$i]['id'] = $value['id_citas'];
             $t[$i]['title'] = $paciente->nombre1.' '.$paciente->nombre2.' '.$paciente->apellido1.' '.$paciente->apellido2;
-            $t[$i]['start'] = $value['fecha'].'T'.$value['hora'];
+            $t[$i]['start'] = $value['fecha'].'T'.$value['hora']; //formato de fecha-hora
             $t[$i]['color'] = substr(ListasSistema::find()->select(['descripcion'])->where(['codigo'=>$cita->estado])->scalar(), 0, 7);
             $t[$i]['medico'] = $medico->id;
             $i++;
@@ -300,15 +305,16 @@ JS;
         return $events;
     }
 
-    public function codEventsMultiple($events)
+    public function codEventsMultiple($events, $tiempo_cierre)
     {
         $i = 0;
-        foreach ($events as $key => $value) {
+        foreach ($events as $key => $value) 
+        {
             $medico = Medicos::findOne($value['medicos_id']);
             $t[$i]['id'] = $value['id_citas'];
             $t[$i]['title'] = $medico->nombre;
             $t[$i]['start'] = $value['fecha'].'T'.$value['hora'];
-            $t[$i]['color'] = (strtotime($value['fecha']) < strtotime(date('Y-m-d'))) ? '#C1CAD1' : ListasSistema::find()->select(['descripcion'])->where(['id'=>$medico->color])->scalar();
+            $t[$i]['color'] = (strtotime('+'.$tiempo_cierre.' days', strtotime($value['fecha'])) < strtotime(date('Y-m-d'))) ? '#C1CAD1' : ListasSistema::find()->select(['descripcion'])->where(['id'=>$medico->color])->scalar();
             $t[$i]['medico'] = $medico->id;
             $i++;
         }
@@ -346,7 +352,7 @@ JS;
         
         $js = <<<JS
         $("#esp").prepend("<option value=9999>Mostrar todos los médicos</option>");
-        // $("#esp").prepend("<option value=0>Mostrar todas las citas</option>");
+        $("#esp").prepend("<option value=0>Mostrar todas las citas</option>");
        
 JS;
         $this->getView()->registerJs($js, yii\web\View::POS_READY,null);
@@ -375,7 +381,7 @@ JS;
                     unset($not_dias[$value['dia']]);
                 }
 
-                $events = is_object($med) ?  $this->codEventsMultiple($events) :  $this->codEvents($events);
+                $events = is_object($med) ?  $this->codEventsMultiple($events, $modelIps->tiempo_cierre) :  $this->codEvents($events, $modelIps->tiempo_cierre);
                
             }elseif($med == 0){
 
@@ -384,7 +390,7 @@ JS;
                     $meds = Medicos::find()->select(['id'])->where(['ips_idips'=>$ips]);
                     $events = CitasMedicas::find()->where(['<>', 'estado', 'REP'])->andWhere(['<>', 'estado', 'CNL'])->andWhere(['medicos_id'=>$meds])->asArray()->all();
                    
-                    $events = $this->codEventsMultiple($events);
+                    $events = $this->codEventsMultiple($events, $modelIps->tiempo_cierre);
                 }else{
                     $this->redirect(['index-ips']);                  
                 }
@@ -416,7 +422,7 @@ JS;
             $cita = $this->findModel($value['id_citas']);
             $paciente = Pacientes::find()->where(['id'=>$cita->pacientes_id])->one();
 
-            if(strtotime($value['fecha']) == strtotime(date('Y-m-d')) && (strtotime($cita->hora) < strtotime(date('H:i:s'))) && $cita->estado == 'NOR')
+            if(strtotime($value['fecha']) == strtotime(date('Y-m-d')) && (strtotime($cita->hora) < strtotime(date('H:i:s'))) && $cita->estado == 'NOR' || (strtotime($value['fecha']) < strtotime(date('Y-m-d') && $cita->estado == 'NOR')))
             {
                 $cita->estado = 'AUS';
                 $cita->save();
@@ -502,6 +508,7 @@ JS;
                     $e['start'] = $date;
                     $e['title'] = $med !== '' ? $pac->nombre1.' '.$pac->nombre2.' '.$pac->apellido1.' '.$pac->apellido2 : $medico->nombre;
                     $e['color'] = $med !== '' ? substr(ListasSistema::find()->select(['descripcion'])->where(['codigo'=>$model->estado])->scalar(), 0, 7) : ListasSistema::find()->select(['descripcion'])->where(['id'=>$medico->color])->scalar();
+                    $e['medico'] = $medico->id;
                     \Yii::$app->response->format = 'json';
                     return $e;
                 }else{
@@ -773,6 +780,7 @@ JS;
                 $e['start'] = $model->fecha.'T'.$model->hora;
                 $e['title'] = $med !== '' ? $pac->nombre1.' '.$pac->nombre2.' '.$pac->apellido1.' '.$pac->apellido2 : $medico->nombre;
                 $e['color'] = $med !== '' ? substr(ListasSistema::find()->select(['descripcion'])->where(['codigo'=>$model->estado])->scalar(), 0, 7) : ListasSistema::find()->select(['descripcion'])->where(['id'=>$medico->color])->scalar();
+                $e['medico'] = $medico->id;
                 \Yii::$app->response->format = 'json';
 
                 return $e;
@@ -978,12 +986,46 @@ SCRIPT;
 
     }
 
+    /**
+     * Cambia el estado de una cita a cerrada.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionCerrarCita()
+    {
+        $cita = $this->findModel($_POST['id']);
+        $cita->estado = 'CLS';
+
+        $proc = Procedimientos::find()->where(['idpacientes'=>$cita->pacientes_id, 'idmedicos'=>$cita->medicos_id, 'fecha_atencion'=>$cita->fecha])->one();
+        $proc->estado = 'CER';
+
+
+        if($cita->save() && $proc->save())
+        {
+            $paciente = Pacientes::find()->where(['id'=>$cita->pacientes_id])->one();
+            $t['id'] = $cita->id_citas;
+            $t['title'] = $paciente->nombre1.' '.$paciente->nombre2.' '.$paciente->apellido1.' '.$paciente->apellido2;
+            $t['start'] = $cita->fecha.'T'.$cita->hora;
+            $t['color'] = substr(ListasSistema::find()->select(['descripcion'])->where(['codigo'=>$cita->estado])->scalar(), 0, 7);
+            \Yii::$app->response->format = 'json';
+            return $t;
+        }else{
+            return 0;
+        }
+
+    }
+
     public function actionGetHistoria()
     {
         $hc = HistoriaClinica::find()->select(['id','fecha'=>'DATE_FORMAT(fecha,"%d %b %y")'])->where(['id_paciente'=>$_POST['pac']]); //Se asume que existe una sola historia clinica por fecha
+        $proc_fechas = Procedimientos::find()->select(['id','fecha_atencion'=>'DATE_FORMAT(fecha_atencion,"%d %b %y")'])->where(['idpacientes'=>$_POST['pac']]);
         $paciente = Pacientes::findOne($_POST['pac']);
 
         $historia = HistoriaClinica::find()->select(['id'])->where(['id_paciente'=>$_POST['pac']])->max('id');
+        $historia_model = HistoriaClinica::findOne($historia);
+
+        $tipo_estudio = TiposServicio::findOne($historia_model->id_tipos);
+        $campos = Campos::find()->where(['idtipos_servicio'=>$tipo_estudio->id])->all();
         
         if($historia == null)
         {
@@ -992,7 +1034,10 @@ SCRIPT;
 
         return $this->renderAjax('//historia-clinica/medico',[
                 'hc' => $historia,
+                'pr' => $historia_model->id_procedimiento,
+                'tipo_estudio' => $tipo_estudio,
                 'paciente'=>$paciente,
+                'campos' => $campos,
                 'motivo_l'=>ArrayHelper::map($hc->having(['id'=> MotivoEnfermedad::find()->select(['id_historia'])])->all(), 'id', 'fecha'),
                 'motivo_e'=>new MotivoEnfermedad(),
                 'ant_pato_l'=>ArrayHelper::map($hc->having(['id'=> AntecedentesPatologicos::find()->select(['id_historia'])])->all(), 'id', 'fecha'),
@@ -1014,8 +1059,11 @@ SCRIPT;
                 'recom_e' => new Recomendaciones(),
                 'formula_l' => ArrayHelper::map($hc->having(['id'=> Formulacion::find()->select(['id_historia'])])->all(), 'id', 'fecha'),
                 'formula_e' => new Formulacion(),
+                'archivo_historial' => new ArchivosHistorial(),
+                'archivo_historial_l' => ArrayHelper::map($hc->having(['id'=> ArchivosHistorial::find()->select(['id_historia'])])->all(), 'id', 'fecha'),
                 'archivo' => new UploadForm(),
                 'nombre_pac'=>$paciente->nombre1. ' ' .$paciente->nombre2. ' ' .$paciente->apellido1. ' ' .$paciente->apellido2,
+                'tipo_estudio_l' => ArrayHelper::map($proc_fechas->all(), 'id', 'fecha_atencion'),
             ]);
     }
 
@@ -1104,6 +1152,33 @@ SCRIPT;
 
         return $fecha_min.':'.$fecha_max;
     }
+
+    public function actionImprimirRf($hc, $rf)
+    {
+        switch ($rf) 
+        {
+            case 'r':
+                $model = Recomendaciones::find()->where(['id_historia'=>$hc])->one();
+                $model = $model->recomendaciones;
+                break;
+            case 'f':
+                $model = Formulacion::find()->where(['id_historia'=>$hc])->one();
+                $model = $model->formulacion;
+                break;
+        }
+        $this->layout = 'resultados_layout';
+        $pdf = new Pdf();
+        $mpdf = $pdf->api;
+
+
+        $mpdf->WriteHtml($this->render('//historia-clinica/recomFor', [
+                'model' => $model,
+            ], true));
+        $mpdf->SetJS('this.print()');
+        $mpdf->output();
+
+    }
+
 
     public function actionCodDiag($q = null, $id = null)
     {
@@ -1349,6 +1424,31 @@ SCRIPT;
             }
             
             return 1;
+        }
+    }
+
+    public function actionNewEspecialidad()
+    {
+        if(Yii::$app->request->post())
+        {
+            $i = 0;
+            foreach ($_POST['TiposServicio'] as $clave => $val) 
+            {
+                if($clave != 'id_campo' && $clave != 'id')
+                {
+                    foreach ($_POST['TiposServicio'][$clave] as $key => $value) 
+                    {
+                        $valor = new VlrsCamposProcedimientos();
+                        $valor->valor = $value;
+                        $valor->idcampos_tipos_servicio = $_POST['TiposServicio']['id_campo'][$i];
+                        $valor->id_procedimiento = $_POST['procedimiento_id'];
+                        $valor->save();
+                        $i++;
+                    }
+                }
+            }
+            return 1;
+           
         }
     }
 

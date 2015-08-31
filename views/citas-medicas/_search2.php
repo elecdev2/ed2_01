@@ -25,6 +25,13 @@ use kartik\depdrop\DepDrop;
                 'data'=>$lista_esp,
                 'language' => 'es',
                 'options' => ['id'=>'esp', 'placeholder' => 'Seleccione una opción'],
+                'pluginEvents'=>[
+                    "change" => "function() {
+                        if($(this).val() == 0){
+                            document.getElementById('submmitCalendar').click();
+                        }
+                     }",
+                ]
             ]);
         ?>
     </div>

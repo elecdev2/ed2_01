@@ -25,6 +25,12 @@
 .tabs-right>li {
   margin-left: -1px;
 }
+.tabs-left>li>a:hover{
+  color:#3E5068;
+}
+.tabs-left > li > a{
+  border:0;
+}
 .tabs-left>li.active>a,
 .tabs-left>li.active>a:hover,
 .tabs-left>li.active>a:focus {

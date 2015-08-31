@@ -78,7 +78,7 @@ $this->title = 'Recibos';
             // ['content'=>
             //     Html::a('Crear procedimiento', ['create'], ['class' => 'btn btn-success'])
             // ],
-            // '{export}',
+            '{export}',
             // '{toggleData}',
         ],
         'hover' => true,

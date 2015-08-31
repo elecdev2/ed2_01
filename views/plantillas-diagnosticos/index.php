@@ -60,7 +60,7 @@ $this->title = 'Plantillas diagnosticos';
                         ]);
                     },
                 ],
-                'width'=>'10%',
+                'width'=>'12%',
             ],
         ],
         'toolbar' => [

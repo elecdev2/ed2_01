@@ -6,6 +6,8 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\HistoriaClinica;
+use app\models\AnalisisImpresionDiagnostica;
+use app\models\AnalisisDiag;
 
 /**
  * HistoriaClinicaSearch represents the model behind the search form about `app\models\HistoriaClinica`.
@@ -15,6 +17,7 @@ class HistoriaClinicaSearch extends HistoriaClinica
     public $paciente;
     public $tipo_servicio;
     public $medico;
+    public $diag;
     /**
      * @inheritdoc
      */
@@ -22,7 +25,7 @@ class HistoriaClinicaSearch extends HistoriaClinica
     {
         return [
             [['id', 'id_paciente', 'id_tipos', 'id_medico'], 'integer'],
-            [['fecha', 'hora', 'paciente', 'tipo_servicio', 'medico'], 'safe'],
+            [['fecha', 'hora', 'paciente', 'tipo_servicio', 'medico', 'diag'], 'safe'],
         ];
     }
 
@@ -42,14 +45,23 @@ class HistoriaClinicaSearch extends HistoriaClinica
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
+    public function search($params, $cod)
     {
         $query = HistoriaClinica::find();
+        
+        if($cod !== 0)
+        {
+            $subquery = AnalisisImpresionDiagnostica::find()->select(['id_analisis'])->where(['id_cod'=>$cod]);
+            $subquery2 = AnalisisDiag::find()->select(['id_historia'])->where(['analisis_diag.id'=>$subquery]);
+            $query->where(['historia_clinica.id'=>$subquery2]);
+        }
 
         $query->joinWith(['idMedico', 'idPaciente', 'idTipos']);
 
+
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort'=> ['defaultOrder' => ['fecha'=>SORT_DESC]]
         ]);
 
         $dataProvider->sort->attributes['medico'] = [

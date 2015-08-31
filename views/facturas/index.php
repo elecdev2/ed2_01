@@ -24,10 +24,10 @@ use kartik\grid\GridView;
 				<?php $form = ActiveForm::begin(['action'=>'facturacion']); ?>
 				
 					<div class="col-sm-6 col-lg-4">
-						<?= $form->field($procedimientos, 'estado', ['template'=>"{input}{error}"])->dropDownList(['prompt'=>'Seleccione un estado', 'FCT' => 'Facturado', 'FRM' => 'Firmado']);?>
+						<?= $form->field($procedimientos, 'estado', ['template'=>"{input}{error}"])->dropDownList(['FCT' => 'Facturado', 'FRM' => 'Firmado'],['prompt'=>'Seleccione un estado', 'required'=>true, 'id'=>'estado']);?>
 					</div>
 					<div class="col-sm-6 col-lg-4">
-						<?= $form->field($ips, 'id', ['template'=>"{input}{error}"])->dropDownList($lista_ips, ['prompt'=>'Seleccione un IPS', 'id'=>'ips_id']);?>
+						<?= $form->field($ips, 'id', ['template'=>"{input}{error}"])->dropDownList($lista_ips, ['prompt'=>'Seleccione un IPS', 'id'=>'ips_id', 'required'=>true]);?>
 					</div>
 					<div class="col-sm-6 col-lg-4">
 						<?= $form->field($procedimientos, 'eps_ideps', ['template'=>"{input}{error}"])->widget(DepDrop::classname(), [

@@ -19,6 +19,9 @@ use app\models\ProcedimientosSearch;
 use app\models\VlrsCamposProcedimientos;
 use app\models\MedicosRemitentes;
 use app\models\PlantillasDiagnosticos;
+use app\models\Tarifas;
+use app\models\EpsTipos;
+use app\models\EstudiosIps;
 
 
 use yii\web\Controller;
@@ -857,7 +860,22 @@ SCRIPT;
     /*Consulta de listados*/
     public function eps($id_ips)
     {
-        $query = (new \yii\db\Query());
+        $subquery = EpsTipos::find()->distinct()->select(['eps_id']);
+        $subquery2 = Tarifas::find()->distinct()->select(['eps_id']);
+        $query = (new Query());
+        // $query->select('id,(nombre)AS name')->from('eps')->where('idips=:id');
+        // $query->addParams([':id'=>$id_ips]);
+        $query->select(['id'=>'id', 'name'=>'nombre'])->from('eps')->where(['idips'=>$id_ips])
+        ->andWhere(['id'=>$subquery])
+        ->andWhere(['id'=>$subquery2]);
+        $r = $query->all();
+
+        return $r;
+    }
+
+    public function afiliacion($id_ips)
+    {
+        $query = (new Query());
         $query->select('id,(nombre)AS name')->from('eps')->where('idips=:id');
         $query->addParams([':id'=>$id_ips]);
         $r = $query->all();
@@ -867,12 +885,15 @@ SCRIPT;
 
     public function tipos_s($id_ips, $id_eps)
     {
-        $query = (new \yii\db\Query());
+        $subquery2 = Tarifas::find()->distinct()->select(['idestudios'])->where(['eps_id'=>$id_eps]);
+        $subquery = EstudiosIps::find()->distinct()->select(['idtipo_servicio'])->where(['cod_cups'=>$subquery2]);
+        $query = (new Query());
         $query->select('ts.id,(ts.nombre)AS name')->from('tipos_servicio ts')
         ->join('INNER JOIN', 'eps_tipos ep','ep.tipos_servicio_id = ts.id')
         ->join('INNER JOIN', 'eps e','e.id = ep.eps_id')
         ->join('INNER JOIN', 'ips i','i.id = e.idips')
-        ->where(['e.id'=>$id_eps]);
+        ->where(['e.id'=>$id_eps])
+        ->andWhere(['ts.id'=>$subquery]);
 
         return $query->all();
     }
@@ -880,7 +901,8 @@ SCRIPT;
 
     public function estudio($id_ips, $id_eps, $id_tipo)
     {
-        $query = (new \yii\db\Query());
+        // $tarifas = Tarifas::find()->select(['idestudios'])->where(['eps_id'=>$id_eps]);
+        $query = (new Query());
         $query->select('(es.cod_cups)AS id, (es.descripcion)AS name')->from('estudios es')
         ->join('INNER JOIN', 'estudios_ips ei','ei.cod_cups = es.cod_cups')
         ->join('INNER JOIN', 'tipos_servicio ts','ts.id = ei.idtipo_servicio')
@@ -888,6 +910,7 @@ SCRIPT;
         ->join('INNER JOIN', 'eps e','e.id = et.eps_id')
         ->join('INNER JOIN', 'ips i','i.id = e.idips')
         ->where(['i.id'=>$id_ips,'e.id'=>$id_eps, 'ts.id'=>$id_tipo]);
+        // ->andWhere(['es.cod_cups'=>$tarifas]);
 
         return $query->all();
     }
@@ -900,6 +923,20 @@ SCRIPT;
             if ($parents != null) {
                 $ips_id = $parents[0];
                 $out = $this->eps($ips_id);
+
+                return Json::encode(['output'=>$out, 'selected'=>'']);
+            }
+        }
+        return Json::encode(['output'=>'', 'selected'=>'']);
+    }
+
+    public function actionSubafiliacion() {
+        $out = [];
+        if (isset($_POST['depdrop_parents'])) {
+            $parents = $_POST['depdrop_parents'];
+            if ($parents != null) {
+                $ips_id = $parents[0];
+                $out = $this->afiliacion($ips_id);
 
                 return Json::encode(['output'=>$out, 'selected'=>'']);
             }

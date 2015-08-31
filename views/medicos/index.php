@@ -9,7 +9,7 @@ use yii\bootstrap\Modal;
 /* @var $searchModel app\models\MedicosSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Médicos';
+$this->title = 'Médicos tratantes';
 // $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="medicos-index">

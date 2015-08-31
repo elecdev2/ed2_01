@@ -167,6 +167,11 @@ div.panel-body{
     width: 100%;
 }
 
+.icon-his{
+    content: url(../images/iconos/BotonVerHistorial-86.png);
+    vertical-align: middle;
+}
+
 .bootbox-boton-cerrar{
     width: 28px;
 }
@@ -544,7 +549,7 @@ button.update:hover{
 }
 
 
-.add, .busq{
+.add, .busq, .his{
     width: 29px;
     margin-right: 5px;
 }

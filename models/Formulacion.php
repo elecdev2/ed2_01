@@ -42,7 +42,7 @@ class Formulacion extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'formulacion' => 'Formulacion',
+            'formulacion' => 'Formulación',
             'id_historia' => 'Id Historia',
         ];
     }

@@ -42,7 +42,7 @@ class CamposController extends Controller
     {
         $searchModel = new CamposSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $lista_tipos = ArrayHelper::map(TiposServicio::find()->all(), 'id', 'nombre');
+        $lista_tipos = ArrayHelper::map(TiposServicio::find()->where(['idips'=>UsuariosIps::find()->select(['idips'])->where(['idusuario'=>Yii::$app->user->id])])->all(), 'id', 'nombre'),
 
         return $this->render('index', [
             'searchModel' => $searchModel,

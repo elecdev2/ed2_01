@@ -36,6 +36,7 @@ use Yii;
  * @property double $descuento
  * @property string $fecha_inicio
  * @property string $fecha_fin
+ * @property string $hora 
  *
  * @property Eps $epsIdeps
  * @property Estudios $codCups
@@ -66,7 +67,7 @@ class Procedimientos extends \yii\db\ActiveRecord
         return [
             [['idpacientes', 'fecha_atencion', 'numero_muestra', 'eps_ideps', 'cod_cups', 'cantidad_muestras', 'idtipo_servicio'], 'required'],
             [['idpacientes', 'eps_ideps', 'cantidad_muestras', 'idtipo_servicio', 'idmedico', 'usuario_recibe','medico', 'usuario_transcribe'], 'integer'],
-            [['fecha_atencion', 'fecha_informe', 'fecha_salida', 'fecha_entrega', 'periodo_facturacion', 'fecha_inicio', 'fecha_fin', 'forma_pago'], 'safe'],
+            [['fecha_atencion', 'fecha_informe', 'fecha_salida', 'fecha_entrega', 'periodo_facturacion', 'fecha_inicio', 'fecha_fin', 'forma_pago','hora'], 'safe'],
             [['valor_procedimiento', 'valor_copago', 'valor_saldo', 'valor_abono', 'descuento'], 'number'],
             [['autorizacion', 'numero_muestra', 'numero_cheque', 'numero_factura'], 'string', 'max' => 15],
             [['cod_cups'], 'string', 'max' => 20],

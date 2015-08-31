@@ -31,7 +31,7 @@ use yii\helpers\Html;
                 <li><a href="<?=Yii::$app->request->baseUrl;?>/historia-clinica/index"><img class="sidebar-icon" src="<?=Yii::$app->request->baseUrl;?>/images/iconos/IconHistorial.png" alt="" >Historia clinica</a></li>
             <?php } ?>
 
-                <li><a href="<?=Yii::$app->request->baseUrl;?>/atencion/index"><img class="sidebar-icon" src="<?=Yii::$app->request->baseUrl;?>/images/iconos/IconHistorial.png" alt="" >Atn. a pacientes</a></li>
+                <li><a href="<?=Yii::$app->request->baseUrl;?>/atencion/index"><img class="sidebar-icon" src="<?=Yii::$app->request->baseUrl;?>/images/iconos/IconAtenPaciente.png" alt="" >Consultas</a></li>
 
             <?php if(Yii::$app->user->can('medicos')){ ?>
                 <li class="treeview">
@@ -112,6 +112,7 @@ use yii\helpers\Html;
                         <li class="" role="presentation"><?=Html::a('<img class="subsidebar-icon" src="'.Yii::$app->request->baseUrl.'/images/iconos/AdminIconPerfiles.png" alt="" > Perfiles', ['items/index'], ['class' => '']) ?></li>
                         <li class="" role="presentation"><?=Html::a('<img class="subsidebar-icon" src="'.Yii::$app->request->baseUrl.'/images/iconos/AdminIconInformes.png" alt="" > Informes', ['informes/index'], ['class' => '']) ?></li>
                         <li class="" role="presentation"><?=Html::a('<img class="subsidebar-icon" src="'.Yii::$app->request->baseUrl.'/images/iconos/AdminIconEstudios.png" alt="" > Estudios', ['estudios/index'], ['class' => '']) ?></li>
+                        <li class="" role="presentation"><?=Html::a('<img class="subsidebar-icon" src="'.Yii::$app->request->baseUrl.'/images/iconos/AdminIconEstudios.png" alt="" > Estudios-ips', ['estudios-ips/index'], ['class' => '']) ?></li>
                         <li class="" role="presentation"><?=Html::a('<img class="subsidebar-icon" src="'.Yii::$app->request->baseUrl.'/images/iconos/AdminIconResultados.png" alt="" > Resultados', ['site/index-resultados'], ['class' => '']) ?></li>
                     </ul>
                 </li>

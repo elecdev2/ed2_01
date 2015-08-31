@@ -34,6 +34,17 @@ $this->title = 'Reporte de citas médicas';
         // 'pjax'=>true,
         'columns' => [
             // 'id_citas',
+
+            [
+                'label'=>'',
+                'value'=>function($model){
+                    $cadena = ListasSistema::find()->select(['descripcion'])->where(['tipo'=>"cita_estado", 'codigo'=>$model->estado])->scalar();
+                    $color = substr($cadena, 0, 7);
+                    return '<span class="badge" style="padding: 10px; background-color:'.$color.'"> </span>';
+                },
+                'vAlign'=>'middle',
+                'format'=>'raw',
+            ],
             [
                 'attribute'=>'medicos_id',
                 'label'=>'Médico',
@@ -49,9 +60,33 @@ $this->title = 'Reporte de citas médicas';
             //     'format'=>'raw',
             // ],
             [
+                'attribute'=>'motivo',
+                'value'=>'tipoServicio.nombre'
+            ],
+            [
                 'attribute'=>'id_pac',
-                'label'=>'Paciente',
+                'label'=>'ID Paciente',
                 'value'=> 'pacientes.identificacion',
+            ],
+            [
+                'attribute'=>'nombre1',
+                'label'=>'Primer nombre',
+                'value'=> 'pacientes.nombre1',
+            ],
+            [
+                'attribute'=>'nombre2',
+                'label'=>'Segundo nombre',
+                'value'=> 'pacientes.nombre2',
+            ],
+            [
+                'attribute'=>'apellido1',
+                'label'=>'Primer apellido',
+                'value'=> 'pacientes.apellido1',
+            ],
+            [
+                'attribute'=>'apellido2',
+                'label'=>'Segundo apellido',
+                'value'=> 'pacientes.apellido2',
             ],
            
             [
@@ -120,4 +155,5 @@ $this->title = 'Reporte de citas médicas';
         </div>
     </div>
 </div>
+
 

@@ -98,7 +98,7 @@ $this->title = 'Historia Clinica';
         ],
         'toolbar' => [
                 [
-                    'content'=>Html::a('<i class="add icon-imprimir"></i>Imprimir', ['#'], ['class' => 'imprimir btn btn-primary']),
+                    'content'=>Html::a('<i class="add icon-imprimir"></i>Imprimir', ['#'], ['class' => 'imprimir btn btn-primary', 'style'=>'margin:5px 0']),
                 ],
                 // '{export}',
             //     '{toggleData}',

@@ -122,7 +122,7 @@ class FacturasController extends Controller
             if($proc->estado == 'FCT'){
                 $query = $this->facturados($proc,$ips);
                 $campos = ['0'=>'Fecha', '1'=>'Factura', '2'=>'EPS', '3'=>'IPS', '4'=>'TOTAL'];
-                $select = 'SELECT (t.id) AS id, t.valor_procedimiento, t.valor_copago, t.descuento, (t.periodo_facturacion) 
+                $select = 'SELECT (t.id) AS id, t.valor_procedimiento, t.valor_copago, t.descuento, (DATE_FORMAT(t.periodo_facturacion,"%d %b %y")) 
                 AS FECHA, (t.numero_factura) AS FACTURA, (eps.nombre) AS EPS, (ips.nombre) AS IPS, (sum(t.valor_saldo)-sum(t.valor_copago)) 
                 AS TOTAL, (ips.id) AS IDIPS, (eps.id) AS IDEPS ';
                 $tipo = 2;
@@ -138,7 +138,6 @@ class FacturasController extends Controller
             }
             $query = $select.$query;
 
-            // return print_r($query);
             $lista = Yii::$app->db->createCommand($query)->queryAll();
 
 

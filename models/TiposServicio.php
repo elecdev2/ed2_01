@@ -20,6 +20,10 @@ use Yii;
  */
 class TiposServicio extends \yii\db\ActiveRecord
 {
+    public $input_field;
+    public $input_area;
+    public $input_check;
+    public $id_campo;
     /**
      * @inheritdoc
      */

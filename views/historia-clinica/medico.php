@@ -28,6 +28,9 @@
       <li><a href="#rec" data-toggle="tab">Recomendaciones</a></li>
       <li><a href="#for" data-toggle="tab">Formulación</a></li>
       <li><a href="#arch" data-toggle="tab">Archivos</a></li>
+    <?php if($campos !== null){ ?> 
+      <li><a href="#serv" data-toggle="tab"><?=$tipo_estudio->nombre ?></a></li>
+    <?php } ?>
     </ul>
 </div>
 
@@ -91,30 +94,30 @@
 <!-- motivo -->
         <div class="tab-pane fade" id="mot">
 
-            <?php $form_mot = ActiveForm::begin(['id' => 'motForm', 'validateOnType' => true, 'action'=>'new-mot']); ?>
+            <?php $form_mot = ActiveForm::begin(['id' => 'motForm', 'validateOnType' => true, 'action'=>'new-mot', 'options'=>['name'=>'Motivo-Enfermedad']]); ?>
                 
                 <?= $form_mot->field($motivo_e, 'id')->widget(Select2::classname(), [
                         'data'=>$motivo_l,
                         'language' => 'es',
-                        'options' => ['name'=>'mot_enf','placeholder' => 'Seleccione una opción'],
+                        'options' => ['title'=>'historico','name'=>'mot_enf','placeholder' => 'Seleccione una opción','title'=>'historico'],
                         'pluginEvents'=>[
                             "change" => "function() {
                                 $.post('../historia-clinica/consultar-fechas', {id: $(this).attr('name'), hc: $(this).val()}).done(function(result) {
-                                    $('#motiv').html(result[0]);
-                                    $('#enfer').html(result[1]);
+                                    $('#motiv').html('<div class=\"content-disabled\">'+result[0]+'</div>');
+                                    $('#enfer').html('<div class=\"content-disabled\">'+result[1]+'</div>');
                                 });
                             }",
                         ]
-                    ])->label('Seleccione fecha');
+                    ])->label('Buscar historia clínica por fecha');
                 ?>
                 
-               <div class="content-disabled" id="motiv"></div>
+               <div id="motiv"></div>
 
-                <?= $form_mot->field($motivo_e, 'motivo', ['template'=>"{input}{error}"])->textArea(['placeholder'=>'Motivo de consulta', 'cols'=>85, 'rows'=>5]) ?>
+                <?= $form_mot->field($motivo_e, 'motivo')->textArea(['placeholder'=>'Motivo de consulta', 'cols'=>85, 'rows'=>5])->label('Motivo') ?>
 
-                <div class="content-disabled" id="enfer"></div>
+                <div id="enfer"></div>
 
-                <?= $form_mot->field($motivo_e, 'enfermedad', ['template'=>"{input}{error}"])->textArea(['placeholder'=>'Enfermedad actual', 'cols'=>85, 'rows'=>5]) ?>
+                <?= $form_mot->field($motivo_e, 'enfermedad')->textArea(['placeholder'=>'Enfermedad actual', 'cols'=>85, 'rows'=>5])->label('Enfermedad actual') ?>
                 
                 <input type="text" hidden name="historia_cli" value="<?=$hc?>">
 
@@ -128,23 +131,23 @@
 
 <!-- antecedentes patologicos -->
         <div class="tab-pane fade" id="ant_pa">
-            <?php $form_pat = ActiveForm::begin(['id' => 'patForm', 'validateOnType' => true, 'action'=>'new-pat']); ?>
+            <?php $form_pat = ActiveForm::begin(['id' => 'patForm', 'validateOnType' => true, 'action'=>'new-pat', 'options'=>['name'=>'Antecedentes-Patologicos']]); ?>
 
                 <?= $form_pat->field($ant_pato_e, 'id')->widget(Select2::classname(), [
                         'data'=>$ant_pato_l,
                         'language' => 'es',
-                        'options' => ['name'=>'ant_pat','placeholder' => 'Seleccione una opción'],
+                        'options' => ['title'=>'historico','name'=>'ant_pat','placeholder' => 'Seleccione una opción'],
                         'pluginEvents'=>[
                             "change" => "function() {
                                 $.post('../historia-clinica/consultar-fechas', {id: $(this).attr('name'), hc: $(this).val()}).done(function(result) {
-                                    $('#antecedentes_pat').html(result);
+                                    $('#antecedentes_pat').html('<div class=\"content-disabled\">'+result+'</div>');
                                 });
                             }",
                         ]
-                    ])->label('Seleccione fecha');
+                    ])->label('Buscar historia clínica por fecha');
                 ?>
 
-                <div class="content-disabled" id="antecedentes_pat"></div>
+                <div id="antecedentes_pat"></div>
                 
                 <div class="form-content">
                     <label for="antecedentespatologicos-infecciosos" class="col-sm-3">Infecciosos</label>
@@ -196,22 +199,22 @@
 
 <!-- antecedentes familiares -->
         <div class="tab-pane fade" id="ant_fam">
-            <?php $form_fam = ActiveForm::begin(['id' => 'famForm', 'validateOnType' => true, 'action'=>'new-fam']); ?>
+            <?php $form_fam = ActiveForm::begin(['id' => 'famForm', 'validateOnType' => true, 'action'=>'new-fam', 'options'=>['name'=>'Antecedentes-Familiares']]); ?>
 
                 <?= $form_fam->field($ant_fam_e, 'id')->widget(Select2::classname(), [
                         'data'=>$ant_fam_l,
                         'language' => 'es',
-                        'options' => ['name'=>'ant_fam','placeholder' => 'Seleccione una opción'],
+                        'options' => ['title'=>'historico','name'=>'ant_fam','placeholder' => 'Seleccione una opción'],
                         'pluginEvents'=>[
                             "change" => "function() {
                                 $.post('../historia-clinica/consultar-fechas', {id: $(this).attr('name'), hc: $(this).val()}).done(function(result) {
-                                    $('#antecendentes_fam').html(result);
+                                    $('#antecendentes_fam').html('<div class=\"content-disabled\">'+result+'</div>');
                                 });
                             }",
                         ]
-                    ])->label('Seleccione fecha');
+                    ])->label('Buscar historia clínica por fecha');
                 ?>
-                <div class="content-disabled" id="antecendentes_fam"></div>
+                <div id="antecendentes_fam"></div>
                 
                 <div class="form-content">
                     <label for="antecedentesfamiliares-diabetes" class="col-sm-3">Diabetes</label>
@@ -273,22 +276,22 @@
 
 <!-- Habitos -->
         <div class="tab-pane fade" id="hab">
-            <?php $form_hab = ActiveForm::begin(['id' => 'habForm', 'validateOnType' => true, 'action'=>'new-hab']); ?>
+            <?php $form_hab = ActiveForm::begin(['id' => 'habForm', 'validateOnType' => true, 'action'=>'new-hab', 'options'=>['name'=>'Hábitos']]); ?>
 
                 <?= $form_hab->field($habitos_e, 'id')->widget(Select2::classname(), [
                         'data'=>$habitos_l,
                         'language' => 'es',
-                        'options' => ['name'=>'hab','placeholder' => 'Seleccione una opción'],
+                        'options' => ['title'=>'historico','name'=>'hab','placeholder' => 'Seleccione una opción'],
                         'pluginEvents'=>[
                             "change" => "function() {
                                 $.post('../historia-clinica/consultar-fechas', {id: $(this).attr('name'), hc: $(this).val()}).done(function(result) {
-                                    $('#habitos').html(result);
+                                    $('#habitos').html('<div class=\"content-disabled\">'+result+'</div>');
                                 });
                             }",
                         ]
-                    ])->label('Seleccione fecha');
+                    ])->label('Buscar historia clínica por fecha');
                 ?>
-                <div class="content-disabled" id="habitos"></div>
+                <div id="habitos"></div>
                 
                 <div class="form-content">
                     <label for="habitos-alcohol" class="col-sm-3">Alcohol</label>
@@ -326,23 +329,23 @@
 
 <!-- Revision por sistemas -->
         <div class="tab-pane fade" id="rev">
-            <?php $form_rev = ActiveForm::begin(['id' => 'revForm', 'validateOnType' => true, 'action'=>'new-rev']); ?>
+            <?php $form_rev = ActiveForm::begin(['id' => 'revForm', 'validateOnType' => true, 'action'=>'new-rev', 'options'=>['name'=>'Revision-por-Sistemas']]); ?>
 
                  <?= $form_rev->field($rev_sis_e, 'id')->widget(Select2::classname(), [
                         'data'=>$rev_sis_l,
                         'language' => 'es',
-                        'options' => ['name'=>'rev','placeholder' => 'Seleccione una opción'],
+                        'options' => ['title'=>'historico','name'=>'rev','placeholder' => 'Seleccione una opción'],
                         'pluginEvents'=>[
                             "change" => "function() {
                                 $.post('../historia-clinica/consultar-fechas', {id: $(this).attr('name'), hc: $(this).val()}).done(function(result) {
-                                    $('#revision_sistemas').html(result);
+                                    $('#revision_sistemas').html('<div class=\"content-disabled\">'+result+'</div>');
                                 });
                             }",
                         ]
-                    ])->label('Seleccione fecha');
+                    ])->label('Buscar historia clínica por fecha');
                 ?>
 
-                <div class="content-disabled" id="revision_sistemas"></div>
+                <div id="revision_sistemas"></div>
 
                 <div class="form-content">
                     <label for="rev_sis-cardiorespiratorio" class="col-sm-3">Cardiorespiratorio</label>
@@ -350,7 +353,7 @@
                     <?= $form_rev->field($rev_sis_e, 'cardiorespiratorio')->textArea(['cols'=>85, 'rows'=>2,])->label('') ?>
                 </div>
                  <div class="form-content">
-                    <label for="rev_sis-gastrointestinal" class="col-sm-3">gastrointestinal</label>
+                    <label for="rev_sis-gastrointestinal" class="col-sm-3">Gastrointestinal</label>
                     <?=Html::dropDownList('sino_rev_sis[]','',['1'=>'Normal', '0'=>'Irregular'], ['prompt'=>'Seleccione', 'class'=>'col-sm-3']) ?>
                     <?= $form_rev->field($rev_sis_e, 'gastrointestinal')->textArea(['cols'=>85, 'rows'=>2,])->label('') ?>
                 </div>
@@ -395,22 +398,22 @@
 
 <!-- examen fisico -->
         <div class="tab-pane fade" id="fis">
-            <?php $form_ex = ActiveForm::begin(['id' => 'exForm', 'validateOnType' => true, 'action'=>'new-ex']); ?>
+            <?php $form_ex = ActiveForm::begin(['id' => 'exForm', 'validateOnType' => true, 'action'=>'new-ex', 'options'=>['name'=>'Examen-Físico']]); ?>
 
                 <?= $form_ex->field($exam_fis_e, 'id')->widget(Select2::classname(), [
                         'data'=>$exam_fis_l,
                         'language' => 'es',
-                        'options' => ['name'=>'fis','placeholder' => 'Seleccione una opción'],
+                        'options' => ['title'=>'historico','name'=>'fis','placeholder' => 'Seleccione una opción'],
                         'pluginEvents'=>[
                             "change" => "function() {
                                 $.post('../historia-clinica/consultar-fechas', {id: $(this).attr('name'), hc: $(this).val()}).done(function(result) {
-                                    $('#examen_fisico').html(result);
+                                    $('#examen_fisico').html('<div class=\"content-disabled\">'+result+'</div>');
                                 });
                             }",
                         ]
-                    ])->label('Seleccione fecha');
+                    ])->label('Buscar historia clínica por fecha');
                 ?>
-                <div class="content-disabled" id="examen_fisico"></div>
+                <div id="examen_fisico"></div>
 
                 <?= $form_ex->field($exam_fis_e, 'peso')->textInput()->label('Peso (Kg)') ?>
                 <?= $form_ex->field($exam_fis_e, 'estatura')->textInput()->label('Estatura (cm)') ?>
@@ -431,22 +434,22 @@
 
 <!-- exploracion regional -->
         <div class="tab-pane fade" id="exp">
-            <?php $form_exp = ActiveForm::begin(['id' => 'expForm', 'validateOnType' => true, 'action'=>'new-exp']); ?>
+            <?php $form_exp = ActiveForm::begin(['id' => 'expForm', 'validateOnType' => true, 'action'=>'new-exp', 'options'=>['name'=>'Exploración-Regional']]); ?>
 
                 <?= $form_exp->field($exp_reg_e, 'id')->widget(Select2::classname(), [
                         'data'=>$exp_reg_l,
                         'language' => 'es',
-                        'options' => ['name'=>'exp','placeholder' => 'Seleccione una opción'],
+                        'options' => ['title'=>'historico','name'=>'exp','placeholder' => 'Seleccione una opción'],
                         'pluginEvents'=>[
                             "change" => "function() {
                                 $.post('../historia-clinica/consultar-fechas', {id: $(this).attr('name'), hc: $(this).val()}).done(function(result) {
-                                    $('#exploracion_regional').html(result);
+                                    $('#exploracion_regional').html('<div class=\"content-disabled\">'+result+'</div>');
                                 });
                             }",
                         ]
-                    ])->label('Seleccione fecha');
+                    ])->label('Buscar historia clínica por fecha');
                 ?>
-                <div class="content-disabled" id="exploracion_regional"></div>
+                <div id="exploracion_regional"></div>
 
                 <div class="form-content">
                     <label for="expl_reg-cabeza" class="col-sm-3">Cabeza</label>
@@ -490,21 +493,21 @@
 <!-- Analisis diagnostico -->
         <div class="tab-pane fade" id="an_im">
 
-            <?php $form_an = ActiveForm::begin(['id' => 'anForm', 'validateOnType' => true, 'action'=>'new-an']); ?>
+            <?php $form_an = ActiveForm::begin(['id' => 'anForm', 'validateOnType' => true, 'action'=>'new-an', 'options'=>['name'=>'Análisis-diagnostico']]); ?>
                 <?= $form_an->field($analisis, 'id')->widget(Select2::classname(), [
                         'data'=>$analisis_l,
                         'language' => 'es',
-                        'options' => ['name'=>'ana','placeholder' => 'Seleccione una opción'],
+                        'options' => ['title'=>'historico','name'=>'ana','placeholder' => 'Seleccione una opción'],
                         'pluginEvents'=>[
                             "change" => "function() {
                                 $.post('../historia-clinica/consultar-fechas', {id: $(this).attr('name'), hc: $(this).val()}).done(function(result) {
-                                    $('#analisis_diag').html(result);
+                                    $('#analisis_diag').html('<div class=\"content-disabled\">'+result+'</div>');
                                 });
                             }",
                         ]
-                    ])->label('Seleccione fecha');
+                    ])->label('Buscar historia clínica por fecha');
                 ?>
-                <div class="content-disabled" id="analisis_diag"></div>
+                <div id="analisis_diag"></div>
 
 
                 <?= $form_an->field($an_imp, 'id_cod')->widget(Select2::classname(), [
@@ -542,29 +545,30 @@
 
 <!-- Recomendaciones -->
         <div class="tab-pane fade" id="rec">
-             <?php $form_rec = ActiveForm::begin(['id' => 'reForm', 'validateOnType' => true, 'action'=>'new-rec']); ?>
+             <?php $form_rec = ActiveForm::begin(['id' => 'reForm', 'validateOnType' => true, 'action'=>'new-rec', 'options'=>['name'=>'Recomendaciones']]); ?>
 
                 <?= $form_rec->field($recom_e, 'id')->widget(Select2::classname(), [
                         'data'=>$recom_l,
                         'language' => 'es',
-                        'options' => ['name'=>'rec','placeholder' => 'Seleccione una opción'],
+                        'options' => ['title'=>'historico','name'=>'rec','placeholder' => 'Seleccione una opción'],
                         'pluginEvents'=>[
                             "change" => "function() {
                                 $.post('../historia-clinica/consultar-fechas', {id: $(this).attr('name'), hc: $(this).val()}).done(function(result) {
-                                    $('#recomendaciones').html(result);
+                                    $('#recomendaciones').html('<div class=\"content-disabled\">'+result+'</div>');
                                 });
                             }",
                         ]
-                    ])->label('Seleccione fecha');
+                    ])->label('Buscar historia clínica por fecha');
                 ?>
-                <div class="content-disabled" id="recomendaciones"></div>
+                <div id="recomendaciones"></div>
 
-                <?= $form_rec->field($recom_e, 'recomendaciones', ['template'=>"{input}{error}"])->textArea(['placeholder'=>'Nueva recomendación', 'cols'=>85, 'rows'=>5]) ?>
+                <?= $form_rec->field($recom_e, 'recomendaciones')->textArea(['placeholder'=>'Nueva recomendación', 'cols'=>85, 'rows'=>5]) ?>
              
                 <input type="text" hidden name="historia_cli" value="<?=$hc?>">
 
                 <div class='col-sm-12 text-center'>
                     <?= Html::submitButton('<i class="add icon-guardar"></i>Guardar', ['class' =>'btn btn-success']) ?>
+                    <?= Html::a('<i class="add icon-imprimir"></i>Imprimir',['imprimir-rf', 'hc'=>$hc, 'rf'=>'r'],['disabled'=>true, 'class'=>'btn btn-primary', 'title'=>'imprimir', 'target'=>'_blank']); ?>
                 </div>
 
              <?php ActiveForm::end(); ?>
@@ -572,29 +576,30 @@
 
 <!-- Formulacion -->
         <div class="tab-pane fade" id="for">
-             <?php $form_for = ActiveForm::begin(['id' => 'ForForm', 'validateOnType' => true, 'action'=>'new-for']); ?>
+             <?php $form_for = ActiveForm::begin(['id' => 'ForForm', 'validateOnType' => true, 'action'=>'new-for', 'options'=>['name'=>'Formulación']]); ?>
 
                 <?= $form_for->field($formula_e, 'id')->widget(Select2::classname(), [
                         'data'=>$formula_l,
                         'language' => 'es',
-                        'options' => ['name'=>'for','placeholder' => 'Seleccione una opción'],
+                        'options' => ['title'=>'historico','name'=>'for','placeholder' => 'Seleccione una opción'],
                         'pluginEvents'=>[
                             "change" => "function() {
                                 $.post('../historia-clinica/consultar-fechas', {id: $(this).attr('name'), hc: $(this).val()}).done(function(result) {
-                                    $('#formulacion').html(result);
+                                    $('#formulacion').html('<div class=\"content-disabled\">'+result+'</div>');
                                 });
                             }",
                         ]
-                    ])->label('Seleccione fecha');
+                    ])->label('Buscar historia clínica por fecha');
                 ?>
-                <div class="content-disabled" id="formulacion"></div>
+                <div id="formulacion"></div>
 
-                <?= $form_for->field($formula_e, 'formulacion', ['template'=>"{input}{error}"])->textArea(['placeholder'=>'Nueva formulación', 'cols'=>85, 'rows'=>5]) ?>
+                <?= $form_for->field($formula_e, 'formulacion')->textArea(['placeholder'=>'Nueva formulación', 'cols'=>85, 'rows'=>5]) ?>
              
                 <input type="text" hidden name="historia_cli" value="<?=$hc?>">
 
                 <div class='col-sm-12 text-center'>
                     <?= Html::submitButton('<i class="add icon-guardar"></i>Guardar', ['class' =>'btn btn-success']) ?>
+                    <?= Html::a('<i class="add icon-imprimir"></i>Imprimir',['imprimir-rf', 'hc'=>$hc, 'rf'=>'f'],['disabled'=>true, 'class'=>'btn btn-primary', 'title'=>'imprimir', 'target'=>'_blank']); ?>
                 </div>
 
              <?php ActiveForm::end(); ?>
@@ -603,22 +608,22 @@
 <!-- Archivos -->
         <div class="tab-pane fade" id="arch">
 
-             <?php $form_ar = ActiveForm::begin(['id' => 'archForm', 'options' => ['enctype' => 'multipart/form-data'], 'action' => 'upload']) ?>
+             <?php $form_ar = ActiveForm::begin(['id' => 'archForm', 'options' => ['enctype' => 'multipart/form-data', 'name'=>'Archivos'], 'action' => 'upload']) ?>
                 
                 <?= $form_ar->field($archivo_historial, 'id')->widget(Select2::classname(), [
                         'data'=>$archivo_historial_l,
                         'language' => 'es',
-                        'options' => ['name'=>'arch','placeholder' => 'Seleccione una opción'],
+                        'options' => ['title'=>'historico','name'=>'arch','placeholder' => 'Seleccione una opción'],
                         'pluginEvents'=>[
                             "change" => "function() {
                                 $.post('../historia-clinica/consultar-fechas', {id: $(this).attr('name'), hc: $(this).val()}).done(function(result) {
-                                    $('#archivos_h').html(result);
+                                    $('#archivos_h').html('<div class=\"content-disabled\">'+result+'</div>');
                                 });
                             }",
                         ]
-                    ])->label('Seleccione fecha');
+                    ])->label('Buscar historia clínica por fecha');
                 ?>
-                <div class="content-disabled" id="archivos_h"></div>
+                <div id="archivos_h"></div>
 
                 <?= $form_ar->field($archivo, 'files[]')->fileInput(['multiple' => true, 'accept' => '*'])->label('Cargar archivo(s)') ?>
              
@@ -631,6 +636,56 @@
              <?php ActiveForm::end(); ?>
         </div>
 
+<!-- Especialidad -->
+    <?php if($campos !== null){ ?>
+        <div class="tab-pane fade" id="serv">
+
+
+            <?php $form_serv = ActiveForm::begin(['id' => 'servForm', 'options' => ['name'=>'Especialidad'], 'action' => 'new-especialidad']) ?>
+                
+                <?= $form_serv->field($tipo_estudio, 'id')->widget(Select2::classname(), [
+                        'data'=>$tipo_estudio_l,
+                        'language' => 'es',
+                        'options' => ['title'=>'historico','placeholder' => 'Seleccione una opción'],
+                        'pluginEvents'=>[
+                            "change" => "function() {
+                                $.post('../historia-clinica/fechas-especialidad', {pr: $(this).val()}).done(function(result) {
+                                    $('#tipo_estudio').html('<div class=\"content-disabled\">'+result+'</div>');
+                                });
+                            }",
+                        ]
+                    ])->label('Buscar historia clínica por fecha');
+                ?>
+                <div id="tipo_estudio"></div>
+                
+                <?php foreach ($campos as $campo) {
+                    switch ($campo->tipo_campo) 
+                    {
+                        case 'textField':
+                            echo $form_serv->field($tipo_estudio, 'input_field[]')->textInput(['placeholder'=>$campo->nombre_campo])->label($campo->nombre_campo);
+                            echo $form_serv->field($tipo_estudio, 'id_campo[]')->hiddenInput(['value'=>$campo->id])->label('');
+                            break;
+                        case 'textArea':
+                            echo $form_serv->field($tipo_estudio, 'input_area[]')->textArea(['placeholder'=>$campo->nombre_campo, 'cols'=>85, 'rows'=>5])->label($campo->nombre_campo);
+                            echo $form_serv->field($tipo_estudio, 'id_campo[]')->hiddenInput(['value'=>$campo->id])->label('');
+                            break;
+                        case 'checkBox':
+                            echo $form_serv->field($tipo_estudio, 'input_check[]')->checkbox(['label'=>$campo->nombre_campo, 'uncheck'=>null]);
+                            echo $form_serv->field($tipo_estudio, 'id_campo[]')->hiddenInput(['value'=>$campo->id])->label('');
+                            break;
+                       
+                    }
+                } ?>
+
+                <input type="text" hidden name="procedimiento_id" value="<?=$pr?>">
+
+                <div class='col-sm-12 text-center'>
+                    <?= Html::submitButton('<i class="add icon-guardar"></i>Guardar', ['class' =>'btn btn-success']) ?>
+                </div>
+
+            <?php ActiveForm::end(); ?>
+        </div>
+    <?php } ?>
     </div>
 </div> 
 
@@ -641,6 +696,9 @@ $('form').on('beforeSubmit', function(e)
 {
     var \$form = $(this);
     var data = new FormData($(this)[0]);
+    var btn = $(this).find('button[type=submit]');
+    var btn_imp = $(this).find('a[title=imprimir]');
+    
 
     $.ajax({
         url : \$form.attr("action"),
@@ -658,10 +716,15 @@ $('form').on('beforeSubmit', function(e)
                     break;
                 case '1':
                     notification('Se guardaron los cambios', 1);
+                    btn.attr('disabled', true);
+                    btn_imp.attr('disabled', false);
                     break;
                 case '2':
                     notification('Formato de archivo inválido', 2);
-                    break;          
+                    break;
+                default:
+                    console.log(result)
+                    break;        
             }
         },
         fail : function(result)
